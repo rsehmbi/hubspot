@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/schedule_id"
+        android:title="Schedule"
+        android:icon="@drawable/ic_baseline_calendar_month_24"/>
+
+    <item
+        android:id="@+id/security_id"
+        android:icon="@drawable/ic_baseline_security_24"
+        android:title="Security" />
+
+    <item
+        android:id="@+id/studybuddy_id"
+        android:title="Study Buddy"
+        android:icon="@drawable/ic_baseline_people_outline_24"/>
+
+    <item
+        android:id="@+id/ratings_id"
+        android:title="Ratings"
+        android:icon="@drawable/ic_baseline_person_search_24"/>
+
+</menu>
