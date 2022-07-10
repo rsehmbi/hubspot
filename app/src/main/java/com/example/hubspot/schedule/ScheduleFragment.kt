@@ -50,18 +50,24 @@ class ScheduleFragment : Fragment() {
                         val coursekey = dsp.key
                         SuggestionCourselist.add(coursekey!!) //add result into array list
                     }
-                    var courseListAdapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        SuggestionCourselist
-                    )
-                    autocompleteTextSearch.setAdapter(courseListAdapter)
-                    autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
-                        val courseSelected = parent.selectedItem
-                        loadCourseInfo(databaseReference, courseSelected.toString())
-                        Toast.makeText(requireContext(), "${courseSelected}", Toast.LENGTH_SHORT).show()
+                    try {
+                        var courseListAdapter = ArrayAdapter(
+                            requireActivity(),
+                            android.R.layout.simple_list_item_1,
+                            SuggestionCourselist
+                        )
+                        autocompleteTextSearch.setAdapter(courseListAdapter)
+                        autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
+                            val courseSelected = parent.selectedItem
+                            loadCourseInfo(databaseReference, courseSelected.toString())
+                            Toast.makeText(requireContext(), "${courseSelected}", Toast.LENGTH_SHORT).show()
+                        }
+                        println("Data snapshot is" + SuggestionCourselist)
                     }
-                    println("Data snapshot is" + SuggestionCourselist)
+                    catch (exception: Exception){
+
+                    }
+
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
