@@ -50,7 +50,6 @@ class ScheduleFragment : Fragment() {
 //                "Courses"
 //            )
 //        loadSuggestionList(courseReference)
-
         return scheduleView
     }
 

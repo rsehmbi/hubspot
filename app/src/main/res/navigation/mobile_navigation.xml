@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_schedule">
+
+    <fragment
+        android:id="@+id/navigation_schedule"
+        android:name="com.example.hubspot.schedule.ScheduleFragment"
+        android:label="Schedule"
+        tools:layout="@layout/fragment_schedule" />
+
+    <fragment
+        android:id="@+id/navigation_ratings"
+        android:name="com.example.hubspot.ratings.RatingsFragment"
+        android:label="Ratings"
+        tools:layout="@layout/fragment_ratings" />
+
+    <fragment
+        android:id="@+id/navigation_security"
+        android:name="com.example.hubspot.security.SecurityFragment"
+        android:label="Security"
+        tools:layout="@layout/fragment_ratings" />
+
+    <fragment
+        android:id="@+id/navigation_studdybuddy"
+        android:name="com.example.hubspot.studybuddy.StudyBuddyFragment"
+        android:label="Studdy Buddy"
+        tools:layout="@layout/fragment_ratings" />
+
+</navigation>
