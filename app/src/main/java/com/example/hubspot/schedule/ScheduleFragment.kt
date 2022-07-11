@@ -9,16 +9,19 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
+import com.example.hubspot.schedule.CourseListViewModel.CourseListViewModel
 import com.google.firebase.database.*
 
 
 class ScheduleFragment : Fragment() {
     lateinit var autocompleteTextSearch: AutoCompleteTextView;
     lateinit var autoPopulateCourseList: RecyclerView;
-    val SuggestionCourselist = ArrayList<String>()
+    var SuggestionCourselist = ArrayList<String>()
     var SelectedCourselist = ArrayList<Course>()
 
     override fun onCreateView(
@@ -31,12 +34,22 @@ class ScheduleFragment : Fragment() {
         val recycleLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext())
         autoPopulateCourseList.layoutManager = recycleLayoutManager
 
-
-        val courseReference =
-            FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
-                "Courses"
+        val courseListViewModel = ViewModelProvider(requireActivity())[CourseListViewModel::class.java]
+        courseListViewModel.getCourseListSuggestions()?.observe(requireActivity(), Observer {
+            SuggestionCourselist = it
+            var courseListAdapter = ArrayAdapter(
+                requireActivity(),
+                android.R.layout.simple_list_item_1,
+                SuggestionCourselist
             )
-        loadSuggestionList(courseReference)
+            autocompleteTextSearch.setAdapter(courseListAdapter)
+
+        })
+//        val courseReference =
+//            FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
+//                "Courses"
+//            )
+//        loadSuggestionList(courseReference)
 
         return scheduleView
     }
