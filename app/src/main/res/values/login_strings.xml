@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_textview_email">Email</string>
+    <string name="login_edittext_email_hint">ex. my_email@gmail.com</string>
+
+    <string name="login_textview_password">Password</string>
+    <string name="login_edittext_password_hint">ex. my_password123!</string>
+
+    <string name="login_button_login">Log in</string>
+    <string name="login_button_signup">Sign up</string>
+</resources>
