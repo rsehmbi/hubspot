@@ -1,5 +1,6 @@
 package com.example.hubspot.services
 
+/** Authentication service module to provide user authentication for the app. */
 object Auth {
     // Will be removed, for mock navigation flow purposes.
     var initialLogin: Boolean = true
