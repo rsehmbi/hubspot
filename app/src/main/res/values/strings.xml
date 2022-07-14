@@ -20,4 +20,6 @@
     <string name="start">Start</string>
     <string name="pause">Pause</string>
 
+    <string name="search_courses">Search Courses</string>
+    <string name="load">Load</string>
 </resources>
