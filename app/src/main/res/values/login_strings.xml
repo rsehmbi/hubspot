@@ -9,4 +9,18 @@
     <string name="login_button_login">Log in</string>
     <string name="login_button_signup">Sign up</string>
     <string name="login_textview_title">HubSpot</string>
+
+    <string name="login_toast_email_not_activated">Account not activated. Check your email to activate your account.</string>
+    <string name="login_toast_sign_in_fail">Failed to sign in. Error Code: </string>
+    <string name="login_toast_sign_up_fail">Failed to sign up. Error Code: </string>
+    <string name="login_toast_sign_up_success">Check your email to activate your account!</string>
+    <string name="login_toast_invalid_email">Invalid email format. Emails should be like: myemail@gmail.com</string>
+    <string name="login_toast_weak_password">Password is too weak. Choose a password with more characters and numbers</string>
+    <string name="login_toast_invalid_password">Invalid password. Please try again.</string>
+    <string name="login_toast_empty_email_or_password">Both the email and password must not be empty.</string>
+    <string name="login_toast_email_already_used">This email is already in use. Either use another email, resend the account activation email, or log in.</string>
+    <string name="login_toast_send_email_fail">Failed to send account activation email. Try resending it with the resend button.</string>
+    <string name="login_toast_resend_activation_email">Account activation email has been resent!</string>
+    <string name="login_button_resend_email">Resend Activation Email</string>
+    <string name="login_toast_email_already_activated">Account email has already been activated!</string>
 </resources>

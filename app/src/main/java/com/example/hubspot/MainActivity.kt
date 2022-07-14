@@ -7,15 +7,19 @@ import androidx.fragment.app.Fragment
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.security.SecurityFragment
-import com.example.hubspot.services.Auth
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val currentUser = Auth.getCurrentUser()
-        if (currentUser == null) {
+
+        // Check if user is currently logged in, go to login screen if not
+        val auth = Firebase.auth
+        val currentUser = auth.currentUser
+        if (currentUser == null || !currentUser.isEmailVerified) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
