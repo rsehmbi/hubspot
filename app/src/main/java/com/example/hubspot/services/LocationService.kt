@@ -21,14 +21,27 @@ import com.google.android.gms.tasks.OnTokenCanceledListener
 object LocationService {
 
     /**
-     * Get the current location of the user with Google Location Services
-     * FusedLocationProviderClient. Checks location action permissions before obtaining the user's
-     * current location. In the event where the user denys permissions or a location cannot be
-     * found it will return null, otherwise it will return a location of type Location.
-     * Takes in an activity.
+     * Interface can be used to provide a callback function for getting the current location.
+     * Example usage:
+     *  LocationService.getCurrentLocation(activity,
+     *       object : LocationCallback {
+     *           override fun onCallback(result: Location?) {
+     *               // Do something with location result
+     *           }
+     *       }
+     *   })
      */
-    fun getCurrentLocation(activity: Activity) : Location? {
-        var currentLocation: Location? = null
+    interface LocationCallback {
+        fun onCallback(result: Location?)
+    }
+
+    /**
+     * Get the current location of the user with Google Location Services
+     * [FusedLocationProviderClient]. Checks location action permissions before obtaining the user's
+     * current location. Once the location has been successfully obtained, it calls the
+     * [LocationCallback] passing in the result. Requires an [Activity] and [LocationCallback].
+     */
+    fun getCurrentLocation(activity: Activity, locationCallback: LocationCallback) {
         val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
 
         if (ActivityCompat.checkSelfPermission(
@@ -47,7 +60,6 @@ object LocationService {
                 coarseLocationResult = grantResults[1]
             }
             if (fineLocationResult == PERMISSION_DENIED || coarseLocationResult == PERMISSION_DENIED) {
-                return null
             }
         }
 
@@ -57,8 +69,7 @@ object LocationService {
             override fun isCancellationRequested() = false
         })
             .addOnSuccessListener { location: Location? ->
-                currentLocation = location
+                locationCallback.onCallback(location)
             }
-        return currentLocation
     }
 }
