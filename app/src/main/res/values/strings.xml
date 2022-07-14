@@ -1,5 +1,25 @@
 <resources>
     <string name="app_name">HubSpot</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Study buddy -->
+    <string name="study_length">Study time length</string>
+    <string name="break_length">Break time length</string>
+    <string name="ask_share_location">Would you like to share your location with friends?</string>
+    <string name="start_study_session">Start study session!</string>
+    <string name="study_session_title">Stay focused!</string>
+    <string name="break_session_title">Break time!</string>
+    <string name="timer">%1$s</string>
+    <string name="start_study_dialog_title">Let\'s continue studying!</string>
+    <string name="start_break_dialog_title">Time for a break!</string>
+    <string name="ask_continue">Would you like to continue?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="end_session">End session</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+
     <string name="search_courses">Search Courses</string>
     <string name="load">Load</string>
 </resources>
