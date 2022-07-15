@@ -13,6 +13,14 @@
         android:padding="16dp"
         tools:context=".LoginActivity">
 
+        <ProgressBar
+            android:id="@+id/login_loading_spinner"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +58,7 @@
             android:inputType="textPassword" />
 
         <Button
+            android:id="@+id/login_button_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -57,6 +66,7 @@
             android:text="@string/login_button_login" />
 
         <Button
+            android:id="@+id/login_button_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -64,6 +74,7 @@
             android:text="@string/login_button_signup" />
 
         <Button
+            android:id="@+id/login_button_resend_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onResendActivationEmailButtonClick"
