@@ -35,15 +35,15 @@ class LoginActivity : AppCompatActivity() {
         }
         authViewModel.signUpUserResult.observe(this) { result ->
             if (result.resultCode == SUCCESS) {
-                displayVerificationEmailSentMessage()
+                displayActivationEmailSentMessage()
             } else {
                 displayAuthError(result)
             }
             setScreenLoading(false)
         }
-        authViewModel.resendVerificationEmailResult.observe(this) { result ->
+        authViewModel.resendActivationEmailResult.observe(this) { result ->
             if (result.resultCode == SUCCESS) {
-                displayVerificationEmailSentMessage()
+                displayActivationEmailSentMessage()
             } else {
                 displayAuthError(result)
             }
@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
             WEAK_PASSWORD -> displayWeakPasswordError()
             EMAIL_ALREADY_USED -> displayEmailAlreadyUsedError()
             EMAIL_PASSWORD_EMPTY -> displayEmailOrPasswordEmptyError()
-            EMAIL_NOT_VERIFIED -> displayEmailNotVerifiedError()
+            ACCOUNT_NOT_ACTIVATED -> displayAccountNotActivatedError()
             TOO_MANY_REQUESTS_AT_ONCE -> displayTooManyRequestsAtOnceError()
             NO_LOGIN_OR_SIGNUP -> displayNoPreviousLogInOrSignUpError()
             else -> displayCatchAllAuthError()
@@ -91,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun displayVerificationEmailSentMessage() {
+    private fun displayActivationEmailSentMessage() {
         val successMessage = resources.getString(R.string.login_toast_sign_up_success)
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
     }
@@ -112,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
     }
 
-    private fun displayEmailNotVerifiedError() {
+    private fun displayAccountNotActivatedError() {
         val errorMessage = resources.getString(R.string.login_toast_email_not_activated)
         Toast.makeText(
             this, errorMessage,
@@ -196,6 +196,6 @@ class LoginActivity : AppCompatActivity() {
 
     fun onResendActivationEmailButtonClick(view: View) {
         setScreenLoading(true)
-        authViewModel.resendVerificationEmail()
+        authViewModel.resendActivationEmail()
     }
 }

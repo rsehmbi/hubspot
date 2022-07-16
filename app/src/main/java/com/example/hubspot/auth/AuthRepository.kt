@@ -25,7 +25,7 @@ class AuthRepository {
         val auth = Firebase.auth
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                // Successfully signed in, check if email is verified
+                // Successfully signed in, check if email is verified (and thus acc activated)
                 val currentUser = auth.currentUser
                 if (currentUser != null && currentUser.isEmailVerified) {
                     authResult.value = AuthResult(
@@ -34,7 +34,7 @@ class AuthRepository {
                     )
                 } else {
                     authResult.value =
-                        AuthResult(AuthResultCode.EMAIL_NOT_VERIFIED, null)
+                        AuthResult(AuthResultCode.ACCOUNT_NOT_ACTIVATED, null)
                 }
             } else {
                 // Failed to sign in, tell the user why
@@ -46,10 +46,10 @@ class AuthRepository {
     class AuthResult(val resultCode: AuthResultCode, val loggedInUser: User?)
 
     enum class AuthResultCode {
-        SUCCESS, EMAIL_PASSWORD_EMPTY, EMAIL_NOT_VERIFIED, INVALID_EMAIL,
+        SUCCESS, EMAIL_PASSWORD_EMPTY, ACCOUNT_NOT_ACTIVATED, INVALID_EMAIL,
         UNKNOWN_ERROR, EMAIL_ALREADY_USED, WEAK_PASSWORD, WRONG_PASSWORD,
-        USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, EMAIL_ALREADY_VERIFIED,
-        FAILED_TO_SEND_VERIFICATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE
+        USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, ACCOUNT_ALREADY_ACTIVATED,
+        FAILED_TO_SEND_ACTIVATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE
     }
 
     fun handleAuthError(
@@ -108,7 +108,7 @@ class AuthRepository {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Successfully created account, just need to activate by email
-                    sendVerificationEmail(signUpUserResult)
+                    sendActivationEmail(signUpUserResult)
                 } else {
                     // Failed to create account, display error message
                     handleAuthError(task, signUpUserResult)
@@ -116,42 +116,42 @@ class AuthRepository {
             }
     }
 
-    private fun sendVerificationEmail(authResult: MutableLiveData<AuthResult>) {
-        // Successfully created account, now send verification email (or resend it)
+    private fun sendActivationEmail(authResult: MutableLiveData<AuthResult>) {
+        // Successfully created account, now send activation email (or resend it)
         val user = Firebase.auth.currentUser
         if (user == null) {
-            // No attempted login or signup, can't send verification email yet
+            // No attempted login or signup, can't send activation email yet
             authResult.value = AuthResult(AuthResultCode.NO_LOGIN_OR_SIGNUP, null)
             return
         }
 
         if (user.isEmailVerified) {
             // User email is already verified, don't send again
-            authResult.value = AuthResult(AuthResultCode.EMAIL_ALREADY_VERIFIED, null)
+            authResult.value = AuthResult(AuthResultCode.ACCOUNT_ALREADY_ACTIVATED, null)
             return
         }
 
         user.sendEmailVerification()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // verification email successfully sent
+                    // activation email successfully sent
                     authResult.value =
                         AuthResult(AuthResultCode.SUCCESS, User(user.uid, user.email!!))
                 } else {
-                    // Failed to send verification email
+                    // Failed to send activation email
                     if (task.exception is FirebaseTooManyRequestsException) {
                         // User is sending emails too quickly, Firebase has throttled us
                         authResult.value =
                             AuthResult(AuthResultCode.TOO_MANY_REQUESTS_AT_ONCE, null)
                     } else {
                         authResult.value =
-                            AuthResult(AuthResultCode.FAILED_TO_SEND_VERIFICATION_EMAIL, null)
+                            AuthResult(AuthResultCode.FAILED_TO_SEND_ACTIVATION_EMAIL, null)
                     }
                 }
             }
     }
 
-    fun resendVerificationEmail(resendVerificationEmailResult: MutableLiveData<AuthResult>) {
-        sendVerificationEmail(resendVerificationEmailResult)
+    fun resendActivationEmail(resendActivationEmailResult: MutableLiveData<AuthResult>) {
+        sendActivationEmail(resendActivationEmailResult)
     }
 }
