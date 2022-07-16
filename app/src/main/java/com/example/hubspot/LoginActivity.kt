@@ -16,6 +16,7 @@ import com.example.hubspot.auth.AuthViewModel
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
+    private var toastMessage: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,89 +94,64 @@ class LoginActivity : AppCompatActivity() {
 
     private fun displayActivationEmailSentMessage() {
         val successMessage = resources.getString(R.string.login_toast_sign_up_success)
-        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
+        showToast(successMessage)
+    }
+
+    private fun showToast(message: String) {
+        toastMessage?.cancel()
+        toastMessage = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        toastMessage?.show()
     }
 
     private fun displayCatchAllAuthError() {
         val errorMessage =
             resources.getString(R.string.login_toast_auth_fail)
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        showToast(errorMessage)
     }
 
     private fun displayNoPreviousLogInOrSignUpError() {
         val errorMessage = resources.getString(R.string.login_toast_try_logging_in_first)
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        showToast(errorMessage)
     }
 
     private fun displayTooManyRequestsAtOnceError() {
         val successMessage = resources.getString(R.string.login_toast_too_many_requests_at_once)
-        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
+        showToast(successMessage)
     }
 
     private fun displayAccountNotActivatedError() {
         val errorMessage = resources.getString(R.string.login_toast_email_not_activated)
-        Toast.makeText(
-            this, errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        showToast(errorMessage)
     }
 
     private fun displayEmailOrPasswordEmptyError() {
         val errorMessage = resources.getString(R.string.login_toast_empty_email_or_password)
-        Toast.makeText(
-            this, errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        showToast(errorMessage)
     }
 
     private fun displayEmailAlreadyUsedError() {
-        val errorMessage =
-            resources.getString(R.string.login_toast_email_already_used)
-        Toast.makeText(
-            this,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        val errorMessage = resources.getString(R.string.login_toast_email_already_used)
+        showToast(errorMessage)
     }
 
     private fun displayWeakPasswordError() {
-        val errorMessage =
-            resources.getString(R.string.login_toast_weak_password)
-        Toast.makeText(
-            this,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        val errorMessage = resources.getString(R.string.login_toast_weak_password)
+        showToast(errorMessage)
     }
 
     private fun displayWrongPasswordError() {
-        val errorMessage =
-            resources.getString(R.string.login_toast_invalid_password)
-        Toast.makeText(
-            this,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        val errorMessage = resources.getString(R.string.login_toast_invalid_password)
+        showToast(errorMessage)
     }
 
     private fun displayUserNotFoundError() {
-        val errorMessage =
-            resources.getString(R.string.login_toast_user_not_found)
-        Toast.makeText(
-            this,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        val errorMessage = resources.getString(R.string.login_toast_user_not_found)
+        showToast(errorMessage)
     }
 
     private fun displayInvalidEmailError() {
-        val errorMessage =
-            resources.getString(R.string.login_toast_invalid_email)
-        Toast.makeText(
-            this,
-            errorMessage,
-            Toast.LENGTH_LONG
-        ).show()
+        val errorMessage = resources.getString(R.string.login_toast_invalid_email)
+        showToast(errorMessage)
     }
 
     fun onLogInButtonClick(view: View) {
