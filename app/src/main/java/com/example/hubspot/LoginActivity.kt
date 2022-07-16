@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
             EMAIL_ALREADY_USED -> displayEmailAlreadyUsedError()
             EMAIL_PASSWORD_EMPTY -> displayEmailOrPasswordEmptyError()
             EMAIL_NOT_VERIFIED -> displayEmailNotVerifiedError()
-            SENDING_EMAILS_TOO_QUICKLY -> displaySendingEmailsTooQuicklyError()
+            TOO_MANY_REQUESTS_AT_ONCE -> displayTooManyRequestsAtOnceError()
             NO_LOGIN_OR_SIGNUP -> displayNoPreviousLogInOrSignUpError()
             else -> displayCatchAllAuthError()
         }
@@ -107,8 +107,8 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
     }
 
-    private fun displaySendingEmailsTooQuicklyError() {
-        val successMessage = resources.getString(R.string.login_toast_sending_email_too_fast)
+    private fun displayTooManyRequestsAtOnceError() {
+        val successMessage = resources.getString(R.string.login_toast_too_many_requests_at_once)
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
     }
 

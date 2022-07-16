@@ -49,14 +49,26 @@ class AuthRepository {
         SUCCESS, EMAIL_PASSWORD_EMPTY, EMAIL_NOT_VERIFIED, INVALID_EMAIL,
         UNKNOWN_ERROR, EMAIL_ALREADY_USED, WEAK_PASSWORD, WRONG_PASSWORD,
         USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, EMAIL_ALREADY_VERIFIED,
-        FAILED_TO_SEND_VERIFICATION_EMAIL, SENDING_EMAILS_TOO_QUICKLY
+        FAILED_TO_SEND_VERIFICATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE
     }
 
     fun handleAuthError(
         task: Task<com.google.firebase.auth.AuthResult>,
         authResult: MutableLiveData<AuthResult>
     ) {
-        val errorCode = (task.exception as FirebaseAuthException?)!!.errorCode
+        if (task.exception is FirebaseTooManyRequestsException) {
+            authResult.value = AuthResult(AuthResultCode.TOO_MANY_REQUESTS_AT_ONCE, null)
+        }
+
+        lateinit var errorCode: String
+
+        try {
+            errorCode = (task.exception as FirebaseAuthException?)!!.errorCode
+        } catch (e: Exception) {
+            authResult.value = AuthResult(AuthResultCode.UNKNOWN_ERROR, null)
+            return
+        }
+
         when (errorCode) {
             "ERROR_INVALID_EMAIL" -> {
                 authResult.value = AuthResult(AuthResultCode.INVALID_EMAIL, null)
@@ -129,7 +141,7 @@ class AuthRepository {
                     if (task.exception is FirebaseTooManyRequestsException) {
                         // User is sending emails too quickly, Firebase has throttled us
                         authResult.value =
-                            AuthResult(AuthResultCode.SENDING_EMAILS_TOO_QUICKLY, null)
+                            AuthResult(AuthResultCode.TOO_MANY_REQUESTS_AT_ONCE, null)
                     } else {
                         authResult.value =
                             AuthResult(AuthResultCode.FAILED_TO_SEND_VERIFICATION_EMAIL, null)
