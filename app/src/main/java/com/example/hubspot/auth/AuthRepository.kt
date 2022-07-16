@@ -8,8 +8,18 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-
+/** Layer of abstraction between the AuthViewModel and Firebase Auth */
 class AuthRepository {
+
+    companion object {
+        fun getCurrentUser(): User? {
+            val firebaseUser = Firebase.auth.currentUser
+            if (firebaseUser != null && firebaseUser.isEmailVerified) {
+                return User(firebaseUser.uid, firebaseUser.email!!)
+            }
+            return null
+        }
+    }
 
     fun signInUser(
         email: String,

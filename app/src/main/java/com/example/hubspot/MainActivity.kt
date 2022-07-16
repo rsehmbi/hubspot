@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.hubspot.auth.Auth
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.security.SecurityFragment
@@ -20,9 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Check if user is currently logged in, go to login screen if not
-        val auth = Firebase.auth
-        val currentUser = auth.currentUser
-        if (currentUser == null || !currentUser.isEmailVerified) {
+        if (Auth.getCurrentUser() == null) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
