@@ -11,8 +11,7 @@
     <string name="login_textview_title">HubSpot</string>
 
     <string name="login_toast_email_not_activated">Account not activated. Check your email to activate your account. Try resending the activation email otherwise.</string>
-    <string name="login_toast_sign_in_fail">Failed to sign in. Error Code: </string>
-    <string name="login_toast_sign_up_fail">Failed to sign up. Error Code: </string>
+    <string name="login_toast_auth_fail">Failed to authenticate.</string>
     <string name="login_toast_sign_up_success">Check your email to activate your account!</string>
     <string name="login_toast_invalid_email">Invalid email format. Emails should be like: myemail@gmail.com</string>
     <string name="login_toast_weak_password">Password is too weak. Choose a password with more characters and numbers</string>

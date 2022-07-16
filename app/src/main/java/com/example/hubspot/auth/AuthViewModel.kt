@@ -16,7 +16,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         loginRepository.signInUser(email, password, signInUserResult)
     }
 
-    fun signUp(email: String, password: String) {
+    fun signUpUser(email: String, password: String) {
         loginRepository.signUpUser(email, password, signUpUserResult)
     }
 

@@ -34,7 +34,7 @@ class AuthRepository {
                     )
                 } else {
                     authResult.value =
-                        AuthResult(AuthResultCode.EMAIL_NOT_ACTIVATED, null)
+                        AuthResult(AuthResultCode.EMAIL_NOT_VERIFIED, null)
                 }
             } else {
                 // Failed to sign in, tell the user why
@@ -46,7 +46,7 @@ class AuthRepository {
     class AuthResult(val resultCode: AuthResultCode, val loggedInUser: User?)
 
     enum class AuthResultCode {
-        SUCCESS, EMAIL_PASSWORD_EMPTY, EMAIL_NOT_ACTIVATED, INVALID_EMAIL,
+        SUCCESS, EMAIL_PASSWORD_EMPTY, EMAIL_NOT_VERIFIED, INVALID_EMAIL,
         UNKNOWN_ERROR, EMAIL_ALREADY_USED, WEAK_PASSWORD, WRONG_PASSWORD,
         USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, EMAIL_ALREADY_VERIFIED,
         FAILED_TO_SEND_VERIFICATION_EMAIL, SENDING_EMAILS_TOO_QUICKLY
