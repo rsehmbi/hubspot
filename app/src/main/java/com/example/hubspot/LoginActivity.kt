@@ -28,31 +28,6 @@ class LoginActivity : AppCompatActivity() {
         signInUser(email, password)
     }
 
-    private fun signInUser(email: String, password: String) {
-        setScreenLoading(true)
-        val auth = Firebase.auth
-        if (checkIfEmailOrPasswordIsEmpty(email, password)) {
-            setScreenLoading(false)
-            return
-        }
-
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                // Successfully signed in, check if email is verified
-                val currentUser = auth.currentUser
-                if (currentUser != null && currentUser.isEmailVerified) {
-                    gotoMainActivity()
-                } else {
-                    displayEmailNotActivatedError()
-                }
-            } else {
-                // Failed to sign in, tell the user why
-                displayAuthError(task)
-            }
-            setScreenLoading(false)
-        }
-    }
-
     private fun checkIfEmailOrPasswordIsEmpty(
         email: String,
         password: String
@@ -210,7 +185,7 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        user!!.sendEmailVerification()
+        user.sendEmailVerification()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Activation email successfully sent
