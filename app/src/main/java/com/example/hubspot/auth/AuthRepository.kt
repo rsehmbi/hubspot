@@ -58,6 +58,7 @@ class AuthRepository {
     ) {
         if (task.exception is FirebaseTooManyRequestsException) {
             authResult.value = AuthResult(AuthResultCode.TOO_MANY_REQUESTS_AT_ONCE, null)
+            return
         }
 
         lateinit var errorCode: String
