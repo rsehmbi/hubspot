@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_textview_email">Email</string>
+    <string name="login_edittext_email_hint">ex. my_email@gmail.com</string>
+
+    <string name="login_textview_password">Password</string>
+    <string name="login_edittext_password_hint">ex. my_password123!</string>
+
+    <string name="login_button_login">Log in</string>
+    <string name="login_button_signup">Sign up</string>
+    <string name="login_textview_title">HubSpot</string>
+
+    <string name="login_toast_email_not_activated">Account not activated. Check your email to activate your account. Try resending the activation email otherwise.</string>
+    <string name="login_toast_auth_fail">Failed to authenticate.</string>
+    <string name="login_toast_sign_up_success">Check your email to activate your account! Check your spam folder if you do not see it in your inbox.</string>
+    <string name="login_toast_invalid_email">Invalid email format. Emails should be like: myemail@gmail.com</string>
+    <string name="login_toast_weak_password">Password is too weak. Choose a password with more characters and numbers</string>
+    <string name="login_toast_invalid_password">Invalid password. Please try again.</string>
+    <string name="login_toast_empty_email_or_password">Both the email and password must not be empty.</string>
+    <string name="login_toast_email_already_used">This email is already in use. Either use another email, resend the account activation email, or log in.</string>
+    <string name="login_toast_send_email_fail">Failed to send account activation email. Try resending it with the resend button.</string>
+    <string name="login_toast_resend_activation_email">Account activation email has been resent!</string>
+    <string name="login_button_resend_email">Resend Activation Email</string>
+    <string name="login_toast_email_already_activated">Account email has already been activated!</string>
+    <string name="login_toast_try_logging_in_first">Please login or try signing up an account before resending an activation email.</string>
+    <string name="login_toast_user_not_found">This account does not exist. Please check your credentials and try again or sign up for a new account.</string>
+    <string name="login_toast_too_many_requests_at_once">Too many requests made at once. Please wait and try again later.</string>
+</resources>
