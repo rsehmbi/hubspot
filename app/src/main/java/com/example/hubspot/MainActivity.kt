@@ -2,6 +2,11 @@ package com.example.hubspot
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.hubspot.databinding.ActivityMainBinding
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +19,8 @@ import com.example.hubspot.security.ui.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -26,32 +31,25 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val ratingsFragment = RatingsFragment()
         val scheduleFragment = ScheduleFragment()
         val securityFragment = SecurityFragment()
         val studybuddyFragment = StudyBuddyFragment()
 
-        setCurrentFragment(scheduleFragment)
+        val navView: BottomNavigationView = binding.bottomNavigationView
+        val navController = findNavController(R.id.flFragment)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_schedule, R.id.navigation_ratings, R.id.navigation_studdybuddy, R.id.navigation_security,
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.schedule_id->setCurrentFragment(scheduleFragment)
-                R.id.ratings_id->setCurrentFragment(ratingsFragment)
-                R.id.security_id->setCurrentFragment(securityFragment)
-                R.id.studybuddy_id->setCurrentFragment(studybuddyFragment)
-            }
-            true
-        }
     }
-
-    private fun setCurrentFragment(fragment: Fragment)=
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment,fragment)
-            commit()
-        }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
