@@ -1,5 +1,7 @@
 package com.example.hubspot
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,6 +20,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
     private var toastMessage: Toast? = null
 
+    // necessary to dismiss in the view model sign up observe handler
+    lateinit var signUpDialog: Dialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -26,6 +31,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initAuthViewModel() {
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+
+        // Wait for and handle sign in result
         authViewModel.signInUserResult.observe(this) { result ->
             if (result.resultCode == SUCCESS) {
                 gotoMainActivity()
@@ -34,14 +41,22 @@ class LoginActivity : AppCompatActivity() {
             }
             setScreenLoading(false)
         }
+        // Wait for and handle sign up result
         authViewModel.signUpUserResult.observe(this) { result ->
             if (result.resultCode == SUCCESS) {
                 displayActivationEmailSentMessage()
+                signUpDialog.dismiss()
             } else {
                 displayAuthError(result)
+
+                // re-enable positive dialog button to allow user to try again now
+                val positiveButton: Button =
+                    (signUpDialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                positiveButton.isEnabled = true
             }
             setScreenLoading(false)
         }
+        // Wait for and handle resend activation email result
         authViewModel.resendActivationEmailResult.observe(this) { result ->
             if (result.resultCode == SUCCESS) {
                 displayActivationEmailSentMessage()
@@ -168,7 +183,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun onSignUpDialogFinishButtonClick(email: String, password: String) {
         setScreenLoading(true)
-        authViewModel.signInUser(email, password)
+        authViewModel.signUpUser(email, password)
     }
 
     fun onResendActivationEmailButtonClick(view: View) {
