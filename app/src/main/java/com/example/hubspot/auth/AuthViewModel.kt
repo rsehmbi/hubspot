@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.auth.AuthRepository.AuthResult
 
+/** Allows app pages that deal with authentication to follow the MVVM architecture */
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val authRepository: AuthRepository = AuthRepository()
 

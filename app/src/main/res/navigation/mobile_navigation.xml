@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_security"
-        android:name="com.example.hubspot.security.SecurityFragment"
+        android:name="com.example.hubspot.security.ui.SecurityFragment"
         android:label="Security"
         tools:layout="@layout/fragment_ratings" />
 
