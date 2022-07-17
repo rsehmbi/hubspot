@@ -10,7 +10,7 @@ import com.example.hubspot.auth.Auth
 import com.example.hubspot.login.LoginActivity
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
-import com.example.hubspot.security.SecurityFragment
+import com.example.hubspot.security.ui.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
