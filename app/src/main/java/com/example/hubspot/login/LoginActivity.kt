@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.MainActivity
 import com.example.hubspot.R
@@ -36,36 +37,43 @@ class LoginActivity : AppCompatActivity() {
 
         // Wait for and handle sign in result
         authViewModel.signInUserResult.observe(this) { result ->
-            if (result.resultCode == SUCCESS) {
-                gotoMainActivity()
-            } else {
-                displayAuthError(result)
+            // if statement is used to stop code from executing on rotation change
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (result.resultCode == SUCCESS) {
+                    gotoMainActivity()
+                } else {
+                    displayAuthError(result)
+                }
+                setScreenLoading(false)
             }
-            setScreenLoading(false)
         }
         // Wait for and handle sign up result
         authViewModel.signUpUserResult.observe(this) { result ->
-            if (result.resultCode == SUCCESS) {
-                displayActivationEmailSentMessage()
-                signUpDialog.dismiss()
-            } else {
-                displayAuthError(result)
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (result.resultCode == SUCCESS) {
+                    displayActivationEmailSentMessage()
+                    signUpDialog.dismiss()
+                } else {
+                    displayAuthError(result)
 
-                // re-enable positive dialog button to allow user to try again now
-                val positiveButton: Button =
-                    (signUpDialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-                positiveButton.isEnabled = true
+                    // re-enable positive dialog button to allow user to try again now
+                    val positiveButton: Button =
+                        (signUpDialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                    positiveButton.isEnabled = true
+                }
+                setScreenLoading(false)
             }
-            setScreenLoading(false)
         }
         // Wait for and handle resend activation email result
         authViewModel.resendActivationEmailResult.observe(this) { result ->
-            if (result.resultCode == SUCCESS) {
-                displayActivationEmailSentMessage()
-            } else {
-                displayAuthError(result)
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (result.resultCode == SUCCESS) {
+                    displayActivationEmailSentMessage()
+                } else {
+                    displayAuthError(result)
+                }
+                setScreenLoading(false)
             }
-            setScreenLoading(false)
         }
     }
 
