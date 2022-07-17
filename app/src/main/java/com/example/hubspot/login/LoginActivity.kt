@@ -199,5 +199,6 @@ class LoginActivity : AppCompatActivity() {
     fun onResendActivationEmailButtonClick(view: View) {
         setScreenLoading(true)
         authViewModel.resendActivationEmail()
+        // test commits
     }
 }
