@@ -4,7 +4,7 @@ import com.example.hubspot.models.User
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-/** Contains helper methods related to authentication. */
+/** Contains helper methods related to authentication that can be used through the application */
 object Auth {
     /** Returns the currently logged in user or null if there is none. */
     fun getCurrentUser(): User? {

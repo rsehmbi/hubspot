@@ -8,7 +8,9 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-/** Layer of abstraction between the AuthViewModel and Firebase Auth */
+/** Layer of abstraction between the AuthViewModel and Firebase Auth.
+ *  Handles Firebase implementation to fulfill the AuthViewModel functionality
+ *  and Auth helper object functionality */
 class AuthRepository {
 
     companion object {
