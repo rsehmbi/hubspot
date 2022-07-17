@@ -1,4 +1,4 @@
-package com.example.hubspot
+package com.example.hubspot.login
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.example.hubspot.R
 
 
 /** Dialog Fragment for signing up a user account */

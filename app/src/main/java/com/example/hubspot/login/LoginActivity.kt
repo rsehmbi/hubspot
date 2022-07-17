@@ -1,4 +1,4 @@
-package com.example.hubspot
+package com.example.hubspot.login
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -11,6 +11,8 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.hubspot.MainActivity
+import com.example.hubspot.R
 import com.example.hubspot.auth.AuthRepository.AuthResultCode.*
 import com.example.hubspot.auth.AuthRepository.AuthResult
 import com.example.hubspot.auth.AuthViewModel

@@ -11,14 +11,14 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
-        tools:context=".LoginActivity">
+        tools:context=".login.LoginActivity">
 
         <ProgressBar
             android:id="@+id/login_loading_spinner"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:visibility="gone" />
 
         <TextView

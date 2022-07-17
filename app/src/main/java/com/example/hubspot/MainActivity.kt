@@ -7,13 +7,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.hubspot.auth.Auth
+import com.example.hubspot.login.LoginActivity
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.security.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
 class MainActivity : AppCompatActivity() {
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLogOutMenuOptionClicked(item: MenuItem) {
-        Firebase.auth.signOut()
+        Auth.signOutCurrentUser()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
