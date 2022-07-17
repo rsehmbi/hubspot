@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_textview_email" />
+
+    <EditText
+        android:id="@+id/dialog_signup_edittext_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:autofillHints="emailAddress"
+        android:hint="@string/login_edittext_email_hint"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_signup_textview_first_password" />
+
+    <EditText
+        android:id="@+id/dialog_signup_edittext_first_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:autofillHints="password"
+        android:hint="@string/login_edittext_password_hint"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_signup_textview_second_password" />
+
+    <EditText
+        android:id="@+id/dialog_signup_edittext_second_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:autofillHints="password"
+        android:hint="@string/login_edittext_password_hint"
+        android:inputType="textPassword" />
+
+</LinearLayout>

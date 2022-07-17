@@ -162,12 +162,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun onSignUpButtonClick(view: View) {
-        val emailEditText = findViewById<EditText>(R.id.login_edittext_email)
-        val passwordEditText = findViewById<EditText>(R.id.login_edittext_password)
-        val email = emailEditText.text.toString()
-        val password = passwordEditText.text.toString()
+        val signUpDialog = SignUpDialog()
+        signUpDialog.show(supportFragmentManager, "sign_up_dialog")
+    }
+
+    fun onSignUpDialogFinishButtonClick(email: String, password: String) {
         setScreenLoading(true)
-        authViewModel.signUpUser(email, password)
+        authViewModel.signInUser(email, password)
     }
 
     fun onResendActivationEmailButtonClick(view: View) {
