@@ -10,13 +10,8 @@ import com.example.hubspot.databinding.ActivityMainBinding
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.login.LoginActivity
-import com.example.hubspot.ratings.RatingsFragment
-import com.example.hubspot.schedule.ScheduleFragment
-import com.example.hubspot.security.ui.SecurityFragment
-import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -33,11 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val ratingsFragment = RatingsFragment()
-        val scheduleFragment = ScheduleFragment()
-        val securityFragment = SecurityFragment()
-        val studybuddyFragment = StudyBuddyFragment()
 
         val navView: BottomNavigationView = binding.bottomNavigationView
         val navController = findNavController(R.id.flFragment)
