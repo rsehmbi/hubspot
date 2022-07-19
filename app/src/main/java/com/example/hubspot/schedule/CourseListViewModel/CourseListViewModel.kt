@@ -12,6 +12,11 @@ import com.google.firebase.database.ValueEventListener
 
 class CourseListViewModel:ViewModel() {
     private var courseListSuggestions: MutableLiveData<ArrayList<String>>? = null
+    var SelectedCourselist = ArrayList<Course>()
+    val courseReference =
+        FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
+            "Courses"
+        )
 
     fun getCourseListSuggestions(): LiveData<ArrayList<String>>? {
         if (courseListSuggestions == null) {
@@ -22,11 +27,6 @@ class CourseListViewModel:ViewModel() {
     }
 
     private fun loadSuggestions(){
-        val courseReference =
-            FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
-                "Courses"
-            )
-
         courseReference.addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

@@ -23,6 +23,9 @@
         </receiver>
 
         <activity
+            android:name=".schedule.SingleCourseActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
@@ -31,11 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".login.LoginActivity"
             android:exported="false" />
-        <activity android:name=".studybuddy.PomodoroActivity"/>
+        <activity android:name=".studybuddy.PomodoroActivity" />
     </application>
 
 </manifest>

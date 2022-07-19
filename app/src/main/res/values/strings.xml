@@ -18,7 +18,6 @@
     <string name="end_session">End session</string>
     <string name="start">Start</string>
     <string name="pause">Pause</string>
-
     <string name="search_courses">Search Courses</string>
     <string name="load">Load</string>
     <string name="options_menu_item_log_out">Log out</string>
@@ -27,4 +26,7 @@
     <string name="location_services_text">Location Services</string>
     <string name="turn_on_button_text">TURN ON</string>
     <string name="last_known_location_text">Last known location:</string>
+    <string name="enroll">Enroll</string>
+    <string name="show_schedule">Show Schedule</string>
+
 </resources>
