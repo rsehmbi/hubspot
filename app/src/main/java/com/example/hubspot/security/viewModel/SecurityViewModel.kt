@@ -16,4 +16,5 @@ class SecurityViewModel {
     var getLocationNow = _getLocationNow
     val latitude = MutableLiveData<Double>()
     val longitude = MutableLiveData<Double>()
+    val lastLocationDateTime = MutableLiveData<Long>()
 }
