@@ -22,4 +22,6 @@
 
     <string name="search_courses">Search Courses</string>
     <string name="load">Load</string>
+    <string name="enroll">Enroll</string>
+    <string name="show_schedule">Show Schedule</string>
 </resources>

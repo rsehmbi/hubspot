@@ -1,12 +1,15 @@
 package com.example.hubspot.schedule
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
+import com.example.hubspot.schedule.CourseListViewModel.Course
 import kotlin.collections.ArrayList
+
 
 
 class CourseAdapter(private val dataSet: ArrayList<Course>) :
@@ -27,6 +30,11 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
             courseLocationTextView = view.findViewById(R.id.courseLocationId)
             courseProfessorTextView = view.findViewById(R.id.professNameId)
             courseCreditsTextView = view.findViewById(R.id.creditsId)
+
+            view.setOnClickListener {
+                var position: Int = getAdapterPosition()
+
+            }
         }
     }
 
@@ -45,6 +53,13 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
         viewHolder.courseNameTextView.text = selectedCourse.courseName
         viewHolder.courseProfessorTextView.text = selectedCourse.professorName
         viewHolder.courseDescriptionTextView.text = "Description: ${selectedCourse.courseDescription}"
+
+        viewHolder.itemView.setOnClickListener {
+            val intent = Intent(it.context, SingleCourseActivity::class.java).apply {
+                putExtra("COURSE_ID", selectedCourse.courseCode)
+            }
+            it.context.startActivity(intent)
+        }
     }
 
     private fun setCourseCode(viewHolder: ViewHolder, selectedCourse: Course) {
