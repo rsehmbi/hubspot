@@ -45,7 +45,7 @@ class ScheduleFragment : Fragment() {
             )
             autocompleteTextSearch.setAdapter(courseListAdapter)
             autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
-                val courseSelected = parent.selectedItem
+                val courseSelected = parent.getItemAtPosition(position)
                 loadCourseInfo(courseListViewModel.courseReference, courseSelected.toString())
                 Toast.makeText(requireContext(), "Course ${courseSelected} added to cart", Toast.LENGTH_SHORT).show()
                 autocompleteTextSearch.getText().clear()
