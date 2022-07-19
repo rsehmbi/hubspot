@@ -13,6 +13,7 @@ import com.example.hubspot.security.services.SafeLocationService
 import com.example.hubspot.security.viewModel.SecurityViewModel
 import com.example.hubspot.services.LocationService
 import com.example.hubspot.services.LocationService.LocationCallback
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -60,6 +61,13 @@ class SecurityFragment : Fragment() {
             if (securityViewModel.getLocationNow.value == true) {
                 setLocationTextView(view)
                 // TODO: Save to database
+                // check if user id is in the location DB already
+                // if the user is not in the location DB then add them
+                // if the user is in the location DB then add last location
+                //
+                val firebaseDatabase = FirebaseDatabase.getInstance()
+                val dataBaseReference = firebaseDatabase.reference
+//                val dataBaseInstance = dataBaseReference.
                 // TODO: Broadcast to friends
                 securityViewModel.getLocationNow.value = false
             }
