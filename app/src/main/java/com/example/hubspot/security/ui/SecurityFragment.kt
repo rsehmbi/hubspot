@@ -115,6 +115,8 @@ class SecurityFragment : Fragment() {
                             locationTextView.text = currentLocationString
                             securityViewModel.latitude.value = result!!.latitude
                             securityViewModel.longitude.value = result.longitude
+                            securityViewModel.lastLocationDateTime.value =
+                                Calendar.getInstance().timeInMillis
                         }
                     }
                 }
