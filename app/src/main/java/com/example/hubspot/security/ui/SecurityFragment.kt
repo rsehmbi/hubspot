@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.hubspot.R
+import com.example.hubspot.auth.Auth
+import com.example.hubspot.models.UserLocation
 import com.example.hubspot.security.services.SafeLocationService
 import com.example.hubspot.security.viewModel.SecurityViewModel
 import com.example.hubspot.services.LocationService
@@ -18,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 /**
@@ -60,14 +63,29 @@ class SecurityFragment : Fragment() {
         securityViewModel.getLocationNow.observe(viewLifecycleOwner){
             if (securityViewModel.getLocationNow.value == true) {
                 setLocationTextView(view)
-                // TODO: Save to database
-                // check if user id is in the location DB already
-                // if the user is not in the location DB then add them
-                // if the user is in the location DB then add last location
-                //
-                val firebaseDatabase = FirebaseDatabase.getInstance()
-                val dataBaseReference = firebaseDatabase.reference
-//                val dataBaseInstance = dataBaseReference.
+                // Create path for database
+                val currentUser = Auth.getCurrentUser()
+                val currentUserUid = currentUser!!.id
+                val path = "Users/$currentUserUid/Locations"
+                try {
+                    // Get values location values
+                    val latitude = securityViewModel.latitude.value
+                    val longitude = securityViewModel.longitude.value
+                    val location = "$latitude,$longitude"
+                    val dateTime = securityViewModel.lastLocationDateTime.value
+
+                    // Get reference
+                    val firebaseDatabase = FirebaseDatabase.getInstance()
+                    val userLocationsReference = firebaseDatabase.getReference(path)
+
+                    // Add new location to Locations list
+                    val newUserLocation = UserLocation(dateTime!!,location)
+                    val newPostRef = userLocationsReference.push()  // Creates a chronological UID for each list item
+                    newPostRef.setValue(newUserLocation)
+                    // TODO: add max locations
+                }catch (er: Exception) {
+                    println(er.toString())
+                }
                 // TODO: Broadcast to friends
                 securityViewModel.getLocationNow.value = false
             }
