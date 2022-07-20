@@ -1,5 +1,7 @@
 package com.example.hubspot.security.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +35,7 @@ class SecurityFragment : Fragment() {
     private lateinit var securityViewModel: SecurityViewModel
     private lateinit var locationServicesButton: Button
     private lateinit var safeLocationService: SafeLocationService
+    private lateinit var sharedPreferences: SharedPreferences
 
     companion object CompanionObject {
         lateinit var securityViewModel: SecurityViewModel
@@ -55,10 +58,15 @@ class SecurityFragment : Fragment() {
         super.onCreate(savedInstanceState)
         initializeViewModel()
         initializeSafeLocationService()
+        initializeSharedPreferences()
     }
 
 // Private methods --------------------------------------------------------------------------
 
+    private fun initializeSharedPreferences() {
+        sharedPreferences = requireActivity()
+            .getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+    }
     private fun handleLocationUpdates(view: View) {
         securityViewModel.getLocationNow.observe(viewLifecycleOwner){
             if (securityViewModel.getLocationNow.value == true) {
@@ -98,6 +106,9 @@ class SecurityFragment : Fragment() {
 
     private fun initializeSecurityButtons(view: View) {
         locationServicesButton = view.findViewById(R.id.location_services_button)
+
+        val securityButtonText = sharedPreferences.getString("security_button_text", "TURN ON")
+        locationServicesButton.text = securityButtonText
         locationServicesButton.setOnClickListener {
             if (locationServicesButton.text == "TURN ON") {
                 securityViewModel.locationServiceSystemActivated.value = true
@@ -107,10 +118,16 @@ class SecurityFragment : Fragment() {
                     viewLifecycleOwner,
                     securityViewModel,
                 )
-                locationServicesButton.setText(R.string.turn_off_text)
+                locationServicesButton.text = "TURN OFF"
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putString("security_button_text", "TURN OFF")
+                editor.apply()
             } else {
                 securityViewModel.locationServiceSystemActivated.value = false
-                locationServicesButton.setText(R.string.turn_on_text)
+                locationServicesButton.text = "TURN ON"
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putString("security_button_text", "TURN ON")
+                editor.apply()
             }
         }
     }

@@ -15,7 +15,7 @@ import java.util.*
 /**
  * SafeLocationService is a service that handles the continuous location system including setting
  * the location alarm that goes off in 15-minute intervals and turning the alarm on and off. When
- * the alarm goes off, a timing operation in the form of a [PendingIntent] broadcast an [Intent]
+ * the alarm goes off, a timing operation in the form of a [PendingIntent] broadcasts an [Intent]
  * for a [LocationReceiver].
  */
 class SafeLocationService {
