@@ -25,9 +25,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add a Friend!" />
-    <Button
-        android:id="@+id/friendsMapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search where are you friends studying!" />
 </LinearLayout>

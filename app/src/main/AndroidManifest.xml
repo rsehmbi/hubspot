@@ -38,7 +38,7 @@
         <activity
             android:name=".studybuddy.FriendsMapActivity"
             android:exported="false"
-            android:label="label_activity_friends_maps" />
+            android:label="Friends Map" />
 
         <receiver android:name=".security.services.LocationReceiver"
             android:exported="true"
@@ -61,6 +61,7 @@
             android:name=".login.LoginActivity"
             android:exported="false" />
         <activity android:name=".studybuddy.PomodoroActivity" />
+        <service android:enabled="true" android:name=".services.FriendsLocationsService"></service>
     </application>
 
 </manifest>

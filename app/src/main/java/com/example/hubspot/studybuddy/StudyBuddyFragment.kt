@@ -17,6 +17,7 @@ class StudyBuddyFragment : Fragment() {
     private lateinit var breakLength: EditText
     private lateinit var shareLocationRadioGroup: RadioGroup
     private lateinit var startStudySessionButton: Button
+    private lateinit var friendsMapButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +28,12 @@ class StudyBuddyFragment : Fragment() {
         breakLength = view.findViewById(R.id.breakLength)
         shareLocationRadioGroup = view.findViewById(R.id.share_location_radio_group)
         startStudySessionButton = view.findViewById(R.id.startStudySessionButton)
+        friendsMapButton = view.findViewById(R.id.friendsMapButton)
         startStudySessionButton.setOnClickListener{startStudySession()}
+        friendsMapButton.setOnClickListener {
+            val intent = Intent(requireActivity(), FriendsMapActivity::class.java)
+            startActivity(intent)
+        }
         return view
     }
 
