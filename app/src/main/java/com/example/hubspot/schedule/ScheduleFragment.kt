@@ -1,19 +1,19 @@
 package com.example.hubspot.schedule
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
+import com.example.hubspot.schedule.CourseListViewModel.Course
 import com.example.hubspot.schedule.CourseListViewModel.CourseListViewModel
 import com.google.firebase.database.*
 
@@ -21,20 +21,21 @@ import com.google.firebase.database.*
 class ScheduleFragment : Fragment() {
     lateinit var autocompleteTextSearch: AutoCompleteTextView;
     lateinit var autoPopulateCourseList: RecyclerView;
-    var SuggestionCourselist = ArrayList<String>()
-    var SelectedCourselist = ArrayList<Course>()
+    private var SuggestionCourselist = ArrayList<String>()
+    lateinit var courseListViewModel: CourseListViewModel;
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val scheduleView: View = inflater.inflate(R.layout.fragment_schedule, container, false)
+        onClickButtonHandler(scheduleView)
         autocompleteTextSearch = scheduleView.findViewById(R.id.autoCompleteId)
         autoPopulateCourseList = scheduleView.findViewById(R.id.courseListViewId)
         val recycleLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext())
         autoPopulateCourseList.layoutManager = recycleLayoutManager
 
-        val courseListViewModel = ViewModelProvider(requireActivity())[CourseListViewModel::class.java]
+        courseListViewModel = ViewModelProvider(requireActivity())[CourseListViewModel::class.java]
         courseListViewModel.getCourseListSuggestions()?.observe(requireActivity(), Observer {
             SuggestionCourselist = it
             var courseListAdapter = ArrayAdapter(
@@ -43,84 +44,64 @@ class ScheduleFragment : Fragment() {
                 SuggestionCourselist
             )
             autocompleteTextSearch.setAdapter(courseListAdapter)
-
+            autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
+                val courseSelected = parent.getItemAtPosition(position)
+                loadCourseInfo(courseListViewModel.courseReference, courseSelected.toString())
+                Toast.makeText(requireContext(), "Course ${courseSelected} added to cart", Toast.LENGTH_SHORT).show()
+                autocompleteTextSearch.getText().clear()
+            }
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+            autoPopulateCourseList.adapter = adapter
         })
-//        val courseReference =
-//            FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
-//                "Courses"
-//            )
-//        loadSuggestionList(courseReference)
         return scheduleView
     }
 
-    private fun loadSuggestionList(databaseReference: DatabaseReference) {
-        databaseReference.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    println("Data snapshot is" + dataSnapshot.value)
-                    for (dsp in dataSnapshot.children) {
-                        val coursekey = dsp.key
-                        SuggestionCourselist.add(coursekey!!) //add result into array list
-                    }
-                    try {
-                        var courseListAdapter = ArrayAdapter(
-                            requireActivity(),
-                            android.R.layout.simple_list_item_1,
-                            SuggestionCourselist
-                        )
-                        autocompleteTextSearch.setAdapter(courseListAdapter)
-                        autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
-                            val courseSelected = parent.selectedItem
-                            loadCourseInfo(databaseReference, courseSelected.toString())
-                            Toast.makeText(requireContext(), "${courseSelected}", Toast.LENGTH_SHORT).show()
-                        }
-                        println("Data snapshot is" + SuggestionCourselist)
-                    }
-                    catch (exception: Exception){
-
-                    }
-
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    //handle databaseError
-                }
-            })
+    private fun checkAlreadySelected(courseSelected: String): Boolean{
+        for (course in courseListViewModel.SelectedCourselist ){
+            if (courseSelected == course.courseCode){
+                Toast.makeText(requireActivity(), "Course Already Selected", Toast.LENGTH_SHORT).show()
+                return true
+            }
+        }
+        return false
     }
 
     private fun loadCourseInfo(databaseReference:DatabaseReference, courseSelected: String) {
-        val query: Query = databaseReference.orderByChild("CourseCode").equalTo(courseSelected)
-        val valueListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                if (snapshot.exists()){
-                    for (dataSnapshot in snapshot.children){
-                        val selectedCourse: Course = Course(
-                            dataSnapshot.child("ProfessorName").value.toString(),
-                            dataSnapshot.child("CourseName").value.toString(),
-                            dataSnapshot.child("CourseCode").value.toString(),
-                            dataSnapshot.child("Description").value.toString(),
-                            dataSnapshot.child("Credits").value.toString(),
-                            dataSnapshot.child("Location").value.toString(),
-
-                        )
-                        SelectedCourselist.add(selectedCourse)
+        if (!checkAlreadySelected(courseSelected)){
+            val query: Query = databaseReference.orderByChild("CourseCode").equalTo(courseSelected)
+            val valueListener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()){
+                        for (dataSnapshot in snapshot.children){
+                            val selectedCourse = Course(
+                                dataSnapshot.child("ProfessorName").value.toString(),
+                                dataSnapshot.child("CourseName").value.toString(),
+                                dataSnapshot.child("CourseCode").value.toString(),
+                                dataSnapshot.child("Description").value.toString(),
+                                dataSnapshot.child("Credits").value.toString(),
+                                dataSnapshot.child("Location").value.toString(),
+                                )
+                            courseListViewModel.SelectedCourselist.add(selectedCourse)
+                        }
+                        val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+                        autoPopulateCourseList.adapter = adapter
                     }
-                    val adapter = CourseAdapter(SelectedCourselist)
-                    autoPopulateCourseList.adapter = adapter
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
                 }
             }
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
+            query.addListenerForSingleValueEvent(valueListener)
         }
-        query.addListenerForSingleValueEvent(valueListener)
+    }
+
+    private fun onClickButtonHandler(view: View){
+        view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
+            Toast.makeText(requireContext(), "Enroll feature in progress", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<Button>(R.id.view_schedule_id).setOnClickListener {
+            Toast.makeText(requireContext(), "View Schedule feature in progress", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
-
-class Course(var professorName: String,
-             var courseName:String,
-             var courseCode:String,
-             var courseDescription: String,
-             var credits: String,
-             var location:String)
