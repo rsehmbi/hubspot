@@ -94,6 +94,9 @@ class LoginActivity : AppCompatActivity() {
             ACCOUNT_NOT_ACTIVATED -> displayAccountNotActivatedError()
             TOO_MANY_REQUESTS_AT_ONCE -> displayTooManyRequestsAtOnceError()
             NO_LOGIN_OR_SIGNUP -> displayNoPreviousLogInOrSignUpError()
+            FAILED_TO_READ_DATABASE -> displayFailedToReadFromDatabaseError()
+            FAILED_TO_WRITE_USER_TO_DATABASE -> displayFailedToWriteUserToDatabaseError()
+            FAILED_TO_SET_AUTH_DISPLAY_NAME -> displayFailedToSetUserAuthDisplayNameError()
             else -> displayCatchAllAuthError()
         }
     }
@@ -176,6 +179,21 @@ class LoginActivity : AppCompatActivity() {
 
     private fun displayInvalidEmailError() {
         val errorMessage = resources.getString(R.string.login_toast_invalid_email)
+        showToast(errorMessage)
+    }
+
+    private fun displayFailedToReadFromDatabaseError() {
+        val errorMessage = resources.getString(R.string.login_toast_fail_read_database)
+        showToast(errorMessage)
+    }
+
+    private fun displayFailedToSetUserAuthDisplayNameError() {
+        val errorMessage = resources.getString(R.string.login_toast_set_user_auth_displayname_fail)
+        showToast(errorMessage)
+    }
+
+    private fun displayFailedToWriteUserToDatabaseError() {
+        val errorMessage = resources.getString(R.string.login_toast_create_user_in_database_fail)
         showToast(errorMessage)
     }
 
