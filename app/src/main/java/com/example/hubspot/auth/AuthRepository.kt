@@ -45,7 +45,11 @@ class AuthRepository {
                 // Successfully signed in, check if email is verified (and thus acc activated)
                 val currentUser = auth.currentUser
                 if (currentUser != null && currentUser.isEmailVerified) {
-                    val user = User(currentUser.uid, currentUser.email, currentUser.email)
+                    val user = User(
+                        currentUser.uid,
+                        currentUser.email,
+                        getDisplayNameFromEmail(currentUser.email)
+                    )
                     createDatabaseUserIfNotExists(user, authResult)
                 } else {
                     authResult.value =
@@ -55,6 +59,19 @@ class AuthRepository {
                 // Failed to sign in, tell the user why
                 handleAuthError(task, authResult)
             }
+        }
+    }
+
+    private fun getDisplayNameFromEmail(email: String?): String? {
+        if (email != null) {
+            val getBeforeAtSign = email.split("@")
+            if (getBeforeAtSign.isNotEmpty()) {
+                return getBeforeAtSign[0]
+            } else {
+                return null
+            }
+        } else {
+            return null
         }
     }
 
@@ -104,7 +121,7 @@ class AuthRepository {
     private fun createUserInDatabase(user: User, authResult: MutableLiveData<AuthResult>) {
         // Update display name to email default first
         val updateDisplayName = UserProfileChangeRequest.Builder()
-            .setDisplayName(user.email).build()
+            .setDisplayName(user.displayName).build()
         val firebaseUser = Firebase.auth.currentUser
         firebaseUser!!.updateProfile(updateDisplayName).addOnCompleteListener { updateTask ->
             if (updateTask.isSuccessful) {
