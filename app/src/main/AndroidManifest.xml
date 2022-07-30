@@ -62,6 +62,7 @@
             android:exported="false" />
         <activity android:name=".studybuddy.pomodoro.PomodoroActivity" />
         <service android:enabled="true" android:name=".studybuddy.friendsMap.services.FriendsMapService"></service>
+        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.ShareLocationService"></service>
     </application>
 
 </manifest>
