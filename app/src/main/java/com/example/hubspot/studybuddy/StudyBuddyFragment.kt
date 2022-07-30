@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.hubspot.R
+import com.example.hubspot.studybuddy.friendsMap.services.ShareLocationService
 import com.example.hubspot.studybuddy.friendsMap.ui.FriendsMapActivity
 import com.example.hubspot.studybuddy.pomodoro.PomodoroActivity
 
@@ -59,7 +60,7 @@ class StudyBuddyFragment : Fragment() {
     }
 
     private fun shareLocation(){
-        //TODO: implement sharing location with friends
-        println("debug: share location")
+        val intentShareLocationService = Intent(activity!!.applicationContext, ShareLocationService::class.java)
+        activity!!.applicationContext.startService(intentShareLocationService)
     }
 }
