@@ -1,10 +1,13 @@
-package com.example.hubspot.schedule
+package com.example.hubspot.schedule.Adapters
 
+import com.example.hubspot.schedule.SingleCourseActivity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.schedule.CourseListViewModel.Course
@@ -12,8 +15,8 @@ import kotlin.collections.ArrayList
 
 
 
-class CourseAdapter(private val dataSet: ArrayList<Course>) :
-    RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
+class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
+    RecyclerView.Adapter<SingleCourseAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val courseCodeTextView: TextView;
@@ -22,6 +25,8 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
         val courseLocationTextView: TextView;
         val courseProfessorTextView: TextView;
         val courseCreditsTextView: TextView;
+        val addToCalendar: Button;
+        val downloadCourseOutline: Button;
 
         init {
             courseCodeTextView = view.findViewById(R.id.courseCodeId)
@@ -30,16 +35,14 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
             courseLocationTextView = view.findViewById(R.id.courseLocationId)
             courseProfessorTextView = view.findViewById(R.id.professNameId)
             courseCreditsTextView = view.findViewById(R.id.creditsId)
-
-            view.setOnClickListener {
-                var position: Int = getAdapterPosition()
-            }
+            addToCalendar = view.findViewById(R.id.addToCalendarId)
+            downloadCourseOutline = view.findViewById(R.id.downloadOutlineId)
         }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.course, viewGroup, false)
+            .inflate(R.layout.mycourse, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -52,6 +55,13 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
         viewHolder.courseNameTextView.text = selectedCourse.courseName
         viewHolder.courseProfessorTextView.text = selectedCourse.professorName
         viewHolder.courseDescriptionTextView.text = "Description: ${selectedCourse.courseDescription}"
+
+        viewHolder.downloadCourseOutline.setOnClickListener { i->
+            Toast.makeText(
+                viewHolder.itemView.context,
+                "test",
+                Toast.LENGTH_SHORT
+            ).show() }
 
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(it.context, SingleCourseActivity::class.java).apply {
