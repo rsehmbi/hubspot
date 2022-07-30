@@ -1,4 +1,4 @@
-package com.example.hubspot.studybuddy
+package com.example.hubspot.studybuddy.friendsMap.ui
 
 import android.Manifest
 import android.content.Context
@@ -11,8 +11,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
-import com.example.hubspot.services.FriendsLocationsService
+import com.example.hubspot.studybuddy.friendsMap.services.FriendsMapService
 import com.example.hubspot.services.LocationService
+import com.example.hubspot.studybuddy.friendsMap.services.FriendLocation
+import com.example.hubspot.studybuddy.friendsMap.viewModel.FriendsMapViewModel
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -59,7 +61,7 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
             friendsLocations = it
             updateFriendsLocationsMarkers()
         }
-        val intentTrackingService = Intent(this, FriendsLocationsService::class.java)
+        val intentTrackingService = Intent(this, FriendsMapService::class.java)
         applicationContext.startService(intentTrackingService)
         applicationContext.bindService(intentTrackingService, mapViewModel, Context.BIND_AUTO_CREATE)
     }

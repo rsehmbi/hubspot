@@ -11,6 +11,8 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.hubspot.R
+import com.example.hubspot.studybuddy.friendsMap.ui.FriendsMapActivity
+import com.example.hubspot.studybuddy.pomodoro.PomodoroActivity
 
 class StudyBuddyFragment : Fragment() {
     private lateinit var studyLength: EditText

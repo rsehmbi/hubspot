@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.hubspot.R
-import com.example.hubspot.studybuddy.PomodoroActivity
+import com.example.hubspot.studybuddy.pomodoro.PomodoroActivity
 
 class Dialog : DialogFragment(), DialogInterface.OnClickListener{
     companion object{

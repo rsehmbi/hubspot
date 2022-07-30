@@ -1,16 +1,16 @@
-package com.example.hubspot.services
+package com.example.hubspot.studybuddy.friendsMap.services
 
 import android.app.*
 import android.content.Intent
 import android.os.*
-import com.example.hubspot.studybuddy.FriendLocation
+import com.example.hubspot.auth.Auth
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class FriendsLocationsService : Service(){
+class FriendsMapService : Service(){
     companion object {
         const val FRIENDS_LOCATIONS_KEY = "friendsLocationsKey"
         const val ARRAY_LIST = 1
@@ -20,12 +20,13 @@ class FriendsLocationsService : Service(){
     private val dbReference =
         FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference
     private var friendsLocations: ArrayList<FriendLocation> = ArrayList()
+    private val currUserId = Auth.getCurrentUser()!!.id
 
     // This is called as soon as the services starts
     override fun onCreate() {
         super.onCreate()
         myBinder = MyBinder()
-        createFriendsLocationListeners(1)
+        createFriendsLocationListeners(currUserId!!)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -41,7 +42,7 @@ class FriendsLocationsService : Service(){
         // This can be called in the mapViewModel,
         // since the binder object is passed to the viewModel through onServiceConnected()
         fun setmsgHandler(msgHandler: Handler) {
-            this@FriendsLocationsService.msgHandler = msgHandler
+            this@FriendsMapService.msgHandler = msgHandler
         }
     }
 
@@ -56,7 +57,7 @@ class FriendsLocationsService : Service(){
         stopSelf()
     }
 
-    private fun updateFriendsLocationsList(friendId: Long, newLocation: LatLng){
+    private fun updateFriendsLocationsList(friendId: String, newLocation: LatLng){
         val iterator = friendsLocations.iterator()
         while(iterator.hasNext()){
             val item = iterator.next()
@@ -68,14 +69,14 @@ class FriendsLocationsService : Service(){
         friendsLocations.add(updatedFriend)
     }
 
-    private fun createFriendsLocationListeners(userId: Long) {
+    private fun createFriendsLocationListeners(userId: String) {
         dbReference.child("Users/${userId}/friends").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (friendId in dataSnapshot.children) {
-                        val friend = FriendLocation(friendId.value as Long, null)
+                        val friend = FriendLocation(friendId.value.toString(), null)
                         friendsLocations.add(friend)
-                        createLocationListener(friendId.value as Long)
+                        createLocationListener(friendId.value.toString())
                     }
                 }
 
@@ -85,7 +86,7 @@ class FriendsLocationsService : Service(){
             })
     }
 
-    private fun createLocationListener(userId: Long){
+    private fun createLocationListener(userId: String){
         dbReference.child("Users/${userId}/currentLocation").addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
