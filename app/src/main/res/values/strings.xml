@@ -29,4 +29,12 @@
     <string name="enroll">Enroll</string>
     <string name="show_schedule">Show Schedule</string>
 
+    <!-- Friends System -->
+    <string name="your_secret_id">Your Secret ID:</string>
+    <string name="share">Share</string>
+    <string name="search_friends">Search Friends</string>
+    <string name="enter_secret_id">Enter Secret ID</string>
+    <string name="add_a_friend">Add a friend!</string>
+    <string name="your_friends">Your friends</string>
+
 </resources>

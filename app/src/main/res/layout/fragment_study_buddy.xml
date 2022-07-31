@@ -55,4 +55,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_study_session" />
+    <Button
+        android:id="@+id/friendsMapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Look where your friends are studying!" />
 </LinearLayout>

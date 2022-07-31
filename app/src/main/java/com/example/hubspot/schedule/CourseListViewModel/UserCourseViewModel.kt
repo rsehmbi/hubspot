@@ -14,7 +14,7 @@ class UserCourseViewModel:ViewModel() {
     var courseList: MutableLiveData<ArrayList<String>>? = null
     var enrolledCourseList = ArrayList<Course>()
 
-    val usersCoursesReference = FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
+    private val usersCoursesReference = FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
         "Users").child(currentUser.toString())
 
     fun getUserCourses(): LiveData<ArrayList<String>>? {
