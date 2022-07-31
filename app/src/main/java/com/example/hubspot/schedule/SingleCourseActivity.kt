@@ -3,12 +3,30 @@ package com.example.hubspot.schedule
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
+import com.example.hubspot.schedule.CourseListViewModel.CourseOutlineViewModel
+import com.example.hubspot.schedule.CourseListViewModel.CourseOutlineViewModelFactory
+import com.example.hubspot.schedule.Repository.repository
 
 class SingleCourseActivity : AppCompatActivity() {
+    private lateinit var courseOutlineViewModel: CourseOutlineViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_course)
+
+        val repository = repository()
+        val viewModelFactory = CourseOutlineViewModelFactory(repository)
+        courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
+        courseOutlineViewModel.getCourseOutline()
+
+        courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
+            if (response.isSuccessful) {
+                println("raman debug" + (response.body()?.courseSchedule?.get(0)?.campus))
+            }
+        }
+
 
         val extras = intent.extras
         val courseID: String?
