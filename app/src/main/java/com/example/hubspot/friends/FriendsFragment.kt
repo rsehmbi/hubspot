@@ -83,14 +83,13 @@ class FriendsFragment  : Fragment() {
                     friendsList.clear()
                     friendsListViewModel.friendsList.value = friendsList
                     // create a list of friends users and update the UI
-                    var friendUser = User()
                     for(friend in dataSnapshot.children) {
-                        friendUser = User(friend.value.toString())
-                        friendsList.add(friendUser.toString())
+                        val friendUser = User(friend.value.toString())
+                        friendsList.add(friendUser.id.toString())
                     }
-                    for ((friendIndex) in friendsList.withIndex()){
+                    for ((friendIndex, friendUserId) in friendsList.withIndex()){
                         // get info of each friend by their userId
-                        getFriendInfo(friendUser.id!!, friendIndex)
+                        getFriendInfo(friendUserId, friendIndex)
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
