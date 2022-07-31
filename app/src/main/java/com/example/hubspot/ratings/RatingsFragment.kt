@@ -21,7 +21,7 @@ class RatingsFragment : Fragment() {
     lateinit var autocompleteTextSearch: AutoCompleteTextView;
     lateinit var autoPopulateProfList: RecyclerView;
     private var suggestionProfList = ArrayList<String>()
-    lateinit var profListViewModel: ProfessorListViewModel;
+    lateinit var profListViewModel: ProfessorListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +52,7 @@ class RatingsFragment : Fragment() {
                 // clears the search box
                 autocompleteTextSearch.getText().clear()
             }
+            println("debug101: afterrrrrrrrrrrrrrrrr ${profListViewModel.selectedProfessorList}")
             val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList)
             autoPopulateProfList.adapter = adapter
         })
@@ -79,6 +80,7 @@ class RatingsFragment : Fragment() {
                             if(dataSnapshot.child("Rating").value.toString() != ""){
                                 rating = dataSnapshot.child("Rating").value.toString().toFloat()
                             }
+
                             val selectedProf = Professor (
                                 dataSnapshot.child("Area").value.toString(),
 //                                dataSnapshot.child("Comments").value,
@@ -103,10 +105,6 @@ class RatingsFragment : Fragment() {
     }
 
     private fun onClickButtonHandler(view: View){
-        view.findViewById<Button>(R.id.save_comments_btn_id).setOnClickListener {
-            Toast.makeText(requireContext(), "To be implemented", Toast.LENGTH_SHORT).show()
-        }
-
         view.findViewById<Button>(R.id.clear_profs_btn_id).setOnClickListener {
             Toast.makeText(requireContext(), "Cleared the list of professors", Toast.LENGTH_SHORT).show()
             profListViewModel.selectedProfessorList.clear()

@@ -30,7 +30,7 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
             profName = view.findViewById(R.id.profNameId)
             profRating = view.findViewById(R.id.profRatingId)
             profDepartment = view.findViewById(R.id.profDepartmentId)
-            ratingBar = view.findViewById(R.id.ratingBarId)
+            ratingBar = view.findViewById(R.id.ratingBarDisplayId)
 
             view.setOnClickListener {
                 var position: Int = adapterPosition
@@ -49,7 +49,7 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
         val selectedProf = dataSet[position]
         //viewHolder.profImageView CHECK SOS
         viewHolder.profName.text = changeDisplayName(selectedProf.profName)
-        if(selectedProf.rating == -1.0F){
+        if(selectedProf.rating < 0.0F){
             viewHolder.profRating.text = "Rating: No reviews yet"
         }
         else{
@@ -58,17 +58,15 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
         }
 
         viewHolder.profDepartment.text = "Department: ${selectedProf.department}"
+
         // setting the prof's image
-            // fetching image from the url
+            // fetching image from the url and setting it to profImage
         Picasso.with(viewHolder.itemView.context).load(selectedProf.imgUrl).into(viewHolder.profImage)
-
-
-
 
 
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(it.context, SingleProfessorActivity::class.java).apply {
-                putExtra("PROF_NAME", selectedProf.profName) // name of professors are unique
+                putExtra("PROF_NAME", selectedProf.profName) // Assuming that name of professors are unique
             }
             it.context.startActivity(intent)
         }

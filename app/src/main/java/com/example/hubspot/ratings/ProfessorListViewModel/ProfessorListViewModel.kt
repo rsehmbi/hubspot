@@ -1,5 +1,6 @@
 package com.example.hubspot.ratings.ProfessorListViewModel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,8 @@ class ProfessorListViewModel: ViewModel()  {
         FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
             "Professors"
         )
+
+    var savedProfRating: MutableLiveData<Float> = MutableLiveData<Float>()
 
     fun getProfessorListSuggestions(): LiveData<ArrayList<String>>? {
         if (professorListSuggestions == null) {

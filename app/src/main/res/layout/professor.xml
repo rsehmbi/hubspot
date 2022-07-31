@@ -30,8 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:id="@+id/profNameId"
-                />
+                android:id="@+id/profNameId"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -46,23 +45,20 @@
                 android:id="@+id/profRatingId">
             </TextView>
 
+
             <RatingBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ratingBarId"
+                android:id="@+id/ratingBarDisplayId"
                 android:numStars="5"
                 android:stepSize="0.5"
                 android:theme="@style/Widget.AppCompat.RatingBar"
                 android:paddingTop="12dp"
-                android:isIndicator="true"
-                >
-
+                android:isIndicator="true">
             </RatingBar>
 
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 
