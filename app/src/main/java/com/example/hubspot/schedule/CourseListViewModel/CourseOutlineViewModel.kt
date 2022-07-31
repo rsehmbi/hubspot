@@ -10,9 +10,9 @@ import retrofit2.Response
 
 class CourseOutlineViewModel(private val repository: repository):ViewModel() {
     val myOutlineReponse: MutableLiveData<Response<CourseOutline>> = MutableLiveData()
-    fun getCourseOutline(){
+    fun getCourseOutline(courseNumber: String){
         viewModelScope.launch {
-            val response = repository.getCourseOutline()
+            val response = repository.getCourseOutline(courseNumber)
             myOutlineReponse.value = response
             println("raman debug " + response)
         }

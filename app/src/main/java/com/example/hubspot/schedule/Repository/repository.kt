@@ -5,7 +5,7 @@ import com.example.hubspot.schedule.Models.CourseOutline
 import retrofit2.Response
 
 class repository {
-    suspend fun getCourseOutline(): Response<CourseOutline> {
-        return RetrofitInstance.api.getCourseOutline()
+    suspend fun getCourseOutline(courseNumber: String): Response<CourseOutline> {
+        return RetrofitInstance.api.getCourseOutline(courseNumber)
     }
 }

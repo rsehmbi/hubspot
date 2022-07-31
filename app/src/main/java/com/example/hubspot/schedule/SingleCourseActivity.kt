@@ -16,18 +16,6 @@ class SingleCourseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_course)
 
-        val repository = repository()
-        val viewModelFactory = CourseOutlineViewModelFactory(repository)
-        courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
-        courseOutlineViewModel.getCourseOutline()
-
-        courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
-            if (response.isSuccessful) {
-                println("raman debug" + (response.body()?.courseSchedule?.get(0)?.campus))
-            }
-        }
-
-
         val extras = intent.extras
         val courseID: String?
 
@@ -35,6 +23,23 @@ class SingleCourseActivity : AppCompatActivity() {
             courseID = extras.getString("COURSE_ID")
             var textView = findViewById<TextView>(R.id.tempViewTextId)
             textView.text = "You clicked on ${courseID}. This feature is under development"
+
+            val repository = repository()
+            val viewModelFactory = CourseOutlineViewModelFactory(repository)
+            courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
+
+            if (!courseID.isNullOrEmpty()){
+                val courseNumber = courseID.split(" ").get(1)
+                courseOutlineViewModel.getCourseOutline("course-outlines?current/current/cmpt/${courseNumber}/d100")
+                courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
+                    if (response.isSuccessful) {
+                        println("raman debug" + (response.body()?.courseSchedule?.get(0)?.campus))
+                    }
+                }
+            }
         }
+
+
+
     }
 }
