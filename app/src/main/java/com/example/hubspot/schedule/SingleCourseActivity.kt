@@ -70,7 +70,7 @@ class SingleCourseActivity : AppCompatActivity() {
 
     private fun updateInfoTextView(info: Info?) {
         if (info != null) {
-            singlecourseNameId.text = stringBuilder("Course Name",info.name.toString())
+            singlecourseNameId.text = info.name.toString()
             titleId.text = stringBuilder("Course Title", info.title)
             termId.text = stringBuilder("Term", info.term)
             prereqId.text = stringBuilder("Pre-Requisities", info.prerequisites)
