@@ -26,7 +26,6 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
         val courseProfessorTextView: TextView;
         val courseCreditsTextView: TextView;
         val addToCalendar: Button;
-        val downloadCourseOutline: Button;
 
         init {
             courseCodeTextView = view.findViewById(R.id.courseCodeId)
@@ -36,7 +35,6 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
             courseProfessorTextView = view.findViewById(R.id.professNameId)
             courseCreditsTextView = view.findViewById(R.id.creditsId)
             addToCalendar = view.findViewById(R.id.addToCalendarId)
-            downloadCourseOutline = view.findViewById(R.id.downloadOutlineId)
         }
     }
 
@@ -56,7 +54,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
         viewHolder.courseProfessorTextView.text = selectedCourse.professorName
         viewHolder.courseDescriptionTextView.text = "Description: ${selectedCourse.courseDescription}"
 
-        viewHolder.downloadCourseOutline.setOnClickListener { i->
+        viewHolder.addToCalendar.setOnClickListener { i->
             Toast.makeText(
                 viewHolder.itemView.context,
                 "test",

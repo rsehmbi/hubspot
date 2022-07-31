@@ -36,5 +36,9 @@
     <string name="enter_secret_id">Enter Secret ID</string>
     <string name="add_a_friend">Add a friend!</string>
     <string name="your_friends">Your friends</string>
+    <string name="course_info">Course Info</string>
+    <string name="course_schedule">Course Schedule</string>
+    <string name="exam_schedule">Exam Schedule</string>
+    <string name="instructor">Instructor</string>
 
 </resources>

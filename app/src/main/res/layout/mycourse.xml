@@ -106,17 +106,6 @@
             android:layout_weight="1"
             android:id="@+id/addToCalendarId">
         </Button>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Download Outline"
-            android:textAllCaps="false"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:id="@+id/downloadOutlineId">
-        </Button>
-
     </LinearLayout>
 
 </LinearLayout>
