@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">HubSpot</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Study buddy -->
@@ -19,9 +18,23 @@
     <string name="end_session">End session</string>
     <string name="start">Start</string>
     <string name="pause">Pause</string>
-
     <string name="search_courses">Search Courses</string>
     <string name="load">Load</string>
+    <string name="options_menu_item_log_out">Log out</string>
+    <string name="turn_off_text">TURN OFF</string>
+    <string name="turn_on_text">TURN ON</string>
+    <string name="location_services_text">Location Services</string>
+    <string name="turn_on_button_text">TURN ON</string>
+    <string name="last_known_location_text">Last known location:</string>
     <string name="enroll">Enroll</string>
     <string name="show_schedule">Show Schedule</string>
+
+    <!-- Friends System -->
+    <string name="your_secret_id">Your Secret ID:</string>
+    <string name="share">Share</string>
+    <string name="search_friends">Search Friends</string>
+    <string name="enter_secret_id">Enter Secret ID</string>
+    <string name="add_a_friend">Add a friend!</string>
+    <string name="your_friends">Your friends</string>
+
 </resources>
