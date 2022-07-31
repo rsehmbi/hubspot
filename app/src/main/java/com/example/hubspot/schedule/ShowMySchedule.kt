@@ -54,7 +54,9 @@ class ShowMySchedule : AppCompatActivity() {
                                 dataSnapshot.child("Credits").value.toString(),
                                 dataSnapshot.child("Location").value.toString(),
                             )
-                            usercourseListViewModel.enrolledCourseList.add(selectedCourse)
+                            if (!alreadyExists(selectedCourse)){
+                                usercourseListViewModel.enrolledCourseList.add(selectedCourse)
+                            }
                         }
                         val adapter = SingleCourseAdapter(usercourseListViewModel.enrolledCourseList)
                         mycourseListView.adapter = adapter
@@ -62,10 +64,19 @@ class ShowMySchedule : AppCompatActivity() {
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
+
             }
             query.addListenerForSingleValueEvent(valueListener)
         }
+    }
 
+    private fun alreadyExists(course: Course): Boolean{
+        for (enrolledCourse in usercourseListViewModel.enrolledCourseList){
+            if (course.courseCode == enrolledCourse.courseCode){
+                return true
+            }
+        }
+        return false
     }
 }
 
