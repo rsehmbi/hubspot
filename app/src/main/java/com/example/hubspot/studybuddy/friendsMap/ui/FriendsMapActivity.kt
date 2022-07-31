@@ -40,7 +40,7 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
     private lateinit var mapViewModel: FriendsMapViewModel
-    private var friendsLocations: ArrayList<FriendLocation> = ArrayList()
+    private var friendsLocations = ArrayList<FriendLocation>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,8 +180,8 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
             if (friend.location != null) {
                 map?.addMarker(MarkerOptions()
                     .position(friend.location!!)
-                    .title(friend.friendId.toString())
-                    .snippet("Join me!"))
+                    .title(friend.friendDisplayName)
+                    .snippet("Studying here!"))
             }
         }
     }

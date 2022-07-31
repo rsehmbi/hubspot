@@ -4,11 +4,13 @@ import android.Manifest
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import com.example.hubspot.auth.Auth
+import com.example.hubspot.studybuddy.StudyBuddyFragment.Companion.LAST_KNOWN_LOCATION_KEY
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.FirebaseDatabase
 
@@ -42,6 +44,8 @@ class ShareLocationService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val lastKnownLocation = intent!!.getParcelableExtra<Location>(LAST_KNOWN_LOCATION_KEY)
+        onLocationChanged(lastKnownLocation!!)
         return START_STICKY
     }
 
@@ -58,10 +62,14 @@ class ShareLocationService: Service() {
         stopSelf()
     }
 
-    private var locationListenerGPS: LocationListener = LocationListener { location ->
+    private fun onLocationChanged(location: Location){
         val latitude = location.latitude
         val longitude = location.longitude
         val latLng = LatLng(latitude, longitude)
         dbReference.child("Users/${currUserId}/currentLocation").setValue(latLng)
+    }
+
+    private var locationListenerGPS: LocationListener = LocationListener { location ->
+        onLocationChanged(location)
     }
 }
