@@ -35,6 +35,9 @@
             android:permission="android.permission.ACCESS_FINE_LOCATION">
         </receiver>
         <activity
+            android:name=".ratings.SingleProfessorActivity"
+            android:exported="false" />
+        <activity
             android:name=".schedule.SingleCourseActivity"
             android:exported="false" />
 
