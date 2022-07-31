@@ -11,59 +11,79 @@
         android:paddingRight="5dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="4dp"
+            android:background="@drawable/rounded_corner"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:textColor="@color/purple_500"
+                android:textAlignment="center"
+                android:text="@string/course_info"
+                >
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/singlecourseNameId"
+                android:textSize="20sp"
+                android:textStyle="bold">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/titleId">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/termId" >
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/prereqId">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/unitsId">
+            </TextView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/courseDetailsId">
+            </TextView>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="4dp"
+        android:background="@drawable/rounded_corner"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="25sp"
-            android:textAlignment="center"
-            android:text="@string/course_info"
-            >
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/singlecourseNameId"
-            android:textSize="20sp"
-            android:textStyle="bold">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/titleId">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/termId" >
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/prereqId">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/unitsId">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/courseDetailsId">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="25sp"
+            android:textColor="@color/purple_500"
             android:textAlignment="center"
             android:text="@string/course_schedule"
             >
@@ -93,11 +113,22 @@
             android:id="@+id/timingDetailsId">
         </TextView>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="4dp"
+        android:background="@drawable/rounded_corner"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="25sp"
+            android:textColor="@color/purple_500"
             android:textAlignment="center"
             android:text="@string/instructor"
             >
@@ -133,5 +164,6 @@
             android:id="@+id/registrationNotesId">
         </TextView>
 
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>
