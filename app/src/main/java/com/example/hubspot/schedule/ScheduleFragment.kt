@@ -1,5 +1,6 @@
 package com.example.hubspot.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
+import com.example.hubspot.auth.Auth
 import com.example.hubspot.schedule.CourseListViewModel.Course
 import com.example.hubspot.schedule.CourseListViewModel.CourseListViewModel
 import com.google.firebase.database.*
@@ -93,14 +95,38 @@ class ScheduleFragment : Fragment() {
             query.addListenerForSingleValueEvent(valueListener)
         }
     }
-
+    private fun enrollInCourse(){
+        val courseList: MutableList<String> = mutableListOf<String>()
+        val UsersReference =
+            FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
+                "Users"
+            )
+        val currentUser = Auth.getCurrentUser()
+        for (course in courseListViewModel.SelectedCourselist ){
+            courseList.add(course.courseCode)
+        }
+        if (currentUser != null){
+            try {
+                if (courseList.isNotEmpty()) {
+                    UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
+                        .setValue(courseList)
+                }
+            }
+            catch (e: Exception){
+                Toast.makeText(requireContext(), "Unable to add courses", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        Toast.makeText(requireContext(), "Course added to schedule", Toast.LENGTH_SHORT).show()
+    }
     private fun onClickButtonHandler(view: View){
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
-            Toast.makeText(requireContext(), "Enroll feature in progress", Toast.LENGTH_SHORT).show()
+            enrollInCourse()
         }
 
         view.findViewById<Button>(R.id.view_schedule_id).setOnClickListener {
-            Toast.makeText(requireContext(), "View Schedule feature in progress", Toast.LENGTH_SHORT).show()
+            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
+            startActivity(showMyScheduleIntent)
         }
 
     }

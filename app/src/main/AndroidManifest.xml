@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.hubspot" >
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    package="com.example.hubspot">
 
     <application
         android:allowBackup="true"
@@ -12,22 +9,15 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HubSpot"
         tools:targetApi="31">
 
-        <!--
-             TODO: Before you run your application, you need a Google Maps API key.
-
-             To get one, follow the directions here:
-
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
-
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-        -->
+        <activity
+            android:name=".schedule.ShowMySchedule"
+            android:exported="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBIBNGv9Ge95vkC5CdCVd_8b-zZryBcvT8" />
@@ -44,13 +34,13 @@
             android:exported="true"
             android:permission="android.permission.ACCESS_FINE_LOCATION">
         </receiver>
-
         <activity
             android:name=".schedule.SingleCourseActivity"
             android:exported="false" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,9 +50,22 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="false" />
+        <receiver
+            android:name=".security.services.LocationReceiver"
+            android:exported="true"
+            android:permission="android.permission.ACCESS_FINE_LOCATION">
+        </receiver>
+
         <activity android:name=".studybuddy.pomodoro.PomodoroActivity" />
-        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.FriendsMapService"></service>
-        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.ShareLocationService"></service>
+        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.FriendsMapService">
+        </service>
+        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.ShareLocationService">
+
+        </service>
     </application>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
