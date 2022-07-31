@@ -29,4 +29,10 @@
         android:label="Studdy Buddy"
         tools:layout="@layout/fragment_ratings" />
 
+    <fragment
+        android:id="@+id/navigation_friends"
+        android:name="com.example.hubspot.friends.FriendsFragment"
+        android:label="Friends"
+        tools:layout="@layout/fragment_friends" />
+
 </navigation>
