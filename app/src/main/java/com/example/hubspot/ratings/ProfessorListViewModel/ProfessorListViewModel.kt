@@ -13,7 +13,9 @@ import kotlin.collections.ArrayList
 
 class ProfessorListViewModel: ViewModel()  {
     private var professorListSuggestions: MutableLiveData<ArrayList<String>>? = null
+    var profComments = MutableLiveData<ArrayList<String>>()
     var selectedProfessorList = ArrayList<Professor>()
+    var selectedProfessorCommentsList = ArrayList<Professor>()
     val professorReference =
         FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
             "Professors"

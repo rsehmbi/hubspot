@@ -9,13 +9,10 @@ package com.example.hubspot.ratings
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
-import com.example.hubspot.ratings.ProfessorListViewModel.Professor
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,21 +22,16 @@ import com.squareup.picasso.Picasso
 import java.util.*
 
 class SingleProfessorActivity : AppCompatActivity() {
+
     private lateinit var profImage: ImageView
     private lateinit var profName: TextView
     private lateinit var profDepartment: TextView
     private lateinit var profOccupation: TextView
     private lateinit var profEmail: TextView
     private lateinit var profArea: TextView
-
     private lateinit var rateNowBtn: Button
-
     private lateinit var profListViewModel: ProfessorListViewModel
-
     private lateinit var curActivity: Activity
-
-    private lateinit var commentListFragments: Fragment
-    private lateinit var addNewCommentFragments: Fragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,19 +53,12 @@ class SingleProfessorActivity : AppCompatActivity() {
         loadProfInfo(selectedProfName!!)
 
         // case 1: view a list of comments for this professor
-        commentListFragments = CommentsDisplayFragment()
+        val commentListFragments = CommentsDisplayFragment()
+        val arg = Bundle()
+        arg.putString("PROF_NAME", selectedProfName)
+        commentListFragments.arguments = arg
         replaceFragment(commentListFragments)
-
-
-
-
-
-
-
-
-
     }
-
 
     private fun getViewReferences(){
         profImage = findViewById(R.id.profImageId)
@@ -85,20 +70,23 @@ class SingleProfessorActivity : AppCompatActivity() {
         rateNowBtn = findViewById(R.id.rate_now_btn_id)
     }
 
-
     private fun onClickButtonHandler(){
         rateNowBtn.setOnClickListener {
-            Toast.makeText(this, "To be implemented - rate now", Toast.LENGTH_SHORT).show()
             if(rateNowBtn.text == "Rate Now!"){
-                rateNowBtn.text = "View Comments"
-                addNewCommentFragments = AddNewCommentFragment()
+                rateNowBtn.text = "View Reviews"
+                val addNewCommentFragments = AddNewCommentFragment()
                 replaceFragment(addNewCommentFragments)
             }
             else{
+                Toast.makeText(this, "Displaying Reviews", Toast.LENGTH_SHORT).show()
                 rateNowBtn.text = "Rate Now!"
+                val commentListFragments = CommentsDisplayFragment()
+                val arg = Bundle()
+                val selectedProfName = intent.getStringExtra("PROF_NAME")
+                arg.putString("PROF_NAME", selectedProfName)
+                commentListFragments.arguments = arg
                 replaceFragment(commentListFragments)
             }
-
         }
     }
 
@@ -120,12 +108,16 @@ class SingleProfessorActivity : AppCompatActivity() {
                 if (snapshot.exists()){
                     for (dataSnapshot in snapshot.children){
                         var rating: Float = -1.0F
+
+                        val profComments = ArrayList<String>()
+                        val test = dataSnapshot.child("Comments").children.forEach {
+                            profComments.add(it.value.toString())
+                            println("debug51: ${it.value}")
+                        }
+
                         if(dataSnapshot.child("Rating").value.toString() != ""){
                             rating = dataSnapshot.child("Rating").value.toString().toFloat()
                         }
-
-//                                dataSnapshot.child("Comments").value,
-
                         // setting the prof's image
                         // fetching image from the url and setting it to profImage
                         Picasso.with(curActivity).load(dataSnapshot.child("ImgUrl").value.toString()).into(profImage)

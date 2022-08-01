@@ -46,6 +46,7 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        println("debug23: here")
         val selectedProf = dataSet[position]
         //viewHolder.profImageView CHECK SOS
         viewHolder.profName.text = changeDisplayName(selectedProf.profName)

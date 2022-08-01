@@ -45,14 +45,14 @@ class RatingsFragment : Fragment() {
             autocompleteTextSearch.setAdapter(courseListAdapter)
             autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
                 val professorSelected = parent.getItemAtPosition(position)
-                loadProfInfo(profListViewModel.professorReference, professorSelected.toString().uppercase()) // CHECK SOS
+                //
+                loadProfInfo(profListViewModel.professorReference, professorSelected.toString().uppercase())
 
                 Toast.makeText(requireContext(), "Professor ${professorSelected} added to the list", Toast.LENGTH_SHORT).show()
 
                 // clears the search box
                 autocompleteTextSearch.getText().clear()
             }
-            println("debug101: afterrrrrrrrrrrrrrrrr ${profListViewModel.selectedProfessorList}")
             val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList)
             autoPopulateProfList.adapter = adapter
         })
@@ -80,10 +80,8 @@ class RatingsFragment : Fragment() {
                             if(dataSnapshot.child("Rating").value.toString() != ""){
                                 rating = dataSnapshot.child("Rating").value.toString().toFloat()
                             }
-
                             val selectedProf = Professor (
                                 dataSnapshot.child("Area").value.toString(),
-//                                dataSnapshot.child("Comments").value,
                                 dataSnapshot.child("Department").value.toString(),
                                 dataSnapshot.child("Email").value.toString(),
                                 dataSnapshot.child("ImgUrl").value.toString(),
