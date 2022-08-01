@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
@@ -47,15 +48,23 @@ class CommentsDisplayFragment : Fragment() {
                         val review = Review(review.child("Comment").value.toString(), rating)
                         reviewArrayList.add(review)
                     }
-                    reviewListView.isClickable = false
+                    if(reviewArrayList.size == 0){
+                        val reviewStat = view.findViewById<TextView>(R.id.comment_stat_id)
+                        reviewStat.text = "Nothing to show. Leave the first review!"
+                    }
+                    else{
+                        reviewListView.isClickable = false
 
-                    // to avoid exception when swapping fragments very fast
-                    if(isAdded){
-                        reviewListView.adapter = ReviewAdapter(requireActivity(), reviewArrayList)
+                        // to avoid exception when swapping fragments very fast
+                        if(isAdded){
+                            reviewListView.adapter = ReviewAdapter(requireActivity(), reviewArrayList)
+                        }
                     }
                 }
                 override fun onCancelled(p0: DatabaseError) {}
             })
+
+
         return view
     }
 }
