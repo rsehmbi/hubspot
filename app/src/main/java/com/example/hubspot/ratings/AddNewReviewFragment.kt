@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.hubspot.R
 
-class AddNewCommentFragment : Fragment() {
+class AddNewReviewFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

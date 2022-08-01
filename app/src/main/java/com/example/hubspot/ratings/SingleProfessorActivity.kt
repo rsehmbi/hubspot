@@ -54,12 +54,12 @@ class SingleProfessorActivity : AppCompatActivity() {
             // displaying prof's info
             loadProfInfo(selectedProfName!!)
 
-            // case 1: view a list of comments for this professor
-            val commentListFragments = CommentsDisplayFragment()
+            // case 1: view a list of reviews for this professor
+            val reviewListFragments = ReviewDisplayFragment()
             val arg = Bundle()
             arg.putString("PROF_NAME", selectedProfName)
-            commentListFragments.arguments = arg
-            replaceFragment(commentListFragments)
+            reviewListFragments.arguments = arg
+            replaceFragment(reviewListFragments)
         }
         else{
             setContentView(R.layout.activity_offline)
@@ -84,17 +84,17 @@ class SingleProfessorActivity : AppCompatActivity() {
         rateNowBtn.setOnClickListener {
             if(rateNowBtn.text == "Rate Now!"){
                 rateNowBtn.text = "View Reviews"
-                val addNewCommentFragments = AddNewCommentFragment()
-                replaceFragment(addNewCommentFragments)
+                val addNewReviewFragments = AddNewReviewFragment()
+                replaceFragment(addNewReviewFragments)
             }
             else{
                 rateNowBtn.text = "Rate Now!"
-                val commentListFragments = CommentsDisplayFragment()
+                val reviewListFragments = ReviewDisplayFragment()
                 val arg = Bundle()
                 val selectedProfName = intent.getStringExtra("PROF_NAME")
                 arg.putString("PROF_NAME", selectedProfName)
-                commentListFragments.arguments = arg
-                replaceFragment(commentListFragments)
+                reviewListFragments.arguments = arg
+                replaceFragment(reviewListFragments)
             }
         }
     }
@@ -118,6 +118,7 @@ class SingleProfessorActivity : AppCompatActivity() {
                     for (dataSnapshot in snapshot.children){
                         var rating: Float = -1.0F
 
+                        // SOS CHECK
                         val profComments = ArrayList<String>()
                         val test = dataSnapshot.child("Comments").children.forEach {
                             profComments.add(it.value.toString())

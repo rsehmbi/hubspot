@@ -17,10 +17,10 @@ import com.google.firebase.database.ValueEventListener
 
 /**
  * A simple [Fragment] subclass.
- * Use the [CommentsDisplayFragment.newInstance] factory method to
+ * Use the [ReviewDisplayFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CommentsDisplayFragment : Fragment() {
+class ReviewDisplayFragment : Fragment() {
 
     private lateinit var profListViewModel: ProfessorListViewModel
     private lateinit var reviewArrayList: ArrayList<Review>

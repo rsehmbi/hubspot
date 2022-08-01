@@ -42,5 +42,7 @@
     <string name="connect_to_the_internet_and_try_again">Connect to the internet and try again</string>
     <string name="error_no_internet_connection">Error - No internet connection</string>
     <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
