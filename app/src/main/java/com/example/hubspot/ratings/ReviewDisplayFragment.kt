@@ -37,6 +37,7 @@ class ReviewDisplayFragment : Fragment() {
         reviewListView = view.findViewById<ListView>(R.id.review_listView)
 
         var passedProfName: String? = arguments?.getString("PROF_NAME")
+        println("debug100: in display $passedProfName")
 
         profListViewModel = ViewModelProvider(this)[ProfessorListViewModel::class.java]
         profListViewModel.professorReference.child("$passedProfName/Reviews").addValueEventListener(

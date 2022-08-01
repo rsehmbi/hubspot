@@ -85,6 +85,10 @@ class SingleProfessorActivity : AppCompatActivity() {
             if(rateNowBtn.text == "Rate Now!"){
                 rateNowBtn.text = "View Reviews"
                 val addNewReviewFragments = AddNewReviewFragment()
+                val arg = Bundle()
+                val selectedProfName = intent.getStringExtra("PROF_NAME")
+                arg.putString("PROF_NAME", selectedProfName)
+                addNewReviewFragments.arguments = arg
                 replaceFragment(addNewReviewFragments)
             }
             else{
