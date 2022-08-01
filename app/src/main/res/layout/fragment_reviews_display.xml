@@ -6,8 +6,15 @@
     tools:context=".ratings.CommentsDisplayFragment">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/comment_stat_id"
+        android:textStyle="bold"
+        />
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="This fragment is going to display all the comments for the prof in a listView" />
+        android:id="@+id/review_listView"/>
 
 </FrameLayout>

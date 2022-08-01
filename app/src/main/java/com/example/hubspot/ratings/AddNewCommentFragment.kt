@@ -20,7 +20,7 @@ class AddNewCommentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_new_comment, container, false)
+        return inflater.inflate(R.layout.fragment_add_new_review, container, false)
     }
 
 }
