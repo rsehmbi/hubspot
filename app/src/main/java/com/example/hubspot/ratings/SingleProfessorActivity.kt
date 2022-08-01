@@ -7,11 +7,12 @@ Displays the rating and additional information about the professors
 package com.example.hubspot.ratings
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.hubspot.NetworkUtil
 import com.example.hubspot.R
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.google.firebase.database.DataSnapshot
@@ -20,6 +21,7 @@ import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
+
 
 class SingleProfessorActivity : AppCompatActivity() {
 
@@ -36,28 +38,32 @@ class SingleProfessorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_single_professor)
+        if(NetworkUtil.isOnline(this)){
+            setContentView(R.layout.activity_single_professor)
+            curActivity = this
 
-        curActivity = this
+            // getting prof_name (which is unique)
+            val selectedProfName = intent.getStringExtra("PROF_NAME")
 
-        // getting prof_name (which is unique)
-        val selectedProfName = intent.getStringExtra("PROF_NAME")
+            // getting references of the views in the activity
+            getViewReferences()
 
-        // getting references of the views in the activity
-        getViewReferences()
+            // calling listener on rate now btn
+            onClickButtonHandler()
 
-        // calling listener on rate now btn
-        onClickButtonHandler()
+            // displaying prof's info
+            loadProfInfo(selectedProfName!!)
 
-        // displaying prof's info
-        loadProfInfo(selectedProfName!!)
-
-        // case 1: view a list of comments for this professor
-        val commentListFragments = CommentsDisplayFragment()
-        val arg = Bundle()
-        arg.putString("PROF_NAME", selectedProfName)
-        commentListFragments.arguments = arg
-        replaceFragment(commentListFragments)
+            // case 1: view a list of comments for this professor
+            val commentListFragments = CommentsDisplayFragment()
+            val arg = Bundle()
+            arg.putString("PROF_NAME", selectedProfName)
+            commentListFragments.arguments = arg
+            replaceFragment(commentListFragments)
+        }
+        else{
+            setContentView(R.layout.activity_offline)
+        }
     }
 
     private fun getViewReferences(){
@@ -78,7 +84,6 @@ class SingleProfessorActivity : AppCompatActivity() {
                 replaceFragment(addNewCommentFragments)
             }
             else{
-                Toast.makeText(this, "Displaying Reviews", Toast.LENGTH_SHORT).show()
                 rateNowBtn.text = "Rate Now!"
                 val commentListFragments = CommentsDisplayFragment()
                 val arg = Bundle()
@@ -90,7 +95,7 @@ class SingleProfessorActivity : AppCompatActivity() {
         }
     }
 
-    // to capitalize prof name
+    // to capitalize first letter of prof's first and last name
     private fun changeDisplayName(name: String): String{
         return name.split(" ").joinToString(" ") { it ->
             it.lowercase(Locale.getDefault())
@@ -142,4 +147,5 @@ class SingleProfessorActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,fragment).commit()
     }
+
 }

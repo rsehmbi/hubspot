@@ -31,14 +31,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="name"
+                android:text="Name:"
                 android:paddingBottom="5dp"
                 android:id="@+id/profNameId"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="dep"
+                android:text="Department:"
                 android:paddingBottom="5dp"
                 android:id="@+id/profDepartmentId">
             </TextView>
@@ -46,21 +46,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="occupation"
+                android:text="Occupation:"
                 android:paddingBottom="5dp"
                 android:id="@+id/profOccupationId"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="email"
+                android:text="Email:"
                 android:paddingBottom="5dp"
                 android:id="@+id/profEmailId"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="area"
+                android:text="Area:"
                 android:paddingBottom="5dp"
                 android:id="@+id/profAreaId"/>
 

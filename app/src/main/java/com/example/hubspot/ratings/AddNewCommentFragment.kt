@@ -7,12 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.hubspot.R
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddNewCommentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddNewCommentFragment : Fragment() {
 
     override fun onCreateView(
