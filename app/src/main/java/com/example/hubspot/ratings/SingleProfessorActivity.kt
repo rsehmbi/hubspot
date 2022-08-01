@@ -63,6 +63,10 @@ class SingleProfessorActivity : AppCompatActivity() {
         }
         else{
             setContentView(R.layout.activity_offline)
+            val closeBtn: Button = findViewById(R.id.close_btn_id)
+            closeBtn.setOnClickListener {
+                finish()
+            }
         }
     }
 
