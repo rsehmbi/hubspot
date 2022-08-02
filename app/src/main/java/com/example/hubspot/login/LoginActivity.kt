@@ -17,7 +17,7 @@ import com.example.hubspot.R
 import com.example.hubspot.auth.AuthRepository.AuthResultCode.*
 import com.example.hubspot.auth.AuthRepository.AuthResult
 import com.example.hubspot.auth.AuthViewModel
-import com.example.hubspot.profile.SignUpDialog
+import com.example.hubspot.profile.NameDialog
 
 
 class LoginActivity : AppCompatActivity() {
@@ -206,7 +206,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun onSignUpButtonClick(view: View) {
-        val signUpDialog = SignUpDialog()
+        val signUpDialog = NameDialog()
         signUpDialog.show(supportFragmentManager, "sign_up_dialog")
     }
 

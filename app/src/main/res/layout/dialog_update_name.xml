@@ -23,7 +23,7 @@
             android:text="@string/dialog_update_name_new_display_name" />
 
         <EditText
-            android:id="@+id/dialog_update_name_edittext_text"
+            android:id="@+id/dialog_update_name_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"

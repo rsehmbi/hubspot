@@ -18,7 +18,7 @@ import com.example.hubspot.login.LoginActivity
 
 
 /** Dialog Fragment for signing up a user account */
-class SignUpDialog() : DialogFragment() {
+class NameDialog() : DialogFragment() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var dialogView: View
 
@@ -26,18 +26,19 @@ class SignUpDialog() : DialogFragment() {
         lateinit var ret: Dialog
 
         val builder = AlertDialog.Builder(requireActivity())
-        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_signup, null)
+        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_update_name, null)
         builder.setView(dialogView)
 
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
-        // Wait for and handle sign in result
+        // Wait for and handle update name result
         authViewModel.updateDisplayNameResult.observe(this) { result ->
             // if statement is used to stop code from executing on rotation change
             if (lifecycle.currentState == Lifecycle.State.RESUMED) {
                 if (result.resultCode == AuthRepository.AuthResultCode.SUCCESS) {
                     displaySuccessMessage()
-                    this@SignUpDialog.dismiss()
+                    (requireActivity() as ProfileActivity).refreshDisplayNameText()
+                    this@NameDialog.dismiss()
                 } else {
                     displayErrorMessage()
                 }
@@ -60,16 +61,12 @@ class SignUpDialog() : DialogFragment() {
             val button: Button =
                 ret.getButton(AlertDialog.BUTTON_POSITIVE)
             button.setOnClickListener {
-                // Set signUpDialog reference to allow view model observer in login activity
-                // to dismiss dialog once sign up is successful to avoid closing dialog on errors
-                (requireActivity() as LoginActivity).signUpDialog = ret
-
                 // disable button to stop accidental multiple presses, re-enable in login activity
                 button.isEnabled = false
                 setLoading(true)
 
                 val newName =
-                    dialogView.findViewById<EditText>(R.id.dialog_signup_edittext_email).text.toString()
+                    dialogView.findViewById<EditText>(R.id.dialog_update_name_edittext).text.toString()
                 onPositiveButtonClick(newName, ret)
             }
         }
@@ -91,8 +88,15 @@ class SignUpDialog() : DialogFragment() {
     }
 
     private fun setLoading(isLoading: Boolean) {
-        val loadingSpinner = dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
-        loadingSpinner.visibility = View.VISIBLE
+        if (isLoading) {
+            val loadingSpinner =
+                dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
+            loadingSpinner.visibility = View.VISIBLE
+        } else {
+            val loadingSpinner =
+                dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
+            loadingSpinner.visibility = View.GONE
+        }
     }
 
     private fun onPositiveButtonClick(
