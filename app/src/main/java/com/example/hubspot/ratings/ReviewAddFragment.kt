@@ -114,13 +114,16 @@ class ReviewAddFragment : Fragment() {
                         }
 
                     })
+                // changing parent activity's button
+                val rateReviewBtn = requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
+                rateReviewBtn.text = "Rate Now!"
 
-//                // replacing the fragment to display reviews
-//                val reviewListFragments = ReviewDisplayFragment()
-//                val arg = Bundle()
-//                arg.putString("PROF_NAME", selectedProfName)
-//                reviewListFragments.arguments = arg
-//                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,reviewListFragments).commit()
+                // replacing the fragment to display reviews
+                val reviewListFragments = ReviewDisplayFragment()
+                val arg = Bundle()
+                arg.putString("PROF_NAME", selectedProfName)
+                reviewListFragments.arguments = arg
+                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,reviewListFragments).commit()
             }
         }
         cancelReviewBtn.setOnClickListener {
