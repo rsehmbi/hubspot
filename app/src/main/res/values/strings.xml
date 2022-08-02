@@ -44,5 +44,13 @@
     <string name="close">Close</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="rate_now">Rate Now!</string>
+    <string name="name">Name:</string>
+    <string name="department">Department:</string>
+    <string name="occupation">Occupation:</string>
+    <string name="email">Email:</string>
+    <string name="area">Area:</string>
+    <string name="professor_s_image">Professor\'s Image</string>
+    <string name="enter_comment_here">Enter comment here...</string>
 
 </resources>

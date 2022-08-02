@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ratings.AddNewReviewFragment">
+    tools:context=".ratings.ReviewAddFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             android:isScrollContainer="true"
             android:ems="10"
             android:maxLines="10"
-            android:hint="Enter comment here..."/>
+            android:hint="@string/enter_comment_here"/>
 
         <RelativeLayout
             android:id="@+id/ScheduleButtonsLLID"

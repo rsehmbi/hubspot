@@ -84,12 +84,12 @@ class SingleProfessorActivity : AppCompatActivity() {
         rateNowBtn.setOnClickListener {
             if(rateNowBtn.text == "Rate Now!"){
                 rateNowBtn.text = "View Reviews"
-                val addNewReviewFragments = AddNewReviewFragment()
+                val reviewAddFragments = ReviewAddFragment()
                 val arg = Bundle()
                 val selectedProfName = intent.getStringExtra("PROF_NAME")
                 arg.putString("PROF_NAME", selectedProfName)
-                addNewReviewFragments.arguments = arg
-                replaceFragment(addNewReviewFragments)
+                reviewAddFragments.arguments = arg
+                replaceFragment(reviewAddFragments)
             }
             else{
                 rateNowBtn.text = "Rate Now!"

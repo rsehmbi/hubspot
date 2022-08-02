@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="5dp"
         android:orientation="horizontal">
 
 
@@ -20,7 +21,8 @@
             android:layout_margin="5dp"
             android:adjustViewBounds="false"
             android:scaleType="fitStart"
-            android:textAlignment="center"></ImageView>
+            android:contentDescription="@string/professor_s_image"
+            android:textAlignment="center"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,14 +34,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="15sp"
-                android:text="Name:"
+                android:text="@string/name"
                 android:paddingBottom="5dp"
                 android:id="@+id/profNameId"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Department:"
+                android:text="@string/department"
                 android:paddingBottom="5dp"
                 android:id="@+id/profDepartmentId">
             </TextView>
@@ -47,21 +49,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Occupation:"
+                android:text="@string/occupation"
                 android:paddingBottom="5dp"
                 android:id="@+id/profOccupationId"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email:"
+                android:text="@string/email"
                 android:paddingBottom="5dp"
                 android:id="@+id/profEmailId"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Area:"
+                android:text="@string/area"
                 android:paddingBottom="5dp"
                 android:id="@+id/profAreaId"/>
 
@@ -86,7 +88,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:id="@+id/rate_now_btn_id"
-            android:text="Rate Now!"/>
+            android:text="@string/rate_now"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
