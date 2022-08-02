@@ -2,4 +2,8 @@
 <resources>
     <string name="activity_profile_textview_displayname">Display Name:</string>
     <string name="activity_profile_edittext_displayname_hint">ex. mycoolname777</string>
+    <string name="activity_profile_textview_your_picture">Your Picture</string>
+    <string name="activity_profile_button_change_picture">Change Picture</string>
+    <string name="activity_profile_button_change_name">Change Name</string>
+    <string name="activity_profile_button_reset_password">Reset Password</string>
 </resources>
