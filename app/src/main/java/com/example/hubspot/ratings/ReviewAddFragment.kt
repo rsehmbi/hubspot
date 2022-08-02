@@ -53,12 +53,17 @@ class ReviewAddFragment : Fragment() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if(dataSnapshot.hasChild("Reviews")){
                         if(dataSnapshot.child("Reviews").hasChild(selectedProfName!!)){
-                            Toast.makeText(requireActivity(), "Edit your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
+                            if(isAdded){
+                                Toast.makeText(requireActivity(), "Edit your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
+                            }
+
                             // set database values to the view
                             loadRating(dataSnapshot, selectedProfName)
                         }
                         else{
-                            Toast.makeText(requireActivity(), "Enter your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
+                            if(isAdded){
+                                Toast.makeText(requireActivity(), "Enter your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -85,7 +90,9 @@ class ReviewAddFragment : Fragment() {
         saveReviewBtn.setOnClickListener {
         // check if comment is entered. Default of rating is 0
             if(userCommentEditText.text.isNullOrEmpty()){
-                Toast.makeText(requireActivity(), "The comment cannot be empty!", Toast.LENGTH_SHORT).show()
+                if(isAdded){
+                    Toast.makeText(requireActivity(), "The comment cannot be empty!", Toast.LENGTH_SHORT).show()
+                    }
             }
             else{
                 // save the entries to the database
@@ -114,31 +121,53 @@ class ReviewAddFragment : Fragment() {
                         }
 
                     })
-                // changing parent activity's button
-                val rateReviewBtn = requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
-                rateReviewBtn.text = "Rate Now!"
 
-                // replacing the fragment to display reviews
-                val reviewListFragments = ReviewDisplayFragment()
-                val arg = Bundle()
-                arg.putString("PROF_NAME", selectedProfName)
-                reviewListFragments.arguments = arg
-                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,reviewListFragments).commit()
+                // add the review to the professor object in db
+                dbReference.child("Professors/${currUserId}").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+                    }
+
+                )
+                if(isAdded) {
+                    // changing parent activity's button
+                    val rateReviewBtn =
+                        requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
+                    rateReviewBtn.text = "Rate Now!"
+
+                    // replacing the fragment to display reviews
+                    val reviewListFragments = ReviewDisplayFragment()
+                    val arg = Bundle()
+                    arg.putString("PROF_NAME", selectedProfName)
+                    reviewListFragments.arguments = arg
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.frame_layout_3_displays, reviewListFragments).commit()
+                }
             }
         }
         cancelReviewBtn.setOnClickListener {
                 // go back to displaying the reviews
             // changing parent activity's button
-            val rateReviewBtn = requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
-            rateReviewBtn.text = "Rate Now!"
+            if(isAdded) {
+                val rateReviewBtn =
+                    requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
+                rateReviewBtn.text = "Rate Now!"
 
-            // replacing the fragment to display reviews
-            val selectedProfName = arguments?.getString("PROF_NAME")
-            val reviewListFragments = ReviewDisplayFragment()
-            val arg = Bundle()
-            arg.putString("PROF_NAME", selectedProfName)
-            reviewListFragments.arguments = arg
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,reviewListFragments).commit()
+
+                // replacing the fragment to display reviews
+                val selectedProfName = arguments?.getString("PROF_NAME")
+                val reviewListFragments = ReviewDisplayFragment()
+                val arg = Bundle()
+                arg.putString("PROF_NAME", selectedProfName)
+                reviewListFragments.arguments = arg
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout_3_displays, reviewListFragments).commit()
+            }
         }
     }
 
