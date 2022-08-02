@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_profile_textview_displayname">Display Name:</string>
+    <string name="activity_profile_edittext_displayname_hint">ex. mycoolname777</string>
+</resources>
