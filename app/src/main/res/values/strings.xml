@@ -52,5 +52,7 @@
     <string name="area">Area:</string>
     <string name="professor_s_image">Professor\'s Image</string>
     <string name="enter_comment_here">Enter comment here...</string>
+    <string name="review">Review:</string>
+    <string name="comment">Comment:</string>
 
 </resources>
