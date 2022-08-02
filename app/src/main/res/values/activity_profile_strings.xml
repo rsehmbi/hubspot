@@ -6,4 +6,9 @@
     <string name="activity_profile_button_change_picture">Change Picture</string>
     <string name="activity_profile_button_change_name">Change Name</string>
     <string name="activity_profile_button_reset_password">Reset Password</string>
+    <string name="dialog_update_name_edittext_hint">ex. my_name_123</string>
+    <string name="dialog_update_name_new_display_name">New Display Name:</string>
+    <string name="dialog_update_name_toast_error">Failed to update name. Please try again later.</string>
+    <string name="dialog_update_name_toast_success">Successfully updated display name!</string>
+    <string name="dialog_update_name_toast_name_too_long">Display name is too long. Try less than 50 characters.</string>
 </resources>

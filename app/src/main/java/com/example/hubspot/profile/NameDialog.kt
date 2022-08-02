@@ -2,36 +2,53 @@ package com.example.hubspot.profile
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
+import com.example.hubspot.auth.AuthRepository
+import com.example.hubspot.auth.AuthViewModel
 import com.example.hubspot.login.LoginActivity
 
 
 /** Dialog Fragment for signing up a user account */
 class SignUpDialog() : DialogFragment() {
+    private lateinit var authViewModel: AuthViewModel
+    private lateinit var dialogView: View
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         lateinit var ret: Dialog
 
         val builder = AlertDialog.Builder(requireActivity())
-        val view: View =
-            requireActivity().layoutInflater.inflate(R.layout.dialog_signup, null)
-        builder.setView(view)
+        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_signup, null)
+        builder.setView(dialogView)
 
-        val newName =
-            view.findViewById<EditText>(R.id.dialog_signup_edittext_email).text.toString()
+        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+
+        // Wait for and handle sign in result
+        authViewModel.updateDisplayNameResult.observe(this) { result ->
+            // if statement is used to stop code from executing on rotation change
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (result.resultCode == AuthRepository.AuthResultCode.SUCCESS) {
+                    displaySuccessMessage()
+                    this@SignUpDialog.dismiss()
+                } else {
+                    displayErrorMessage()
+                }
+                setLoading(false)
+            }
+        }
 
         // Show positive button, will override behavior later
         builder.setPositiveButton(
-            resources.getString(R.string.sign_up_dialog_positive_button)
-        ) { _, _ ->
-
-        }
+            resources.getString(R.string.sign_up_dialog_positive_button), null
+        )
 
         builder.setNegativeButton(
             resources.getString(R.string.sign_up_dialog_negative_button),
@@ -47,33 +64,43 @@ class SignUpDialog() : DialogFragment() {
                 // to dismiss dialog once sign up is successful to avoid closing dialog on errors
                 (requireActivity() as LoginActivity).signUpDialog = ret
 
-                val email =
-                    view.findViewById<EditText>(R.id.dialog_signup_edittext_email).text.toString()
-                val firstPassword =
-                    view.findViewById<EditText>(R.id.dialog_signup_edittext_first_password).text.toString()
-                val secondPassword =
-                    view.findViewById<EditText>(R.id.dialog_signup_edittext_second_password).text.toString()
-
                 // disable button to stop accidental multiple presses, re-enable in login activity
                 button.isEnabled = false
+                setLoading(true)
 
-                onPositiveButtonClick(email, firstPassword, secondPassword, ret)
+                val newName =
+                    dialogView.findViewById<EditText>(R.id.dialog_signup_edittext_email).text.toString()
+                onPositiveButtonClick(newName, ret)
             }
         }
         return ret
     }
 
+    private fun displayErrorMessage() {
+        val errorMessage =
+            resources.getString(R.string.dialog_update_name_toast_error)
+        Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun displaySuccessMessage() {
+        val successMessage =
+            resources.getString(R.string.dialog_update_name_toast_success)
+        Toast.makeText(requireActivity(), successMessage, Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        val loadingSpinner = dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
+        loadingSpinner.visibility = View.VISIBLE
+    }
+
     private fun onPositiveButtonClick(
-        email: String,
-        firstPassword: String,
-        secondPassword: String,
+        newName: String,
         dialog: Dialog,
     ) {
-        if (firstPassword != secondPassword) {
-            val bothPasswordsMustMatchError =
-                resources.getString(R.string.dialog_signup_toast_both_passwords_must_match)
-            Toast.makeText(requireActivity(), bothPasswordsMustMatchError, Toast.LENGTH_LONG)
-                .show()
+        if (newName.length > 50) {
+            displayNameTooLongError()
 
             // re-enable positive dialog button to allow user to try again now
             val positiveButton: Button =
@@ -82,6 +109,14 @@ class SignUpDialog() : DialogFragment() {
 
             return
         }
-        (requireActivity() as LoginActivity).onSignUpDialogFinishButtonClick(email, firstPassword)
+
+        authViewModel.updateUserDisplayName(newName)
+    }
+
+    private fun displayNameTooLongError() {
+        val errorMessage =
+            resources.getString(R.string.dialog_update_name_toast_name_too_long)
+        Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
+            .show()
     }
 }
