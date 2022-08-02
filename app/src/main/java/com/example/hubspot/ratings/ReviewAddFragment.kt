@@ -53,18 +53,16 @@ class ReviewAddFragment : Fragment() {
         dbReference.child("Users/${currUserId}").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if(dataSnapshot.hasChild("Reviews")){
-                        if(dataSnapshot.child("Reviews").hasChild(selectedProfName!!)){
-                            if(isAdded){
-                                Toast.makeText(requireActivity(), "Edit your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
-                            }
-                            // set database values to the view
-                            loadRating(dataSnapshot, selectedProfName)
+                    if(dataSnapshot.child("Reviews").hasChild(selectedProfName!!)) {
+                        if(isAdded){
+                            Toast.makeText(requireActivity(), "Edit your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
                         }
-                        else{
-                            if(isAdded){
-                                Toast.makeText(requireActivity(), "Enter your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
-                            }
+                        // set database values to the view
+                        loadRating(dataSnapshot, selectedProfName)
+                    }
+                    else{
+                        if(isAdded){
+                            Toast.makeText(requireActivity(), "Enter your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
