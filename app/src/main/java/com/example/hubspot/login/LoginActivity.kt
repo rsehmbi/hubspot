@@ -17,6 +17,7 @@ import com.example.hubspot.R
 import com.example.hubspot.auth.AuthRepository.AuthResultCode.*
 import com.example.hubspot.auth.AuthRepository.AuthResult
 import com.example.hubspot.auth.AuthViewModel
+import com.example.hubspot.profile.SignUpDialog
 
 
 class LoginActivity : AppCompatActivity() {

@@ -82,7 +82,8 @@ class AuthRepository {
         UNKNOWN_ERROR, EMAIL_ALREADY_USED, WEAK_PASSWORD, WRONG_PASSWORD,
         USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, ACCOUNT_ALREADY_ACTIVATED,
         FAILED_TO_SEND_ACTIVATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE,
-        FAILED_TO_READ_DATABASE, FAILED_TO_WRITE_USER_TO_DATABASE, FAILED_TO_SET_AUTH_DISPLAY_NAME
+        FAILED_TO_READ_DATABASE, FAILED_TO_WRITE_USER_TO_DATABASE,
+        FAILED_TO_SET_AUTH_DISPLAY_NAME, FAILED_TO_SET_DATABASE_DISPLAY_NAME
     }
 
     private fun createDatabaseUserIfNotExists(user: User, authResult: MutableLiveData<AuthResult>) {
@@ -250,5 +251,35 @@ class AuthRepository {
 
     fun resendActivationEmail(resendActivationEmailResult: MutableLiveData<AuthResult>) {
         sendActivationEmail(resendActivationEmailResult)
+    }
+
+    fun updateUserDisplayName(newDisplayName: String, result: MutableLiveData<AuthResult>) {
+        // Update display name in firebase auth
+        val user = getCurrentUser()
+        val updateDisplayName = UserProfileChangeRequest.Builder()
+            .setDisplayName(newDisplayName).build()
+        val firebaseUser = Firebase.auth.currentUser
+        firebaseUser!!.updateProfile(updateDisplayName).addOnCompleteListener { updateTask ->
+            if (updateTask.isSuccessful) {
+                // Then, update display name in database
+                val database = FirebaseDatabase.getInstance()
+                val usersRef = database.getReference("Users")
+
+                usersRef.child(user!!.id!!).child("displayName").setValue(newDisplayName)
+                    .addOnCompleteListener { updateNameTask ->
+                        if (updateNameTask.isSuccessful) {
+                            result.value = AuthResult(
+                                AuthResultCode.SUCCESS,
+                                user
+                            )
+                        } else {
+                            result.value =
+                                AuthResult(AuthResultCode.FAILED_TO_SET_DATABASE_DISPLAY_NAME, null)
+                        }
+                    }
+            } else {
+                result.value = AuthResult(AuthResultCode.FAILED_TO_SET_AUTH_DISPLAY_NAME, null)
+            }
+        }
     }
 }
