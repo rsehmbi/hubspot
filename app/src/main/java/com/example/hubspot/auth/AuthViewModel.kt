@@ -14,6 +14,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var signUpUserResult: MutableLiveData<AuthResult> = MutableLiveData()
     var resendActivationEmailResult: MutableLiveData<AuthResult> = MutableLiveData()
     var updateDisplayNameResult: MutableLiveData<AuthResult> = MutableLiveData()
+    var sendPasswordResetEmailResult: MutableLiveData<AuthResult> = MutableLiveData()
 
     fun signInUser(email: String, password: String) {
         authRepository.signInUser(email, password, signInUserResult)
@@ -29,5 +30,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateUserDisplayName(newDisplayName: String) {
         authRepository.updateUserDisplayName(newDisplayName, updateDisplayNameResult)
+    }
+
+    fun sendPasswordResetEmail(email: String) {
+        authRepository.sendPasswordResetEmail(email, sendPasswordResetEmailResult)
     }
 }

@@ -83,7 +83,8 @@ class AuthRepository {
         USER_NOT_FOUND, NO_LOGIN_OR_SIGNUP, ACCOUNT_ALREADY_ACTIVATED,
         FAILED_TO_SEND_ACTIVATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE,
         FAILED_TO_READ_DATABASE, FAILED_TO_WRITE_USER_TO_DATABASE,
-        FAILED_TO_SET_AUTH_DISPLAY_NAME, FAILED_TO_SET_DATABASE_DISPLAY_NAME
+        FAILED_TO_SET_AUTH_DISPLAY_NAME, FAILED_TO_SET_DATABASE_DISPLAY_NAME,
+        FAILED_TO_SEND_PASSWORD_RESET_EMAIL
     }
 
     private fun createDatabaseUserIfNotExists(user: User, authResult: MutableLiveData<AuthResult>) {
@@ -281,5 +282,22 @@ class AuthRepository {
                 result.value = AuthResult(AuthResultCode.FAILED_TO_SET_AUTH_DISPLAY_NAME, null)
             }
         }
+    }
+
+    fun sendPasswordResetEmail(email: String, result: MutableLiveData<AuthResult>) {
+        Firebase.auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    result.value = AuthResult(
+                        AuthResultCode.SUCCESS,
+                        null
+                    )
+                } else {
+                    result.value = AuthResult(
+                        AuthResultCode.FAILED_TO_SEND_PASSWORD_RESET_EMAIL,
+                        null
+                    )
+                }
+            }
     }
 }
