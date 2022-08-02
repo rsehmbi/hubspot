@@ -30,8 +30,6 @@ class ReviewAddFragment : Fragment() {
     private val dbReference =
         FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference
 
-    // SOS CHECK
-    private var reviewExists = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +46,8 @@ class ReviewAddFragment : Fragment() {
         val selectedProfName = arguments?.getString("PROF_NAME")
 
 
-//         check to see if the user has already entered comment for this professor
-//             if yes: load the data from the database, set it to the views, let users edit it
+         // check to see if the user has already entered comment for this professor
+             // if yes: load the data from the database, set it to the views, let users edit it
         dbReference.child("Users/${currUserId}").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -98,19 +96,43 @@ class ReviewAddFragment : Fragment() {
                     // then go back to displaying reviews
                 val selectedProfName = arguments?.getString("PROF_NAME")
 
-                // add the review to the professor object in db
+                // add the review to the Professor object in db
                 dbReference.child("Professors/$selectedProfName").addListenerForSingleValueEvent(
                     object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            if(dataSnapshot.child("Reviews").hasChild(currUserId!!)){
+                            if(dataSnapshot.child("Reviews").hasChild(currUserId!!)) {
+                                // the user has already entered a review for selectedProfName
+
+                                val previousRating: Float = dataSnapshot.child("Reviews").child(currUserId).child("Rate").value.toString().toFloat()
+
+                                // update previous review
                                 dataSnapshot.child("Reviews").child(currUserId).child("Rate").ref.setValue(profRatingBar.rating)
                                 dataSnapshot.child("Reviews").child(currUserId).child("Comment").ref.setValue(userCommentEditText.text.toString())
+
+                                // update rating Sum
+                                var reviewSum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                                reviewSum -= previousRating
+                                reviewSum += profRatingBar.rating
+                                dataSnapshot.child("Rating").child("Sum").ref.setValue(reviewSum)
                             }
-                            else{
-                                // user adding new review
+                            else {
+                                // new review
+                                    // Reviews
+                                // add new review review
                                 val review = dbReference.child("Professors/$selectedProfName/Reviews/$currUserId")
                                 review.child("Rate").setValue(profRatingBar.rating)
                                 review.child("Comment").setValue(userCommentEditText.text.toString())
+
+                                    // Rating
+                                // update rating count
+                                var reviewCount = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
+                                reviewCount += 1
+                                dataSnapshot.child("Rating").child("Count").ref.setValue(reviewCount)
+
+                                // update rating Sum
+                                var reviewSum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                                reviewSum += profRatingBar.rating
+                                dataSnapshot.child("Rating").child("Sum").ref.setValue(reviewSum)
                             }
                         }
 
@@ -118,7 +140,7 @@ class ReviewAddFragment : Fragment() {
                         }
                     })
 
-                // add the review to the user object in db
+                // add the review to the User object in db
                 dbReference.child("Users/${currUserId}").addListenerForSingleValueEvent(
                     object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -139,6 +161,7 @@ class ReviewAddFragment : Fragment() {
                         }
 
                     })
+
 
                 if(isAdded) {
                     // changing parent activity's button
@@ -165,7 +188,6 @@ class ReviewAddFragment : Fragment() {
                     requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
                 rateReviewBtn.text = "Rate Now!"
 
-
                 // replacing the fragment to display reviews
                 val selectedProfName = arguments?.getString("PROF_NAME")
                 val reviewListFragments = ReviewDisplayFragment()
@@ -183,7 +205,6 @@ class ReviewAddFragment : Fragment() {
     // load the previously entered review to the view
     private fun loadRating(dataSnapshot: DataSnapshot, selectedProfName: String){
         // user has already commented for selectedProfName
-        reviewExists = true
         // load previous rate and comment
         val comment = dataSnapshot.child("Reviews").child(selectedProfName).child("Comment").value.toString()
         val rate = dataSnapshot.child("Reviews").child(selectedProfName).child("Rate").value.toString()

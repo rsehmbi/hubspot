@@ -120,18 +120,7 @@ class SingleProfessorActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
                     for (dataSnapshot in snapshot.children){
-                        var rating: Float = -1.0F
 
-                        // SOS CHECK
-                        val profComments = ArrayList<String>()
-                        val test = dataSnapshot.child("Comments").children.forEach {
-                            profComments.add(it.value.toString())
-                            println("debug51: ${it.value}")
-                        }
-
-                        if(dataSnapshot.child("Rating").value.toString() != ""){
-                            rating = dataSnapshot.child("Rating").value.toString().toFloat()
-                        }
                         // setting the prof's image
                         // fetching image from the url and setting it to profImage
                         Picasso.with(curActivity).load(dataSnapshot.child("ImgUrl").value.toString()).into(profImage)
@@ -142,7 +131,6 @@ class SingleProfessorActivity : AppCompatActivity() {
                         profEmail.text = "Email: ${dataSnapshot.child("Email").value.toString()}"
                         profArea.text = "Area: ${dataSnapshot.child("Area").value.toString()}"
 
-                        profListViewModel.savedProfRating.value = rating
                     }
                 }
             }

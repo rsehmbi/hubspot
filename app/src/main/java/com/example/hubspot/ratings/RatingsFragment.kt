@@ -48,7 +48,7 @@ class RatingsFragment : Fragment() {
                 //
                 loadProfInfo(profListViewModel.professorReference, professorSelected.toString().uppercase())
 
-                Toast.makeText(requireContext(), "Professor ${professorSelected} added to the list", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Professor $professorSelected added to the list", Toast.LENGTH_SHORT).show()
 
                 // clears the search box
                 autocompleteTextSearch.getText().clear()
@@ -77,8 +77,10 @@ class RatingsFragment : Fragment() {
                     if (snapshot.exists()){
                         for (dataSnapshot in snapshot.children){
                             var rating: Float = -1.0F
-                            if(dataSnapshot.child("Rating").value.toString() != ""){
-                                rating = dataSnapshot.child("Rating").value.toString().toFloat()
+                            if(dataSnapshot.child("Rating").child("Count").value.toString() != "0"){
+                                var sum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                                var count = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
+                                rating = sum/count
                             }
                             val selectedProf = Professor (
                                 dataSnapshot.child("Area").value.toString(),
