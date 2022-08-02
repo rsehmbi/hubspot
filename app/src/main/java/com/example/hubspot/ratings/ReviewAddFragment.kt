@@ -46,14 +46,15 @@ class ReviewAddFragment : Fragment() {
         val selectedProfName = arguments?.getString("PROF_NAME")
 
 
-        // check to see if the user has already entered comment for this professor
-            // if so load the data from the database add set it to the views
-        dbReference.child("Users/${currUserId}").addValueEventListener(
+//         check to see if the user has already entered comment for this professor
+//             if so load the data from the database, set it to the views, let users edit it
+        dbReference.child("Users/${currUserId}").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if(dataSnapshot.hasChild("Reviews")){
                         if(dataSnapshot.child("Reviews").hasChild(selectedProfName!!)){
                             Toast.makeText(requireActivity(), "Edit your review for ${changeDisplayName(selectedProfName)}", Toast.LENGTH_SHORT).show()
+                            // set database values to the view
                             loadRating(dataSnapshot, selectedProfName)
                         }
                         else{
@@ -67,12 +68,8 @@ class ReviewAddFragment : Fragment() {
 
             })
 
-
             // if no: let the add a new review ==> only allow the to enter review when both rating and comment is entered
-
-            // if yes: load the previously entered review from db and let the user edit it
-
-
+                // and save it to the database once saved is clicked
 
         return view
     }
@@ -91,9 +88,39 @@ class ReviewAddFragment : Fragment() {
                 Toast.makeText(requireActivity(), "The comment cannot be empty!", Toast.LENGTH_SHORT).show()
             }
             else{
-                // save the entries in the database
+                // save the entries to the database
                     // then go back to displaying reviews
+                val selectedProfName = arguments?.getString("PROF_NAME")
 
+                // add the review to the user object in db
+                dbReference.child("Users/${currUserId}").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.child("Reviews").hasChild(selectedProfName!!)){
+                                // update the entries
+                                val review = dataSnapshot.child("Reviews").child(selectedProfName)
+                                review.child("Rate").ref.setValue(profRatingBar.rating)
+                                review.child("Comment").ref.setValue(userCommentEditText.text.toString())
+                            }
+                            else{
+                                println("DEBUG: adding new value to prof HERE")
+                                val review = dbReference.child("Users/${currUserId}/Reviews/$selectedProfName")
+                                review.child("Rate").setValue(profRatingBar.rating)
+                                review.child("Comment").setValue(userCommentEditText.text.toString())
+                            }
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+
+                    })
+
+//                // replacing the fragment to display reviews
+//                val reviewListFragments = ReviewDisplayFragment()
+//                val arg = Bundle()
+//                arg.putString("PROF_NAME", selectedProfName)
+//                reviewListFragments.arguments = arg
+//                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.frame_layout_3_displays,reviewListFragments).commit()
             }
         }
         cancelReviewBtn.setOnClickListener {
