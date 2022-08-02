@@ -7,15 +7,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.ratings.ProfessorListViewModel.Professor
+import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
+class ProfessorAdapter(private val dataSet: ArrayList<Professor>, private val fragmentActivity: FragmentActivity) :
     RecyclerView.Adapter<ProfessorAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,10 +34,6 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
             profRating = view.findViewById(R.id.profRatingId)
             profDepartment = view.findViewById(R.id.profDepartmentId)
             ratingBar = view.findViewById(R.id.ratingBarDisplayId)
-
-            view.setOnClickListener {
-                var position: Int = adapterPosition
-            }
         }
     }
 
@@ -46,9 +45,8 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        println("debug23: here")
+
         val selectedProf = dataSet[position]
-        //viewHolder.profImageView CHECK SOS
         viewHolder.profName.text = changeDisplayName(selectedProf.profName)
         if(selectedProf.rating < 0.0F){
             viewHolder.profRating.text = "Rating: No reviews yet"
@@ -66,6 +64,10 @@ class ProfessorAdapter(private val dataSet: ArrayList<Professor>) :
 
 
         viewHolder.itemView.setOnClickListener {
+
+            val profListViewModel = ViewModelProvider(fragmentActivity)[ProfessorListViewModel::class.java]
+            profListViewModel.isProfUpdated = true
+
             val intent = Intent(it.context, SingleProfessorActivity::class.java).apply {
                 putExtra("PROF_NAME", selectedProf.profName) // Assuming that name of professors are unique
             }
