@@ -41,6 +41,9 @@ class NameDialog() : DialogFragment() {
                     this@NameDialog.dismiss()
                 } else {
                     displayErrorMessage()
+                    val positiveButton: Button =
+                        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                    positiveButton.isEnabled = true
                 }
                 setLoading(false)
             }

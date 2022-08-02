@@ -11,4 +11,7 @@
     <string name="dialog_update_name_toast_error">Failed to update name. Please try again later.</string>
     <string name="dialog_update_name_toast_success">Successfully updated display name!</string>
     <string name="dialog_update_name_toast_name_too_long">Display name is too long. Try less than 50 characters.</string>
+    <string name="activity_profile_toast_reset_password_success">Password reset email has been sent. Please check your email.</string>
+    <string name="activity_profile_toast_reset_password_error">Failed to send password reset email. Please try again later.</string>
+    <string name="activity_profile_appbar_title">Profile</string>
 </resources>
