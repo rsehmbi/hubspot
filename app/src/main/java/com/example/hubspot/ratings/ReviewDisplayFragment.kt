@@ -9,22 +9,28 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
+import com.example.hubspot.auth.Auth
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.example.hubspot.ratings.ProfessorListViewModel.Review
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 /**
  * A simple [Fragment] subclass.
- * Use the [CommentsDisplayFragment.newInstance] factory method to
+ * Use the [ReviewDisplayFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CommentsDisplayFragment : Fragment() {
+class ReviewDisplayFragment : Fragment() {
 
-    private lateinit var profListViewModel: ProfessorListViewModel
     private lateinit var reviewArrayList: ArrayList<Review>
     private lateinit var reviewListView: ListView
+
+    private val currUserId = Auth.getCurrentUser()!!.id
+
+    private val dbReference =
+        FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference
 
 
     override fun onCreateView(
@@ -34,19 +40,29 @@ class CommentsDisplayFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_reviews_display, container, false)
         // get the comments from the data base
         reviewArrayList = ArrayList()
-        reviewListView = view.findViewById<ListView>(R.id.review_listView)
+        reviewListView = view.findViewById(R.id.review_listView)
 
         var passedProfName: String? = arguments?.getString("PROF_NAME")
 
-        profListViewModel = ViewModelProvider(this)[ProfessorListViewModel::class.java]
-        profListViewModel.professorReference.child("$passedProfName/Reviews").addValueEventListener(
+
+
+
+        // get reviews from database
+        dbReference.child("Professors/$passedProfName").addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for(review in dataSnapshot.children) {
-
-                        val rating = review.child("Rating").value.toString().toFloat()
-                        val review = Review(review.child("Comment").value.toString(), rating)
-                        reviewArrayList.add(review)
+                    reviewArrayList.clear()
+                    if(dataSnapshot.hasChild("Reviews")){
+                        for(userReview in dataSnapshot.child("Reviews").children) {
+                            // SOS CHECK
+                            // bug here CHECK
+                            val res = userReview.value as Map<*, *>
+                            println("bug: $res")
+                            if(res["Comment"] != null && res["Rate"]!= null){
+                                val review = Review(res["Comment"]!!.toString(), res["Rate"]!!.toString().toFloat())
+                                reviewArrayList.add(review)
+                            }
+                        }
                     }
                     if(reviewArrayList.size == 0){
                         val reviewStat = view.findViewById<TextView>(R.id.comment_stat_id)
