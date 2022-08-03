@@ -27,6 +27,8 @@
     <string name="last_known_location_text">Last known location:</string>
     <string name="enroll">Enroll</string>
     <string name="show_schedule">Show Schedule</string>
+    <string name="emergency_info_text">When turned on, a user may press the Volume Downbutton 5 times to automaticall dial 911in the case of an emergency.</string>
+    <string name="emergency_services_switch_text">Emergency Services</string>
 
     <!-- Friends System -->
     <string name="your_secret_id">Your Secret ID:</string>

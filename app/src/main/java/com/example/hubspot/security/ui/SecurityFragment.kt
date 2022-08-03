@@ -1,19 +1,26 @@
 package com.example.hubspot.security.ui
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.Manifest
+import android.content.*
+import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.models.UserLocation
 import com.example.hubspot.security.services.SafeLocationService
+import com.example.hubspot.security.services.SilentButtonReceiver
 import com.example.hubspot.security.viewModel.SecurityViewModel
 import com.example.hubspot.services.LocationService
 import com.example.hubspot.services.LocationService.LocationCallback
@@ -27,15 +34,24 @@ import java.util.*
 
 /**
  * SecurityFragment is a [Fragment] that handles user security features on the HubSpot application.
- * It allows the user to turn on/off continuous location capturing. Contains a companion object that
- * holds a reference to the SecurityFragment's [SecurityViewModel] for referencing locational data.
- * TODO: Add features as they are finished
+ * It allows the user to turn on/off continuous location capturing. It also allows users to toggle
+ * whether they would like to enable the emergency services alert button presses. Contains a
+ * companion object that holds a reference to the SecurityFragment's [SecurityViewModel] for
+ * referencing locational and [KeyEvent] data.
  */
 class SecurityFragment : Fragment() {
     private lateinit var securityViewModel: SecurityViewModel
     private lateinit var locationServicesButton: Button
     private lateinit var safeLocationService: SafeLocationService
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var emergencySilentSwitch: Switch
+    private lateinit var silentButtonReceiver: SilentButtonReceiver
+    private val bindStatusKey = "bind_status_key"
+    private var isBind = false
+    private var downButtonPressedCount = 0
+    private var downButtonPressedCountDown = 5
+    private val callPermissionRequestCode = 119
+    private val callPermissionToggleRequestCode = 99
 
     companion object CompanionObject {
         lateinit var securityViewModel: SecurityViewModel
@@ -48,9 +64,11 @@ class SecurityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_security, container, false)
-        initializeSecurityButtons(view)
+        initializeContinuousLocationServicesButtons(view)
+        initializeSilentEmergencyButton(view)
         setLocationTextView(view)
         handleLocationUpdates(view)
+        handleSilentButtonPresses()
         return view
     }
 
@@ -61,14 +79,85 @@ class SecurityFragment : Fragment() {
         initializeSharedPreferences()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            callPermissionRequestCode -> {
+                if (grantResults.size > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(requireContext(),"Emergency services system activated. Calling '911'.", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(requireContext(),"Call permission denied.", Toast.LENGTH_LONG).show()
+                }
+                return
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(bindStatusKey, isBind)
+    }
+
 // Private methods --------------------------------------------------------------------------
 
-    private fun initializeSharedPreferences() {
-        sharedPreferences = requireActivity()
-            .getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+    private fun handleEmergencyServicesSilentButtonPress() {
+        val intent = Intent(Intent.ACTION_CALL) // This intent dials the number automatically
+        intent.data = Uri.parse("tel: 119") // Obviously not using 911 for this project app
+        if (ContextCompat.checkSelfPermission( // Checks call permissions at runtime
+                requireActivity(),
+                Manifest.permission.CALL_PHONE
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.CALL_PHONE),
+                callPermissionRequestCode
+            )
+        } else { // User already gave permission
+            try {
+                startActivity(intent)
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+        }
     }
+
+    private fun handleKeyEvent(): Boolean {
+        val action = securityViewModel.keyEventButtonAction.value
+        val keyCode = securityViewModel.keyEventButtonKeyCode.value
+        if (action == KeyEvent.ACTION_DOWN) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                downButtonPressedCount++
+                downButtonPressedCountDown--
+                if (downButtonPressedCountDown > 0) {
+                    Toast.makeText(requireContext(), "Press Volume Down button $downButtonPressedCountDown more times to call emergency services", Toast.LENGTH_SHORT).show()
+                }
+                if (downButtonPressedCount == 5) {
+                    handleEmergencyServicesSilentButtonPress()
+                    downButtonPressedCount = 0
+                }
+                return true
+            }
+        } else if (action == KeyEvent.FLAG_LONG_PRESS) {
+            when (keyCode){
+                KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                    // TODO: enable speech to text of attacker
+                }
+                KeyEvent.KEYCODE_VOLUME_UP -> {
+                    // TODO: enable ping friend
+                }
+            }
+        }
+        return false
+    }
+
     private fun handleLocationUpdates(view: View) {
-        securityViewModel.getLocationNow.observe(viewLifecycleOwner){
+        securityViewModel.getLocationNow.observe(viewLifecycleOwner) {
             if (securityViewModel.getLocationNow.value == true) {
                 setLocationTextView(view)
                 // Create path for database
@@ -87,11 +176,12 @@ class SecurityFragment : Fragment() {
                     val userLocationsReference = firebaseDatabase.getReference(path)
 
                     // Add new location to Locations list
-                    val newUserLocation = UserLocation(dateTime!!,location)
-                    val newPostRef = userLocationsReference.push()  // Creates a chronological UID for each list item
+                    val newUserLocation = UserLocation(dateTime!!, location)
+                    val newPostRef =
+                        userLocationsReference.push()  // Creates a chronological UID for each list item
                     newPostRef.setValue(newUserLocation)
                     // TODO: add max locations
-                }catch (er: Exception) {
+                } catch (er: Exception) {
                     println(er.toString())
                 }
                 // TODO: Broadcast to friends
@@ -100,11 +190,18 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    private fun handleSilentButtonPresses() {
+        securityViewModel.silentButtonPressed.observe(viewLifecycleOwner) {
+            handleKeyEvent()
+        }
+    }
+
     private fun initializeSafeLocationService() {
         safeLocationService = SafeLocationService()
     }
 
-    private fun initializeSecurityButtons(view: View) {
+    private fun initializeContinuousLocationServicesButtons(view: View) {
+        // Continuous Location Services Button
         locationServicesButton = view.findViewById(R.id.location_services_button)
 
         val securityButtonText = sharedPreferences.getString("security_button_text", "TURN ON")
@@ -132,8 +229,41 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    private fun initializeSharedPreferences() {
+        sharedPreferences = requireActivity()
+            .getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+    }
+
+    private fun initializeSilentEmergencyButton(view: View) {
+        silentButtonReceiver = SilentButtonReceiver()
+        emergencySilentSwitch = view.findViewById(R.id.emergency_silent_button_switch)
+        emergencySilentSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener
+        { buttonView, isChecked ->
+            if (isChecked) {
+                if (ContextCompat.checkSelfPermission( // Checks call permissions at runtime
+                        requireActivity(),
+                        Manifest.permission.CALL_PHONE
+                    )
+                    != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(), arrayOf(Manifest.permission.CALL_PHONE),
+                        callPermissionToggleRequestCode
+                    )
+                } else { // User already gave permission
+                    println("Permissions already granted")
+                }
+                LocalBroadcastManager.getInstance(requireContext()).registerReceiver(silentButtonReceiver,
+                    IntentFilter("silentButtonPressed")
+                )
+            } else {
+                LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(silentButtonReceiver)
+            }
+        })
+    }
+
     private fun initializeViewModel() {
-        securityViewModel = SecurityViewModel()
+        securityViewModel = ViewModelProvider(requireActivity())[SecurityViewModel::class.java]
         CompanionObject.securityViewModel = securityViewModel
 
     }

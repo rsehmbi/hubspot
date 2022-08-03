@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hubspot">
 
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,31 +20,14 @@
         android:theme="@style/Theme.HubSpot"
         tools:targetApi="31">
 
-        <activity
-            android:name=".schedule.ShowMySchedule"
-            android:exported="false" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBIBNGv9Ge95vkC5CdCVd_8b-zZryBcvT8" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <activity
-            android:name=".studybuddy.friendsMap.ui.FriendsMapActivity"
-            android:exported="false"
-            android:label="Friends Map" />
-
-        <receiver android:name=".security.services.LocationReceiver"
+        <receiver
+            android:name=".security.services.LocationReceiver"
             android:exported="true"
-            android:permission="android.permission.ACCESS_FINE_LOCATION">
-        </receiver>
-        <activity
-            android:name=".ratings.SingleProfessorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".schedule.SingleCourseActivity"
-            android:exported="false" />
+            android:permission="android.permission.ACCESS_FINE_LOCATION" />
+        <receiver
+            android:name=".security.services.SilentButtonReceiver"
+            android:exported="false"
+            android:permission="android.permission.CALL_PHONE" />
 
         <activity
             android:name=".MainActivity"
@@ -53,27 +41,32 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".profile.ProfileActivity"
             android:exported="false" />
-
-        <receiver
-            android:name=".security.services.LocationReceiver"
-            android:exported="true"
-            android:permission="android.permission.ACCESS_FINE_LOCATION">
-        </receiver>
-
+        <activity
+            android:name=".schedule.ShowMySchedule"
+            android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBIBNGv9Ge95vkC5CdCVd_8b-zZryBcvT8" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <activity
+            android:name=".studybuddy.friendsMap.ui.FriendsMapActivity"
+            android:exported="false"
+            android:label="Friends Map" />
+        <activity
+            android:name=".ratings.SingleProfessorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".schedule.SingleCourseActivity"
+            android:exported="false" />
         <activity android:name=".studybuddy.pomodoro.PomodoroActivity" />
-        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.FriendsMapService">
-        </service>
-        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.ShareLocationService">
+        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.FriendsMapService"/>
+        <service android:enabled="true" android:name=".studybuddy.friendsMap.services.ShareLocationService"/>
 
-        </service>
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
