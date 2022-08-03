@@ -84,7 +84,7 @@ class AuthRepository {
         FAILED_TO_SEND_ACTIVATION_EMAIL, TOO_MANY_REQUESTS_AT_ONCE,
         FAILED_TO_READ_DATABASE, FAILED_TO_WRITE_USER_TO_DATABASE,
         FAILED_TO_SET_AUTH_DISPLAY_NAME, FAILED_TO_SET_DATABASE_DISPLAY_NAME,
-        FAILED_TO_SEND_PASSWORD_RESET_EMAIL
+        FAILED_TO_SEND_PASSWORD_RESET_EMAIL, USER_TOKEN_EXPIRED
     }
 
     private fun createDatabaseUserIfNotExists(user: User, authResult: MutableLiveData<AuthResult>) {
@@ -182,6 +182,9 @@ class AuthRepository {
             "ERROR_EMAIL_ALREADY_IN_USE" -> {
                 authResult.value =
                     AuthResult(AuthResultCode.EMAIL_ALREADY_USED, null)
+            }
+            "ERROR_USER_TOKEN_EXPIRED" -> {
+                authResult.value = AuthResult(AuthResultCode.USER_TOKEN_EXPIRED, null)
             }
             else -> {
                 authResult.value = AuthResult(AuthResultCode.UNKNOWN_ERROR, null)
