@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.databinding.ActivityMainBinding
 import com.example.hubspot.login.LoginActivity
+import com.example.hubspot.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.flFragment)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_schedule, R.id.navigation_ratings, R.id.navigation_studdybuddy, R.id.navigation_security,
+                R.id.navigation_schedule, R.id.navigation_ratings, R.id.navigation_studdybuddy,
+                R.id.navigation_security, R.id.navigation_friends
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -81,5 +83,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    fun onProfileMenuOptionClicked(item: MenuItem) {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
     }
 }

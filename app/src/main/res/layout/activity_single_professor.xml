@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ratings.SingleProfessorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/profImageId"
+            android:layout_width="90dp"
+            android:layout_height="116dp"
+            android:layout_margin="5dp"
+            android:adjustViewBounds="false"
+            android:scaleType="fitStart"
+            android:contentDescription="@string/professor_s_image"
+            android:textAlignment="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="@string/name"
+                android:paddingBottom="5dp"
+                android:id="@+id/profNameId"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/department"
+                android:paddingBottom="5dp"
+                android:id="@+id/profDepartmentId">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/occupation"
+                android:paddingBottom="5dp"
+                android:id="@+id/profOccupationId"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email"
+                android:paddingBottom="5dp"
+                android:id="@+id/profEmailId"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/area"
+                android:paddingBottom="5dp"
+                android:id="@+id/profAreaId"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:id="@+id/rate_now_btn_id"
+            android:text="@string/rate_now"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toStartOf="@+id/comment_rate_fragments_id"
+        app:layout_constraintStart_toStartOf="@+id/comment_rate_fragments_id">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/frame_layout_3_displays">
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

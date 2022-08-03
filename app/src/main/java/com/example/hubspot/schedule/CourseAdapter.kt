@@ -33,7 +33,6 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
 
             view.setOnClickListener {
                 var position: Int = getAdapterPosition()
-
             }
         }
     }

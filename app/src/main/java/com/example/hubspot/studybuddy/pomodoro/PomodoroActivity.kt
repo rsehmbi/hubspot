@@ -1,4 +1,4 @@
-package com.example.hubspot.studybuddy
+package com.example.hubspot.studybuddy.pomodoro
 
 import android.os.Bundle
 import android.os.CountDownTimer

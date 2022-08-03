@@ -19,7 +19,6 @@ import java.util.*
  * for a [LocationReceiver].
  */
 class SafeLocationService {
-    private var alarmInterval = AlarmManager.INTERVAL_FIFTEEN_MINUTES
 
 // Private methods --------------------------------------------------------------------------
 
@@ -41,7 +40,7 @@ class SafeLocationService {
         alarmManager.setRepeating( // Sets the alarm manager to be repeating
             AlarmManager.RTC,
             calendar.timeInMillis,
-            alarmInterval,
+            10L,
             pendingIntent
         )
         Toast.makeText(activity,"Location Services ON.", Toast.LENGTH_SHORT).show()

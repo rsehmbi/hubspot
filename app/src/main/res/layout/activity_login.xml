@@ -78,6 +78,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onResendActivationEmailButtonClick"
+            android:layout_marginBottom="16dp"
             android:text="@string/login_button_resend_email" />
+
+        <Button
+            android:id="@+id/login_button_reset_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onLoginActivityResetPasswordButtonClick"
+            android:text="@string/login_button_reset_password" />
     </LinearLayout>
 </ScrollView>

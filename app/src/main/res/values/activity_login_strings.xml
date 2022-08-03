@@ -25,4 +25,10 @@
     <string name="login_toast_try_logging_in_first">Please login or try signing up an account before resending an activation email.</string>
     <string name="login_toast_user_not_found">This account does not exist. Please check your credentials and try again or sign up for a new account.</string>
     <string name="login_toast_too_many_requests_at_once">Too many requests made at once. Please wait and try again later.</string>
+    <string name="login_toast_fail_read_database">Failed to read from database. Please try again later.</string>
+    <string name="login_toast_set_user_auth_displayname_fail">Failed to set Firebase auth display name. Please try again later.</string>
+    <string name="login_toast_create_user_in_database_fail">Failed to create user in database, please try again later.</string>
+    <string name="login_button_reset_password">Reset Password</string>
+    <string name="dialog_password_reset_toast_error">Failed to send password reset email. Please ensure that your email is correct.</string>
+    <string name="dialog_password_reset_toast_empty_email">Email cannot be empty.</string>
 </resources>

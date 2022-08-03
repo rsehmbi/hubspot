@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -65,8 +66,22 @@ dependencies {
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
     implementation 'com.google.android.material:material:1.6.1'
 
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+
     // Coroutine components
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+
+    // Google Maps
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation "com.google.android.gms:play-services-location:20.0.0"
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
 
 }
