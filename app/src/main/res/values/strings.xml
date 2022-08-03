@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">HubSpot</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Study buddy -->
     <string name="study_length">Study time length</string>
@@ -37,5 +36,24 @@
     <string name="add_a_friend">Add a friend!</string>
     <string name="your_friends">Your friends</string>
     <string name="options_menu_item_profile">Profile</string>
+    <string name="course_info">Course Info</string>
+    <string name="course_schedule">Course Schedule</string>
+    <string name="exam_schedule">Exam Schedule</string>
+    <string name="instructor">Instructor</string>
+    <string name="connect_to_the_internet_and_try_again">Connect to the internet and try again</string>
+    <string name="error_no_internet_connection">Error - No internet connection</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="rate_now">Rate Now!</string>
+    <string name="name">Name:</string>
+    <string name="department">Department:</string>
+    <string name="occupation">Occupation:</string>
+    <string name="email">Email:</string>
+    <string name="area">Area:</string>
+    <string name="professor_s_image">Professor\'s Image</string>
+    <string name="enter_comment_here">Enter comment here...</string>
+    <string name="review">Review:</string>
+    <string name="comment">Comment:</string>
 
 </resources>
