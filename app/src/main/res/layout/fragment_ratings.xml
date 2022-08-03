@@ -1,14 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ratings.RatingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/profAutoCompleteId"
+            android:layout_margin="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content"
+            android:hint="Search Professors"
+            android:inputType="text"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            />
+    </LinearLayout>
+
+
+    <RelativeLayout
+
+        android:id="@+id/professorButtonsLLID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Ratings Fragmenr" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profListViewId"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            >
+
+            <Button
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/clear_profs_btn_id"
+                android:text="Clear"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>
