@@ -17,7 +17,6 @@ import com.example.hubspot.R
 import com.example.hubspot.auth.AuthRepository.AuthResultCode.*
 import com.example.hubspot.auth.AuthRepository.AuthResult
 import com.example.hubspot.auth.AuthViewModel
-import com.example.hubspot.profile.NameDialog
 
 
 class LoginActivity : AppCompatActivity() {
@@ -206,7 +205,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun onSignUpButtonClick(view: View) {
-        val signUpDialog = NameDialog()
+        val signUpDialog = SignUpDialog()
         signUpDialog.show(supportFragmentManager, "sign_up_dialog")
     }
 
@@ -218,5 +217,10 @@ class LoginActivity : AppCompatActivity() {
     fun onResendActivationEmailButtonClick(view: View) {
         setScreenLoading(true)
         authViewModel.resendActivationEmail()
+    }
+
+    fun onLoginActivityResetPasswordButtonClick(view: View) {
+        val resetDialog = PasswordResetDialog()
+        resetDialog.show(supportFragmentManager, "password_reset_dialog")
     }
 }

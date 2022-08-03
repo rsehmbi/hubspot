@@ -1,4 +1,4 @@
-package com.example.hubspot.profile
+package com.example.hubspot.login
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -16,8 +16,8 @@ import com.example.hubspot.auth.AuthRepository
 import com.example.hubspot.auth.AuthViewModel
 
 
-/** Dialog Fragment for updating a user display name*/
-class NameDialog() : DialogFragment() {
+/** Dialog Fragment for resetting a user password */
+class PasswordResetDialog() : DialogFragment() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var dialogView: View
 
@@ -25,19 +25,18 @@ class NameDialog() : DialogFragment() {
         lateinit var ret: Dialog
 
         val builder = AlertDialog.Builder(requireActivity())
-        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_update_name, null)
+        dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_password_reset, null)
         builder.setView(dialogView)
 
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
-        // Wait for and handle update name result
-        authViewModel.updateDisplayNameResult.observe(this) { result ->
+        // Wait for and handle password reset result
+        authViewModel.sendPasswordResetEmailResult.observe(this) { result ->
             // if statement is used to stop code from executing on rotation change
             if (lifecycle.currentState == Lifecycle.State.RESUMED) {
                 if (result.resultCode == AuthRepository.AuthResultCode.SUCCESS) {
                     displaySuccessMessage()
-                    (requireActivity() as ProfileActivity).refreshDisplayNameText()
-                    this@NameDialog.dismiss()
+                    this@PasswordResetDialog.dismiss()
                 } else {
                     displayErrorMessage()
                     val positiveButton: Button =
@@ -67,9 +66,9 @@ class NameDialog() : DialogFragment() {
                 button.isEnabled = false
                 setLoading(true)
 
-                val newName =
-                    dialogView.findViewById<EditText>(R.id.dialog_update_name_edittext).text.toString()
-                onPositiveButtonClick(newName, ret)
+                val email =
+                    dialogView.findViewById<EditText>(R.id.dialog_password_reset_edittext_email).text.toString()
+                onPositiveButtonClick(email)
             }
         }
         return ret
@@ -77,14 +76,14 @@ class NameDialog() : DialogFragment() {
 
     private fun displayErrorMessage() {
         val errorMessage =
-            resources.getString(R.string.dialog_update_name_toast_error)
+            resources.getString(R.string.dialog_password_reset_toast_error)
         Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
             .show()
     }
 
     private fun displaySuccessMessage() {
         val successMessage =
-            resources.getString(R.string.dialog_update_name_toast_success)
+            resources.getString(R.string.activity_profile_toast_reset_password_success)
         Toast.makeText(requireActivity(), successMessage, Toast.LENGTH_LONG)
             .show()
     }
@@ -92,21 +91,20 @@ class NameDialog() : DialogFragment() {
     private fun setLoading(isLoading: Boolean) {
         if (isLoading) {
             val loadingSpinner =
-                dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
+                dialogView.findViewById<ProgressBar>(R.id.dialog_password_reset_loading_spinner)
             loadingSpinner.visibility = View.VISIBLE
         } else {
             val loadingSpinner =
-                dialogView.findViewById<ProgressBar>(R.id.dialog_update_name_loading_spinner)
+                dialogView.findViewById<ProgressBar>(R.id.dialog_password_reset_loading_spinner)
             loadingSpinner.visibility = View.GONE
         }
     }
 
     private fun onPositiveButtonClick(
-        newName: String,
-        dialog: Dialog,
+        email: String,
     ) {
-        if (newName.length > 50) {
-            displayNameTooLongError()
+        if (email.isEmpty()) {
+            displayEmailIsEmptyError()
 
             // re-enable positive dialog button to allow user to try again now
             val positiveButton: Button =
@@ -116,13 +114,12 @@ class NameDialog() : DialogFragment() {
 
             return
         }
-
-        authViewModel.updateUserDisplayName(newName)
+        authViewModel.sendPasswordResetEmail(email)
     }
 
-    private fun displayNameTooLongError() {
+    private fun displayEmailIsEmptyError() {
         val errorMessage =
-            resources.getString(R.string.dialog_update_name_toast_name_too_long)
+            resources.getString(R.string.dialog_password_reset_toast_empty_email)
         Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_LONG)
             .show()
     }
