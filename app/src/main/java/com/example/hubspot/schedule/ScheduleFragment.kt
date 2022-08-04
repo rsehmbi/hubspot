@@ -100,14 +100,13 @@ class ScheduleFragment : Fragment() {
     private fun getNewCourses(): List<String> {
         val enrolledCourses = usercourseListViewModel.courseList?.value
         val coursesToEnroll: MutableList<String> = mutableListOf()
+        for (course in courseListViewModel.SelectedCourselist) {
+            coursesToEnroll.add(course.courseCode)
+        }
         if (enrolledCourses != null){
-            for (course in courseListViewModel.SelectedCourselist) {
-                coursesToEnroll.add(course.courseCode)
-            }
             for (course_code in enrolledCourses) {
                 coursesToEnroll.add(course_code)
             }
-
         }
         return coursesToEnroll.distinct()
     }
@@ -120,6 +119,7 @@ class ScheduleFragment : Fragment() {
         val courseList = getNewCourses()
         if (currentUser != null){
             try {
+
                 if (courseList.isNotEmpty()) {
                     UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
                         .setValue(courseList)
