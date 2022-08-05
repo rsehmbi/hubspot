@@ -84,6 +84,10 @@ class ScheduleFragment : Fragment() {
                                 dataSnapshot.child("Description").value.toString(),
                                 dataSnapshot.child("Credits").value.toString(),
                                 dataSnapshot.child("Location").value.toString(),
+                                dataSnapshot.child("courseStartDateTime").value.toString(),
+                                dataSnapshot.child("courseEndDate").value.toString(),
+                                dataSnapshot.child("courseDuration").value.toString(),
+                                dataSnapshot.child("courseDays").value.toString(),
                                 )
                             courseListViewModel.SelectedCourselist.add(selectedCourse)
                         }
@@ -136,6 +140,12 @@ class ScheduleFragment : Fragment() {
         }
     }
     private fun onClickButtonHandler(view: View){
+        view.findViewById<Button>(R.id.clear_button_id).setOnClickListener {
+            courseListViewModel.SelectedCourselist.clear()
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+            autoPopulateCourseList.adapter = adapter
+        }
+
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
             enrollInCourse()
             val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)

@@ -53,6 +53,10 @@ class ShowMySchedule : AppCompatActivity() {
                                 dataSnapshot.child("Description").value.toString(),
                                 dataSnapshot.child("Credits").value.toString(),
                                 dataSnapshot.child("Location").value.toString(),
+                                dataSnapshot.child("courseStartDateTime").value.toString(),
+                                dataSnapshot.child("courseEndDate").value.toString(),
+                                dataSnapshot.child("courseDuration").value.toString(),
+                                dataSnapshot.child("courseDays").value.toString(),
                             )
                             if (!alreadyExists(selectedCourse)){
                                 usercourseListViewModel.enrolledCourseList.add(selectedCourse)

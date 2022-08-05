@@ -51,7 +51,7 @@
                 android:textAllCaps="false"
                 android:layout_weight="1"
                 android:id="@+id/view_schedule_id"
-                android:text="@string/show_schedule"/>
+                android:text="My Schedule"/>
 
             <Button
                 android:layout_weight="1"
@@ -61,6 +61,16 @@
                 android:layout_height="50dp"
                 android:id="@+id/enroll_button_id"
                 android:text="@string/enroll"/>
+
+            <Button
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/clear_button_id"
+                android:text="Clear"/>
+
         </LinearLayout>
 
     </RelativeLayout>
