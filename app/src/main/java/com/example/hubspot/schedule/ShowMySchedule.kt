@@ -2,7 +2,6 @@ package com.example.hubspot.schedule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,10 +13,10 @@ import com.example.hubspot.schedule.CourseListViewModel.UserCourseViewModel
 import com.google.firebase.database.*
 
 class ShowMySchedule : AppCompatActivity() {
-    lateinit var mycourseListView: RecyclerView;
-    lateinit var usercourseListViewModel: UserCourseViewModel;
-    lateinit var courseListViewModel: CourseListViewModel;
-    var SelectedCourselist = ArrayList<String>()
+    lateinit var mycourseListView: RecyclerView
+    lateinit var usercourseListViewModel: UserCourseViewModel
+    lateinit var courseListViewModel: CourseListViewModel
+    private var SelectedCourselist = ArrayList<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,10 +29,10 @@ class ShowMySchedule : AppCompatActivity() {
 
         usercourseListViewModel = ViewModelProvider(this)[UserCourseViewModel::class.java]
         courseListViewModel = ViewModelProvider(this)[CourseListViewModel::class.java]
-        usercourseListViewModel.getUserCourses()?.observe(this, Observer {
+        usercourseListViewModel.getUserCourses()?.observe(this) {
             SelectedCourselist = it
             loadEachCourseinRecyclerView(courseListViewModel.courseReference, SelectedCourselist)
-        })
+        }
     }
 
     private fun loadEachCourseinRecyclerView(
@@ -62,7 +61,7 @@ class ShowMySchedule : AppCompatActivity() {
                                 usercourseListViewModel.enrolledCourseList.add(selectedCourse)
                             }
                         }
-                        val adapter = SingleCourseAdapter(usercourseListViewModel.enrolledCourseList)
+                        val adapter = SingleCourseAdapter(usercourseListViewModel.enrolledCourseList, usercourseListViewModel)
                         mycourseListView.adapter = adapter
                     }
                 }

@@ -14,14 +14,15 @@ class UserCourseViewModel:ViewModel() {
     var courseList: MutableLiveData<ArrayList<String>>? = null
     var enrolledCourseList = ArrayList<Course>()
 
-    private val usersCoursesReference = FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
+    val usersCoursesReference = FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
         "Users").child(currentUser.toString())
 
     fun getUserCourses(): LiveData<ArrayList<String>>? {
         if (courseList == null) {
             courseList = MutableLiveData<ArrayList<String>>()
-            loadUserCourses()
         }
+        println("raman debug: getUserCourses")
+        loadUserCourses()
         return courseList
     }
 
@@ -43,5 +44,4 @@ class UserCourseViewModel:ViewModel() {
                 }
             })
     }
-
 }

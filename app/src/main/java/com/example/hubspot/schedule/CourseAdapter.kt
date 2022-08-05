@@ -4,15 +4,18 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.schedule.CourseListViewModel.Course
+import com.example.hubspot.schedule.CourseListViewModel.CourseListViewModel
 import kotlin.collections.ArrayList
 
 
 
-class CourseAdapter(private val dataSet: ArrayList<Course>) :
+class CourseAdapter(private val dataSet: ArrayList<Course>, val courseListViewModel: CourseListViewModel) :
     RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -22,6 +25,7 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
         val courseLocationTextView: TextView;
         val courseProfessorTextView: TextView;
         val courseCreditsTextView: TextView;
+        val cancelButtonView: ImageView;
 
         init {
             courseCodeTextView = view.findViewById(R.id.courseCodeId)
@@ -30,10 +34,7 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
             courseLocationTextView = view.findViewById(R.id.courseLocationId)
             courseProfessorTextView = view.findViewById(R.id.professNameId)
             courseCreditsTextView = view.findViewById(R.id.creditsId)
-
-            view.setOnClickListener {
-                var position: Int = getAdapterPosition()
-            }
+            cancelButtonView = view.findViewById(R.id.closeBtnId)
         }
     }
 
@@ -47,6 +48,7 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val selectedCourse = dataSet.get(position)
         setCourseCode(viewHolder, selectedCourse)
+
         viewHolder.courseCreditsTextView.text = selectedCourse.credits
         viewHolder.courseLocationTextView.text = selectedCourse.location
         viewHolder.courseNameTextView.text = selectedCourse.courseName
@@ -58,6 +60,12 @@ class CourseAdapter(private val dataSet: ArrayList<Course>) :
                 putExtra("COURSE_ID", selectedCourse.courseCode)
             }
             it.context.startActivity(intent)
+        }
+        viewHolder.cancelButtonView.setOnClickListener{
+            Toast.makeText(it.context, "Removed ${selectedCourse.courseCode}", Toast.LENGTH_SHORT).show()
+            dataSet.remove(selectedCourse)
+            courseListViewModel.SelectedCourselist.remove(selectedCourse)
+            notifyDataSetChanged()
         }
     }
 

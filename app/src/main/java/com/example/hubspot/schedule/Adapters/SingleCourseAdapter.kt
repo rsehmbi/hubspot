@@ -13,16 +13,19 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.schedule.CourseListViewModel.Course
+import com.example.hubspot.schedule.CourseListViewModel.UserCourseViewModel
 import com.example.hubspot.schedule.SingleCourseActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.lang.Integer.parseInt
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalQueries.localDate
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
+class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val userCourseViewModel: UserCourseViewModel) :
     RecyclerView.Adapter<SingleCourseAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -33,6 +36,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
         val courseProfessorTextView: TextView;
         val courseCreditsTextView: TextView;
         val addToCalendar: Button;
+        val unenrollButton: Button
 
         init {
             courseCodeTextView = view.findViewById(R.id.courseCodeId)
@@ -42,6 +46,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
             courseProfessorTextView = view.findViewById(R.id.professNameId)
             courseCreditsTextView = view.findViewById(R.id.creditsId)
             addToCalendar = view.findViewById(R.id.addToCalendarId)
+            unenrollButton = view.findViewById(R.id.unenrollButtonId)
         }
     }
 
@@ -64,6 +69,14 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
             addCourseToCalendar(it.context, selectedCourse)
         }
 
+        viewHolder.unenrollButton.setOnClickListener {
+            dataSet.remove(selectedCourse)
+            userCourseViewModel.enrolledCourseList.remove(selectedCourse)
+            removeCourse(selectedCourse.courseCode, userCourseViewModel)
+            notifyDataSetChanged()
+            Toast.makeText(it.context, "Un-enrolled from ${selectedCourse.courseCode}", Toast.LENGTH_SHORT).show()
+        }
+
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(it.context, SingleCourseActivity::class.java).apply {
                 putExtra("COURSE_ID", selectedCourse.courseCode)
@@ -71,6 +84,28 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>) :
             it.context.startActivity(intent)
         }
     }
+
+    private fun removeCourse(courseCode: String, userCourseViewModel: UserCourseViewModel) {
+        userCourseViewModel.usersCoursesReference.child("Courses").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    if(ds.getValue(String::class.java) == courseCode)
+                    {
+                        ds.ref.removeValue()
+                        for (course in userCourseViewModel.enrolledCourseList){
+                            if(course.courseCode == courseCode){
+                                userCourseViewModel.enrolledCourseList.remove(course)
+                            }
+                        }
+                        userCourseViewModel.courseList?.value?.remove(courseCode)
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
     private fun getCalendar(course: Course): Calendar {
         val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val calendar: Calendar = Calendar.getInstance()

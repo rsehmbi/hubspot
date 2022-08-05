@@ -54,7 +54,7 @@ class ScheduleFragment : Fragment() {
                 Toast.makeText(requireContext(), "Course ${courseSelected} added to cart", Toast.LENGTH_SHORT).show()
                 autocompleteTextSearch.getText().clear()
             }
-            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
             autoPopulateCourseList.adapter = adapter
         })
         return scheduleView
@@ -91,7 +91,7 @@ class ScheduleFragment : Fragment() {
                                 )
                             courseListViewModel.SelectedCourselist.add(selectedCourse)
                         }
-                        val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+                        val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
                         autoPopulateCourseList.adapter = adapter
                     }
                 }
@@ -101,13 +101,14 @@ class ScheduleFragment : Fragment() {
             query.addListenerForSingleValueEvent(valueListener)
         }
     }
+
     private fun getNewCourses(): List<String> {
-        val enrolledCourses = usercourseListViewModel.courseList?.value
+        val enrolledCourses = usercourseListViewModel.getUserCourses()?.value
         val coursesToEnroll: MutableList<String> = mutableListOf()
         for (course in courseListViewModel.SelectedCourselist) {
             coursesToEnroll.add(course.courseCode)
         }
-        if (enrolledCourses != null){
+        if (enrolledCourses != null) {
             for (course_code in enrolledCourses) {
                 coursesToEnroll.add(course_code)
             }
@@ -123,7 +124,6 @@ class ScheduleFragment : Fragment() {
         val courseList = getNewCourses()
         if (currentUser != null){
             try {
-
                 if (courseList.isNotEmpty()) {
                     UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
                         .setValue(courseList)
@@ -142,7 +142,7 @@ class ScheduleFragment : Fragment() {
     private fun onClickButtonHandler(view: View){
         view.findViewById<Button>(R.id.clear_button_id).setOnClickListener {
             courseListViewModel.SelectedCourselist.clear()
-            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
             autoPopulateCourseList.adapter = adapter
         }
 
