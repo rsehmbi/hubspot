@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
-import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.example.hubspot.ratings.ProfessorListViewModel.Review
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -48,14 +46,13 @@ class ReviewDisplayFragment : Fragment() {
 
 
         // get reviews from database
+        var userDisplayName = "Unknown User:"
         dbReference.child("Professors/$passedProfName").addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     reviewArrayList.clear()
                     if(dataSnapshot.hasChild("Reviews")){
                         for(userReview in dataSnapshot.child("Reviews").children) {
-                            // SOS CHECK
-                            // bug here CHECK
                             val res = userReview.value as Map<*, *>
                             println("bug: $res")
                             if(res["Comment"] != null && res["Rate"]!= null){
@@ -71,7 +68,7 @@ class ReviewDisplayFragment : Fragment() {
                     else{
                         reviewListView.isClickable = false
 
-                        // to avoid exception when swapping fragments very fast
+                        // to avoid crashing when swapping fragments very fast
                         if(isAdded){
                             reviewListView.adapter = ReviewAdapter(requireActivity(), reviewArrayList)
                         }
@@ -83,4 +80,5 @@ class ReviewDisplayFragment : Fragment() {
 
         return view
     }
+
 }

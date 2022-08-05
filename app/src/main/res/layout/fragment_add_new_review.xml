@@ -44,7 +44,7 @@
             android:textStyle="bold"
             android:textSize="15sp"
             android:paddingTop="12dp"
-            android:text="Comment:" />
+            android:text="@string/comment" />
 
         <EditText
             android:id="@+id/editText_user_comment"
@@ -78,6 +78,15 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:text="@string/save"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/delete_review_btn_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="Delete"
                     android:textAllCaps="false" />
 
                 <Button
