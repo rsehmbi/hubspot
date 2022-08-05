@@ -277,9 +277,7 @@ class ReviewAddFragment : Fragment() {
 
                                 // update Review (delete the review associated with userId)
                                 dataSnapshot.child("Reviews").ref.child(currUserId!!).removeValue()
-                            }
-                            else {
-                                Toast.makeText(requireActivity(), "You have not entered a review for $selectedProfName yet!", Toast.LENGTH_SHORT).show()
+
                             }
                         }
                         override fun onCancelled(p0: DatabaseError) {
