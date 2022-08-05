@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Raman Sehmbi"
+                    android:text="@string/raman_sehmbi"
                     android:id="@+id/professNameId">
                 </TextView>
 
@@ -68,13 +68,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="Credits: ">
+                    android:text="@string/credits">
                 </TextView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3"
+                    android:text="@string/_3"
                     android:id="@+id/creditsId">
                 </TextView>
 
@@ -90,7 +90,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="@string/description"
             android:layout_margin="5dp"
             android:id="@+id/descriptionId">
         </TextView>
@@ -104,12 +104,23 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add to Calendar"
+            android:text="@string/add_to_calendar"
             android:textAllCaps="false"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:id="@+id/addToCalendarId">
         </Button>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/unenroll"
+            android:textAllCaps="false"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:id="@+id/unenrollButtonId">
+        </Button>
+
     </LinearLayout>
 
 </LinearLayout>

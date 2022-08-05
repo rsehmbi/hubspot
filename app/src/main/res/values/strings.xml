@@ -57,5 +57,11 @@
     <string name="enter_comment_here">Enter comment here...</string>
     <string name="review">Review:</string>
     <string name="comment">Comment:</string>
+    <string name="unenroll">Un-enroll</string>
+    <string name="add_to_calendar">Add to Calendar</string>
+    <string name="description">Description</string>
+    <string name="_3">3</string>
+    <string name="credits">Credits:</string>
+    <string name="raman_sehmbi">Raman Sehmbi</string>
 
 </resources>

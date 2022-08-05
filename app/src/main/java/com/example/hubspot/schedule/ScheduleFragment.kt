@@ -54,7 +54,7 @@ class ScheduleFragment : Fragment() {
                 Toast.makeText(requireContext(), "Course ${courseSelected} added to cart", Toast.LENGTH_SHORT).show()
                 autocompleteTextSearch.getText().clear()
             }
-            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
             autoPopulateCourseList.adapter = adapter
         })
         return scheduleView
@@ -84,10 +84,14 @@ class ScheduleFragment : Fragment() {
                                 dataSnapshot.child("Description").value.toString(),
                                 dataSnapshot.child("Credits").value.toString(),
                                 dataSnapshot.child("Location").value.toString(),
+                                dataSnapshot.child("courseStartDateTime").value.toString(),
+                                dataSnapshot.child("courseEndDate").value.toString(),
+                                dataSnapshot.child("courseDuration").value.toString(),
+                                dataSnapshot.child("courseDays").value.toString(),
                                 )
                             courseListViewModel.SelectedCourselist.add(selectedCourse)
                         }
-                        val adapter = CourseAdapter(courseListViewModel.SelectedCourselist)
+                        val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
                         autoPopulateCourseList.adapter = adapter
                     }
                 }
@@ -97,17 +101,17 @@ class ScheduleFragment : Fragment() {
             query.addListenerForSingleValueEvent(valueListener)
         }
     }
+
     private fun getNewCourses(): List<String> {
-        val enrolledCourses = usercourseListViewModel.courseList?.value
+        val enrolledCourses = usercourseListViewModel.getUserCourses()?.value
         val coursesToEnroll: MutableList<String> = mutableListOf()
-        if (enrolledCourses != null){
-            for (course in courseListViewModel.SelectedCourselist) {
-                coursesToEnroll.add(course.courseCode)
-            }
+        for (course in courseListViewModel.SelectedCourselist) {
+            coursesToEnroll.add(course.courseCode)
+        }
+        if (enrolledCourses != null) {
             for (course_code in enrolledCourses) {
                 coursesToEnroll.add(course_code)
             }
-
         }
         return coursesToEnroll.distinct()
     }
@@ -136,6 +140,12 @@ class ScheduleFragment : Fragment() {
         }
     }
     private fun onClickButtonHandler(view: View){
+        view.findViewById<Button>(R.id.clear_button_id).setOnClickListener {
+            courseListViewModel.SelectedCourselist.clear()
+            val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
+            autoPopulateCourseList.adapter = adapter
+        }
+
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
             enrollInCourse()
             val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
