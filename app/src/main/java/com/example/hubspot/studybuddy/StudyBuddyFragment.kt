@@ -47,7 +47,7 @@ class StudyBuddyFragment : Fragment() {
 
     private fun startStudySession(){
         val intent = Intent(requireActivity(), PomodoroActivity::class.java)
-        if(studyLength.text.toString() != "" && breakLength.text.toString() != "") {
+        if(studyLength.text.toString() != "" && breakLength.text.toString() != "" && shareLocationRadioGroup.checkedRadioButtonId != -1) {
             if(shareLocationRadioGroup.checkedRadioButtonId == R.id.share_location_yes) {
                 shareLocation()
             }
