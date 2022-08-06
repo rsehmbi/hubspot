@@ -103,15 +103,9 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun getNewCourses(): List<String> {
-        val enrolledCourses = usercourseListViewModel.getUserCourses()?.value
         val coursesToEnroll: MutableList<String> = mutableListOf()
         for (course in courseListViewModel.SelectedCourselist) {
             coursesToEnroll.add(course.courseCode)
-        }
-        if (enrolledCourses != null) {
-            for (course_code in enrolledCourses) {
-                coursesToEnroll.add(course_code)
-            }
         }
         return coursesToEnroll.distinct()
     }
@@ -124,14 +118,44 @@ class ScheduleFragment : Fragment() {
         val courseList = getNewCourses()
         if (currentUser != null){
             try {
-                if (courseList.isNotEmpty()) {
-                    UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
-                        .setValue(courseList)
-                    Toast.makeText(requireContext(), "Course added to schedule", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    Toast.makeText(requireContext(), "No Course Selected", Toast.LENGTH_SHORT).show()
-                }
+                UsersReference.addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val enrolledList: MutableList<String> = ArrayList()
+                            if (dataSnapshot.child(currentUser?.id.toString()).hasChild("Courses")){
+                                for (dsp in dataSnapshot.child(currentUser?.id.toString()).child("Courses").children) {
+                                    val coursevalue = dsp.getValue(String::class.java)
+                                    enrolledList.add(coursevalue!!)
+                                }
+                                for (course in courseList){
+                                    enrolledList.add(course)
+                                }
+                                if (enrolledList.isNotEmpty()) {
+                                    UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
+                                        .setValue(enrolledList.distinct())
+                                    Toast.makeText(requireContext(), "Course added to schedule", Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    Toast.makeText(requireContext(), "No Course Selected", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            else {
+                                if (courseList.isNotEmpty()) {
+                                    UsersReference.child(Auth.getCurrentUser()?.id.toString()).child("Courses")
+                                        .setValue(courseList)
+                                    Toast.makeText(requireContext(), "Course added to schedule", Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    Toast.makeText(requireContext(), "No Course Selected", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
+                            startActivity(showMyScheduleIntent)
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+
+                        }
+                    })
             }
             catch (e: Exception){
                 Toast.makeText(requireContext(), "Unable to add courses", Toast.LENGTH_SHORT).show()
@@ -148,14 +172,11 @@ class ScheduleFragment : Fragment() {
 
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
             enrollInCourse()
-            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
-            startActivity(showMyScheduleIntent)
         }
 
         view.findViewById<Button>(R.id.view_schedule_id).setOnClickListener {
             val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
             startActivity(showMyScheduleIntent)
         }
-
     }
 }
