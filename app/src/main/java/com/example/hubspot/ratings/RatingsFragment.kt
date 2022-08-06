@@ -47,11 +47,16 @@ class RatingsFragment : Fragment() {
             autocompleteTextSearch.setAdapter(courseListAdapter)
             autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
                 val professorSelected = parent.getItemAtPosition(position).toString().uppercase()
-                profListViewModel.professorsSelectedList.add(professorSelected)
-                //
-                loadProfInfo(profListViewModel.professorReference, professorSelected!!)
+                if(!profListViewModel.professorsSelectedList.contains(professorSelected)){
+                    profListViewModel.professorsSelectedList.add(professorSelected)
+                }
 
-                Toast.makeText(requireContext(), "Professor $professorSelected added to the list", Toast.LENGTH_SHORT).show()
+                //
+
+                if(!isProfSelected(professorSelected)){
+                    loadProfInfo(profListViewModel.professorReference, professorSelected)
+                    Toast.makeText(requireContext(), "Professor $professorSelected added to the list", Toast.LENGTH_SHORT).show()
+                }
 
                 // clears the search box
                 autocompleteTextSearch.getText().clear()
@@ -73,47 +78,47 @@ class RatingsFragment : Fragment() {
     }
 
     private fun loadProfInfo(databaseReference: DatabaseReference, profSelected: String) {
-        if (!isProfSelected(profSelected)){
-            val query: Query = databaseReference.orderByChild("ProfName").equalTo(profSelected)
-            val valueListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()){
-                        for (dataSnapshot in snapshot.children){
-                            var rating: Float = -1.0F
-                            if(dataSnapshot.child("Rating").child("Count").value.toString() != "0"){
-                                var sum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
-                                var count = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
-                                rating = sum/count
-                            }
-                            val selectedProf = Professor (
-                                dataSnapshot.child("Area").value.toString(),
-                                dataSnapshot.child("Department").value.toString(),
-                                dataSnapshot.child("Email").value.toString(),
-                                dataSnapshot.child("ImgUrl").value.toString(),
-                                dataSnapshot.child("Occupation").value.toString(),
-                                rating,
-                                dataSnapshot.child("ProfName").value.toString()
-                            )
-                            profListViewModel.selectedProfessorList.add(selectedProf)
+        val query: Query = databaseReference.orderByChild("ProfName").equalTo(profSelected)
+        val valueListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    for (dataSnapshot in snapshot.children){
+                        var rating: Float = -1.0F
+                        if(dataSnapshot.child("Rating").child("Count").value.toString() != "0"){
+                            var sum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                            var count = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
+                            rating = sum/count
                         }
-                        val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
-                        autoPopulateProfList.adapter = adapter
+                        val selectedProf = Professor (
+                            dataSnapshot.child("Area").value.toString(),
+                            dataSnapshot.child("Department").value.toString(),
+                            dataSnapshot.child("Email").value.toString(),
+                            dataSnapshot.child("ImgUrl").value.toString(),
+                            dataSnapshot.child("Occupation").value.toString(),
+                            rating,
+                            dataSnapshot.child("ProfName").value.toString()
+                        )
+                        profListViewModel.selectedProfessorList.add(selectedProf)
                     }
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
+                    val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
+                    autoPopulateProfList.adapter = adapter
                 }
             }
-            query.addListenerForSingleValueEvent(valueListener)
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
         }
+        query.addListenerForSingleValueEvent(valueListener)
     }
 
     override fun onResume() {
         // to update professor list after review update
         if(profListViewModel.isProfUpdated){
             profListViewModel.selectedProfessorList.clear()
+
             for (prof in profListViewModel.professorsSelectedList){
                 loadProfInfo(profListViewModel.professorReference, prof)
             }
+
 
             val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
             autoPopulateProfList.adapter = adapter

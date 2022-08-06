@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -24,6 +25,8 @@ class ReviewAddFragment : Fragment() {
     private lateinit var userCommentEditText: EditText
     private lateinit var saveReviewBtn: Button
     private lateinit var cancelReviewBtn: Button
+    private lateinit var deleteReviewBtn: Button
+    private var changeFragment: Boolean = false
 
     private val currUserId = Auth.getCurrentUser()!!.id
 
@@ -41,7 +44,7 @@ class ReviewAddFragment : Fragment() {
         getReference(view)
 
         // handles clicks on save/cancel
-        onClickButtonHandler()
+        onClickButtonHandler(view)
 
         val selectedProfName = arguments?.getString("PROF_NAME")
 
@@ -76,14 +79,35 @@ class ReviewAddFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        if(changeFragment){
+            Toast.makeText(requireActivity(), "Review deleted", Toast.LENGTH_SHORT).show()
+            val selectedProfName = arguments?.getString("PROF_NAME")
+            changeFragment = false
+            val rateReviewBtn =
+                requireActivity().findViewById<Button>(R.id.rate_now_btn_id)
+            rateReviewBtn.text = "Rate Now!"
+
+            // replacing the fragment to display reviews
+            val reviewListFragments = ReviewDisplayFragment()
+            val arg = Bundle()
+            arg.putString("PROF_NAME", selectedProfName)
+            reviewListFragments.arguments = arg
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.frame_layout_3_displays, reviewListFragments).commit()
+        }
+        super.onResume()
+    }
+
     private fun getReference(view: View){
         profRatingBar = view.findViewById(R.id.ratingBar_new_rating_id)
         userCommentEditText = view.findViewById(R.id.editText_user_comment)
         saveReviewBtn = view.findViewById(R.id.save_review_btn_id)
         cancelReviewBtn = view.findViewById(R.id.cancel_review_btn_id)
+        deleteReviewBtn = view.findViewById(R.id.delete_review_btn_id)
     }
 
-    private fun onClickButtonHandler() {
+    private fun onClickButtonHandler(view: View) {
         saveReviewBtn.setOnClickListener {
         // check if comment is entered. Default of rating is 0
             if(userCommentEditText.text.isNullOrEmpty()){
@@ -200,6 +224,12 @@ class ReviewAddFragment : Fragment() {
                 Toast.makeText(requireActivity(), "Review cancelled", Toast.LENGTH_SHORT).show()
             }
         }
+        deleteReviewBtn.setOnClickListener {
+            if(isAdded) {
+                val selectedProfName = arguments?.getString("PROF_NAME")
+                showAlertDialog(selectedProfName)
+            }
+        }
     }
 
     // load the previously entered review to the view
@@ -218,5 +248,55 @@ class ReviewAddFragment : Fragment() {
         return name.split(" ").joinToString(" ") { it ->
             it.lowercase(Locale.getDefault())
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+    }
+
+    // to display alert dialog
+    private fun showAlertDialog(selectedProfName: String?){
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle("Delete review" )
+            .setMessage("Are you sure you want to delete your review?")
+            .setNegativeButton("No") {dialog, which ->
+            }
+            .setPositiveButton("Yes") {dialog, which ->
+                changeFragment = true
+                // Delete the review from the Professor object in db
+                dbReference.child("Professors/$selectedProfName").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if (dataSnapshot.child("Reviews").hasChild(currUserId!!)) {
+                                // update Rating (count and sum)
+                                val previousRating: Float = dataSnapshot.child("Reviews").child(currUserId).child("Rate").value.toString().toFloat()
+                                    // count
+                                var reviewCount = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
+                                reviewCount -= 1
+                                dataSnapshot.child("Rating").child("Count").ref.setValue(reviewCount)
+                                    // sum
+                                var reviewSum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                                reviewSum -= previousRating
+                                dataSnapshot.child("Rating").child("Sum").ref.setValue(reviewSum)
+
+                                // update Review (delete the review associated with userId)
+                                dataSnapshot.child("Reviews").ref.child(currUserId!!).removeValue()
+
+                            }
+                        }
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+                    })
+                // Delete the review from the User object in db
+                dbReference.child("Users/${currUserId}/Reviews/").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.hasChild(selectedProfName!!)){
+                                dataSnapshot.child(selectedProfName).ref.removeValue()
+                            }
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+                    })
+                onResume()
+            }
+            .show()
     }
 }
