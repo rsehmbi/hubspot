@@ -21,7 +21,6 @@ class UserCourseViewModel:ViewModel() {
         if (courseList == null) {
             courseList = MutableLiveData<ArrayList<String>>()
         }
-        println("raman debug: getUserCourses")
         loadUserCourses()
         return courseList
     }
