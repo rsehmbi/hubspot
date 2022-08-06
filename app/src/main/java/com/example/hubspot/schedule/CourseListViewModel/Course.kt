@@ -6,6 +6,10 @@ class Course(
     var courseCode: String,
     var courseDescription: String,
     var credits: String,
-    var location: String
+    var location: String,
+    var courseStartDateTime: String,
+    var courseEndDate:String,
+    var courseDuration:String,
+    var courseDays: String,
 ) {
 }

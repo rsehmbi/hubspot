@@ -23,6 +23,8 @@ class RatingsFragment : Fragment() {
     private var suggestionProfList = ArrayList<String>()
     lateinit var profListViewModel: ProfessorListViewModel
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,16 +46,22 @@ class RatingsFragment : Fragment() {
             )
             autocompleteTextSearch.setAdapter(courseListAdapter)
             autocompleteTextSearch.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
-                val professorSelected = parent.getItemAtPosition(position)
-                loadProfInfo(profListViewModel.professorReference, professorSelected.toString().uppercase()) // CHECK SOS
+                val professorSelected = parent.getItemAtPosition(position).toString().uppercase()
+                if(!profListViewModel.professorsSelectedList.contains(professorSelected)){
+                    profListViewModel.professorsSelectedList.add(professorSelected)
+                }
 
-                Toast.makeText(requireContext(), "Professor ${professorSelected} added to the list", Toast.LENGTH_SHORT).show()
+                //
+
+                if(!isProfSelected(professorSelected)){
+                    loadProfInfo(profListViewModel.professorReference, professorSelected)
+                    Toast.makeText(requireContext(), "Professor $professorSelected added to the list", Toast.LENGTH_SHORT).show()
+                }
 
                 // clears the search box
                 autocompleteTextSearch.getText().clear()
             }
-            println("debug101: afterrrrrrrrrrrrrrrrr ${profListViewModel.selectedProfessorList}")
-            val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList)
+            val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
             autoPopulateProfList.adapter = adapter
         })
         return profView
@@ -70,45 +78,62 @@ class RatingsFragment : Fragment() {
     }
 
     private fun loadProfInfo(databaseReference: DatabaseReference, profSelected: String) {
-        if (!isProfSelected(profSelected)){
-            val query: Query = databaseReference.orderByChild("ProfName").equalTo(profSelected)
-            val valueListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()){
-                        for (dataSnapshot in snapshot.children){
-                            var rating: Float = -1.0F
-                            if(dataSnapshot.child("Rating").value.toString() != ""){
-                                rating = dataSnapshot.child("Rating").value.toString().toFloat()
-                            }
-
-                            val selectedProf = Professor (
-                                dataSnapshot.child("Area").value.toString(),
-//                                dataSnapshot.child("Comments").value,
-                                dataSnapshot.child("Department").value.toString(),
-                                dataSnapshot.child("Email").value.toString(),
-                                dataSnapshot.child("ImgUrl").value.toString(),
-                                dataSnapshot.child("Occupation").value.toString(),
-                                rating,
-                                dataSnapshot.child("ProfName").value.toString()
-                            )
-                            profListViewModel.selectedProfessorList.add(selectedProf)
+        val query: Query = databaseReference.orderByChild("ProfName").equalTo(profSelected)
+        val valueListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    for (dataSnapshot in snapshot.children){
+                        var rating: Float = -1.0F
+                        if(dataSnapshot.child("Rating").child("Count").value.toString() != "0"){
+                            var sum = dataSnapshot.child("Rating").child("Sum").value.toString().toFloat()
+                            var count = dataSnapshot.child("Rating").child("Count").value.toString().toInt()
+                            rating = sum/count
                         }
-                        val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList)
-                        autoPopulateProfList.adapter = adapter
+                        val selectedProf = Professor (
+                            dataSnapshot.child("Area").value.toString(),
+                            dataSnapshot.child("Department").value.toString(),
+                            dataSnapshot.child("Email").value.toString(),
+                            dataSnapshot.child("ImgUrl").value.toString(),
+                            dataSnapshot.child("Occupation").value.toString(),
+                            rating,
+                            dataSnapshot.child("ProfName").value.toString()
+                        )
+                        profListViewModel.selectedProfessorList.add(selectedProf)
                     }
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
+                    val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
+                    autoPopulateProfList.adapter = adapter
                 }
             }
-            query.addListenerForSingleValueEvent(valueListener)
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
         }
+        query.addListenerForSingleValueEvent(valueListener)
+    }
+
+    override fun onResume() {
+        // to update professor list after review update
+        if(profListViewModel.isProfUpdated){
+            profListViewModel.selectedProfessorList.clear()
+
+            for (prof in profListViewModel.professorsSelectedList){
+                loadProfInfo(profListViewModel.professorReference, prof)
+            }
+
+
+            val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
+            autoPopulateProfList.adapter = adapter
+            profListViewModel.isProfUpdated = false
+        }
+
+        super.onResume()
     }
 
     private fun onClickButtonHandler(view: View){
         view.findViewById<Button>(R.id.clear_profs_btn_id).setOnClickListener {
             Toast.makeText(requireContext(), "Cleared the list of professors", Toast.LENGTH_SHORT).show()
+            profListViewModel.professorsSelectedList.clear()
             profListViewModel.selectedProfessorList.clear()
-            val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList)
+            val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
             autoPopulateProfList.adapter = adapter
         }
     }

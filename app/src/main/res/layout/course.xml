@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    android:background="@drawable/rounded_corner">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +17,7 @@
             android:layout_height="60dp"
             android:textSize="24sp"
             android:layout_margin="5dp"
+            android:textColor="@color/purple_500"
             android:text="CMPT 135"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -26,13 +29,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:layout_weight="3"
                 android:text="Intro to Computer Programming"
                 android:id="@+id/courseNameId">
             </TextView>
+
+            <ImageView
+                android:id="@+id/closeBtnId"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/ic_baseline_cancel_24"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -88,6 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description"
+            android:layout_margin="5dp"
             android:id="@+id/descriptionId">
         </TextView>
 

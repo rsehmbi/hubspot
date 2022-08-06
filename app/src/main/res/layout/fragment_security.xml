@@ -41,4 +41,35 @@
             >
         </TextView>
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="30sp"
+        >
+
+            <Switch
+                android:id="@+id/emergency_silent_button_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/emergency_services_switch_text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@string/emergency_info_text'
+                >
+            </TextView>
+
+
+
+    </LinearLayout>
+
+
 </LinearLayout>

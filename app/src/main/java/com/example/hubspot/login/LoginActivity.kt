@@ -218,4 +218,9 @@ class LoginActivity : AppCompatActivity() {
         setScreenLoading(true)
         authViewModel.resendActivationEmail()
     }
+
+    fun onLoginActivityResetPasswordButtonClick(view: View) {
+        val resetDialog = PasswordResetDialog()
+        resetDialog.show(supportFragmentManager, "password_reset_dialog")
+    }
 }
