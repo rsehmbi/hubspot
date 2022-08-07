@@ -100,8 +100,11 @@ class RatingsFragment : Fragment() {
                         )
                         profListViewModel.selectedProfessorList.add(selectedProf)
                     }
-                    val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
-                    autoPopulateProfList.adapter = adapter
+                    if(isAdded()){
+                        val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
+                        autoPopulateProfList.adapter = adapter
+                    }
+
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

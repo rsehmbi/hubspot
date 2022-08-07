@@ -5,105 +5,111 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ratings.ReviewAddFragment">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:text="Rate:" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scrollView_id">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <RatingBar
-                android:id="@+id/ratingBar_new_rating_id"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:numStars="5"
-                android:stepSize="0.5"
-                android:theme="@style/Widget.AppCompat.RatingBar"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:text="Rate:" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RatingBar
+                    android:id="@+id/ratingBar_new_rating_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:theme="@style/Widget.AppCompat.RatingBar"
+                    android:paddingTop="12dp"
+                    android:rating="0.0"
+                    app:layout_constraintTop_toTopOf="parent">
+                </RatingBar>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15sp"
                 android:paddingTop="12dp"
-                android:rating="0.0"
-                app:layout_constraintTop_toTopOf="parent">
-            </RatingBar>
+                android:text="@string/comment" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:paddingTop="12dp"
-            android:text="@string/comment" />
-
-        <EditText
-            android:id="@+id/editText_user_comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="false"
-            android:inputType="textCapSentences|textMultiLine"
-            android:isScrollContainer="true"
-            android:ems="10"
-            android:maxLines="10"
-            android:hint="@string/enter_comment_here"/>
-
-        <RelativeLayout
-            android:id="@+id/ScheduleButtonsLLID"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="39dp">
-
-            <LinearLayout
+            <EditText
+                android:id="@+id/editText_user_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
+                android:singleLine="false"
+                android:inputType="textCapSentences|textMultiLine"
+                android:isScrollContainer="true"
+                android:ems="10"
+                android:maxLines="10"
+                android:hint="@string/enter_comment_here"/>
 
-                <Button
-                    android:id="@+id/save_review_btn_id"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/save"
-                    android:textAllCaps="false" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <Button
-                    android:id="@+id/delete_review_btn_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="Delete"
-                    android:textAllCaps="false" />
+                    <Button
+                        android:id="@+id/save_review_btn_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="@string/save"
+                        android:textAllCaps="false"/>
 
-                <Button
-                    android:id="@+id/cancel_review_btn_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/cancel"
-                    android:textAllCaps="false" />
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/delete_review_btn_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="Delete"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/cancel_review_btn_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="@string/cancel"
+                        android:textAllCaps="false" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </RelativeLayout>
 
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
+
 
 
 </FrameLayout>
