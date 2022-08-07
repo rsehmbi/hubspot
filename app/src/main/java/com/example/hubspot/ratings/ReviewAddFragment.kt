@@ -9,8 +9,10 @@ import android.widget.EditText
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
+import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -33,6 +35,7 @@ class ReviewAddFragment : Fragment() {
     private val dbReference =
         FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference
 
+    private lateinit var profListViewModel: ProfessorListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +50,8 @@ class ReviewAddFragment : Fragment() {
         onClickButtonHandler(view)
 
         val selectedProfName = arguments?.getString("PROF_NAME")
+
+        profListViewModel = ViewModelProvider(requireActivity())[ProfessorListViewModel::class.java]
 
 
          // check to see if the user has already entered comment for this professor
@@ -81,6 +86,7 @@ class ReviewAddFragment : Fragment() {
 
     override fun onResume() {
         if(changeFragment){
+            profListViewModel.currentFragment = 0
             Toast.makeText(requireActivity(), "Review deleted", Toast.LENGTH_SHORT).show()
             val selectedProfName = arguments?.getString("PROF_NAME")
             changeFragment = false
@@ -188,6 +194,7 @@ class ReviewAddFragment : Fragment() {
 
 
                 if(isAdded) {
+                    profListViewModel.currentFragment = 0
                     // changing parent activity's button
                     val rateReviewBtn =
                         requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
@@ -208,6 +215,7 @@ class ReviewAddFragment : Fragment() {
                 // go back to displaying the reviews
             // changing parent activity's button
             if(isAdded) {
+                profListViewModel.currentFragment = 0
                 val rateReviewBtn =
                     requireActivity().findViewById<Button>(com.example.hubspot.R.id.rate_now_btn_id)
                 rateReviewBtn.text = "Rate Now!"

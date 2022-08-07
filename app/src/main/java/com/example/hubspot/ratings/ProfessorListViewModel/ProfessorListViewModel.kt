@@ -16,6 +16,7 @@ class ProfessorListViewModel: ViewModel()  {
     var selectedProfessorList = ArrayList<Professor>()
 
     var professorsSelectedList = ArrayList<String>()
+    var currentFragment = 0
 
     // used to update the listview with new rating
     var isProfUpdated = false
