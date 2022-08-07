@@ -10,5 +10,32 @@
             android:id="@+id/side_drawer_menu_item_security"
             android:icon="@drawable/ic_baseline_security_24"
             android:title="Security" />
+        <item
+            android:id="@+id/side_drawer_menu_item_studybuddy"
+            android:icon="@android:drawable/ic_lock_idle_alarm"
+            android:title="Study Buddy" />
+        <item
+            android:id="@+id/side_drawer_menu_item_friends"
+            android:icon="@drawable/ic_baseline_people_outline_24"
+            android:title="Friends" />
+        <item
+            android:id="@+id/side_drawer_menu_item_ratings"
+            android:icon="@drawable/ic_baseline_person_search_24"
+            android:title="Ratings" />
+
+        <item android:title="">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/side_drawer_menu_item_profile"
+                        android:icon="@drawable/ic_profile"
+                        android:title="Profile" />
+                    <item
+                        android:id="@+id/side_drawer_menu_item_logout"
+                        android:icon="@drawable/ic_logout"
+                        android:title="Log out" />
+                </group>
+            </menu>
+        </item>
     </group>
 </menu>

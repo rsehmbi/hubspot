@@ -4,19 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.view.Window
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.databinding.ActivityMainBinding
+import com.example.hubspot.friends.FriendsFragment
 import com.example.hubspot.login.LoginActivity
 import com.example.hubspot.profile.ProfileActivity
+import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.security.ui.SecurityFragment
+import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.navigation.NavigationView
 
 
@@ -38,16 +42,30 @@ class MainActivity : AppCompatActivity() {
 
         replaceActionBarWithToolBar()
 
-        // This will display an Up icon (<-), we will replace it with hamburger later
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-
         // Setup drawer view
         val drawer = binding.nvView
         setupDrawerContent(drawer);
+
+        // Setup animated hamburger button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        val drawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            findViewById(R.id.toolbar),
+            R.string.drawer_open,
+            R.string.drawer_close
+        )
+
+        // Setup toggle to display hamburger icon with nice animation
+        drawerToggle.isDrawerIndicatorEnabled = true;
+        drawerToggle.syncState();
+
+        // Tie DrawerLayout events to the ActionBarToggle
+        binding.drawerLayout.addDrawerListener(drawerToggle);
     }
 
     private fun replaceActionBarWithToolBar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar);
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar);
     }
 
@@ -66,10 +84,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Use schedule fragment as default fragment
-        setDefaultFragment(ScheduleFragment::class.java)
+        setCurrentFragment(ScheduleFragment::class.java)
     }
 
-    private fun <T> setDefaultFragment(fragmentClass:  Class<T>) {
+    private fun setCurrentFragment(fragmentClass: Class<*>) {
         var fragment: Fragment? = null
         try {
             fragment = fragmentClass.newInstance() as Fragment
@@ -81,23 +99,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun selectDrawerItem(menuItem: MenuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        var fragment: Fragment? = null
-        val fragmentClass: Class<*>
-        fragmentClass = when (menuItem.itemId) {
-            R.id.side_drawer_menu_item_schedule -> ScheduleFragment::class.java
-            R.id.side_drawer_menu_item_security -> SecurityFragment::class.java
-            else -> ScheduleFragment::class.java
-        }
-        try {
-            fragment = fragmentClass.newInstance() as Fragment
-        } catch (e: Exception) {
-            e.printStackTrace()
+        // Handle menu options that aren't a fragment
+        when (menuItem.itemId) {
+            R.id.side_drawer_menu_item_profile -> {
+                onProfileMenuOptionClicked()
+                return
+            }
+            R.id.side_drawer_menu_item_logout -> {
+                onLogOutMenuOptionClicked()
+                return
+            }
         }
 
-        // Insert the fragment by replacing any existing fragment
-        val fragmentManager: FragmentManager = supportFragmentManager
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment!!).commit()
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        var fragment: Fragment? = null
+        val fragmentClass: Class<*> = when (menuItem.itemId) {
+            R.id.side_drawer_menu_item_schedule -> ScheduleFragment::class.java
+            R.id.side_drawer_menu_item_security -> SecurityFragment::class.java
+            R.id.side_drawer_menu_item_studybuddy -> StudyBuddyFragment::class.java
+            R.id.side_drawer_menu_item_friends -> FriendsFragment::class.java
+            R.id.side_drawer_menu_item_ratings -> RatingsFragment::class.java
+            else -> ScheduleFragment::class.java
+        }
+        setCurrentFragment(fragmentClass)
 
         // Highlight the selected item has been done by NavigationView
         menuItem.isChecked = true
@@ -134,14 +158,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onLogOutMenuOptionClicked(item: MenuItem) {
+    fun onLogOutMenuOptionClicked() {
         Auth.signOutCurrentUser()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    fun onProfileMenuOptionClicked(item: MenuItem) {
+    fun onProfileMenuOptionClicked() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
     }
