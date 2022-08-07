@@ -17,14 +17,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlin.collections.ArrayList
 
-// TODO: Extract the adding/retrieving friends form DB logic from this class into a Service
 class FriendsFragment  : Fragment() {
     private lateinit var secretId: TextView
     private lateinit var friendId: EditText
     private lateinit var addFriendButton: Button
     private lateinit var shareButton: Button
     private lateinit var friendAddedToast: Toast
-    private var friendsList = ArrayList<String>()
+    private var friendsList = ArrayList<User>()
     private lateinit var friendsListView: ListView
 
     private val currUserId = Auth.getCurrentUser()!!.id
@@ -61,13 +60,12 @@ class FriendsFragment  : Fragment() {
 
         // list view for the list of current user's friends
         friendsListView = view.findViewById(R.id.friends_listview)
-        val friendsList = ArrayList<String>()
-        val friendsListAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, friendsList)
+        val friendsList = ArrayList<User>()
+        val friendsListAdapter = FriendsListAdapter(requireActivity(), friendsList)
         friendsListView.adapter = friendsListAdapter
         friendsListViewModel = ViewModelProvider(requireActivity())[FriendsViewModel::class.java]
         friendsListViewModel.friendsList.observe(requireActivity()) {
-            friendsListAdapter.clear()
-            friendsListAdapter.addAll(it)
+            friendsListAdapter.replace(it)
             friendsListAdapter.notifyDataSetChanged()
         }
         getFriends()
@@ -85,11 +83,11 @@ class FriendsFragment  : Fragment() {
                     // create a list of friends users and update the UI
                     for(friend in dataSnapshot.children) {
                         val friendUser = User(friend.value.toString())
-                        friendsList.add(friendUser.id.toString())
+                        friendsList.add(friendUser)
                     }
                     for ((friendIndex, friendUserId) in friendsList.withIndex()){
                         // get info of each friend by their userId
-                        getFriendInfo(friendUserId, friendIndex)
+                        getFriendInfo(friendUserId.id!!, friendIndex)
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -99,10 +97,11 @@ class FriendsFragment  : Fragment() {
     }
 
     private fun getFriendInfo(friendId: String, friendIndex: Int){
-        dbReference.child("Users/${friendId}/displayName").addListenerForSingleValueEvent(
+        dbReference.child("Users/${friendId}").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    friendsList[friendIndex] = dataSnapshot.value as String
+                    val friend = User(dataSnapshot.child("id").value.toString(), null, dataSnapshot.child("displayName").value.toString())
+                    friendsList[friendIndex] = friend
                     friendsListViewModel.friendsList.value = friendsList
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -111,27 +110,15 @@ class FriendsFragment  : Fragment() {
             })
     }
 
-    private fun getNumOfFriends(dataSnapshot: DataSnapshot, userId: String) : Int {
-        val friends = dataSnapshot.child(userId).child("friends")
-        return if (friends.value == null) {
-            0
-        } else {
-            val friendsAsList = friends.value as List<*>
-            friendsAsList.size
-        }
-    }
-
     private fun addFriend(friendUserId: String) {
         dbReference.child("Users").addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val currUserNumOfFriends = getNumOfFriends(dataSnapshot, currUserId!!)
-                    val friendUserNumOfFriends = getNumOfFriends(dataSnapshot, friendUserId)
                     if (isAddFriendValid(dataSnapshot, friendUserId)){
                         // add friend user to current user's friend list
-                        dbReference.child("Users/${currUserId}/friends/${currUserNumOfFriends}").setValue(friendUserId)
+                        dbReference.child("Users/${currUserId}/friends/${friendUserId}").setValue(friendUserId)
                         // add current user to the friend user's friend list
-                        dbReference.child("Users/${friendUserId}/friends/${friendUserNumOfFriends}").setValue(currUserId)
+                        dbReference.child("Users/${friendUserId}/friends/${currUserId}").setValue(currUserId)
                         friendAddedToast.show()
                     }
                 }
