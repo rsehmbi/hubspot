@@ -5,8 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.auth.AuthRepository.AuthResult
 
-/** Allows app pages that deal with authentication to follow the MVVM architecture
- *  Features include sign in, sign up, and resending account activation emails */
+/** Allows app pages that deal with authentication to follow the MVVM architecture.
+ *  Features include sign in, sign up, resending account activation emails,
+ *  and more. */
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val authRepository: AuthRepository = AuthRepository()
 

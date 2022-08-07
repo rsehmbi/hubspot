@@ -5,11 +5,9 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
-import android.view.Window
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -24,7 +22,10 @@ import com.example.hubspot.security.ui.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.navigation.NavigationView
 
-
+/** The main activity for the application, which displays the different
+ *  fragments for each feature. A side navigation drawer is used for
+ *  navigation between the fragments and to logout or check user profiles.
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerToggle: ActionBarDrawerToggle
@@ -46,23 +47,24 @@ class MainActivity : AppCompatActivity() {
 
         // Setup drawer view
         val drawer = binding.nvView
-        setupDrawerContent(drawer, savedInstanceState);
+        setupDrawerContent(drawer, savedInstanceState)
 
+        // Setup app bar title to current fragment name
         setAppBarTitleToFragmentName(drawer)
 
         // Setup animated hamburger button
         setupHamburgerButton()
 
         // Setup toggle to display hamburger icon with animation
-        drawerToggle.isDrawerIndicatorEnabled = true;
-        drawerToggle.syncState();
+        drawerToggle.isDrawerIndicatorEnabled = true
+        drawerToggle.syncState()
 
         // Tie DrawerLayout events to the ActionBarToggle
-        binding.drawerLayout.addDrawerListener(drawerToggle);
+        binding.drawerLayout.addDrawerListener(drawerToggle)
     }
 
     private fun setupHamburgerButton() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         drawerToggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
@@ -81,14 +83,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun replaceActionBarWithToolBar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
+            return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupDrawerContent(navigationView: NavigationView, savedInstanceState: Bundle?) {
@@ -99,7 +101,8 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             // Use schedule fragment as default fragment on first app load
-            setCurrentFragment(ScheduleFragment::class.java, "Schedule")
+            val scheduleTitle = resources.getString(R.string.schedule_fragment_title)
+            setCurrentFragment(ScheduleFragment::class.java, scheduleTitle)
         }
     }
 
@@ -116,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         title = appBarTitle
     }
 
-    fun selectDrawerItem(menuItem: MenuItem) {
+    private fun selectDrawerItem(menuItem: MenuItem) {
         // Handle menu options that aren't a fragment
         when (menuItem.itemId) {
             R.id.side_drawer_menu_item_profile -> {

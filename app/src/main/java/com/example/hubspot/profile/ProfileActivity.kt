@@ -18,6 +18,9 @@ import com.example.hubspot.auth.AuthViewModel
 import com.example.hubspot.login.LoginActivity
 
 
+/** An activity which allows the user to display and update
+ *  their personal profile information.
+ */
 class ProfileActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
 
@@ -30,7 +33,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // set activity title
         val appBarTitle = resources.getString(R.string.activity_profile_appbar_title)
-        supportActionBar?.title = appBarTitle;
+        supportActionBar?.title = appBarTitle
 
         refreshDisplayNameText()
         initAuthViewModel()
