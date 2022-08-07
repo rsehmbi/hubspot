@@ -10,6 +10,7 @@ import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
@@ -20,7 +21,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 
-
+/**
+ * ReviewAddFragment is a [Fragment] subclass and handles the logic of adding new reviews
+ * or editing previous reviews
+ */
 class ReviewAddFragment : Fragment() {
 
     private lateinit var profRatingBar: RatingBar

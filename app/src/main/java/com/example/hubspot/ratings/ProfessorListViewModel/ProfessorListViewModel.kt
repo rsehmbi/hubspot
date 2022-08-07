@@ -1,6 +1,5 @@
 package com.example.hubspot.ratings.ProfessorListViewModel
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +10,10 @@ import com.google.firebase.database.ValueEventListener
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * ProfessorListViewModel is a subclass of [ViewModel] which handles the live data updates of the
+ * professors lists.
+ */
 class ProfessorListViewModel: ViewModel()  {
     private var professorListSuggestions: MutableLiveData<ArrayList<String>>? = null
     var selectedProfessorList = ArrayList<Professor>()

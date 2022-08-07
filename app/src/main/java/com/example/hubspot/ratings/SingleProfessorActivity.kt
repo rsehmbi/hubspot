@@ -22,7 +22,10 @@ import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
 
-
+/**
+ * SecurityFragment is a [Fragment] subclass that handles the display of professor information and swapping
+ * between [ReviewDisplayFragment] and [ReviewAddFragment] fragments
+ */
 class SingleProfessorActivity : AppCompatActivity() {
 
     private lateinit var profImage: ImageView
