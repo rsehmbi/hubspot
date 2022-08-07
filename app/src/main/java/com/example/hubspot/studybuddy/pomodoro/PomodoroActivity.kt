@@ -1,11 +1,13 @@
 package com.example.hubspot.studybuddy.pomodoro
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hubspot.R
+import com.example.hubspot.studybuddy.friendsMap.services.ShareLocationService
 import com.example.hubspot.utils.Dialog
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
 import java.util.*
@@ -103,8 +105,14 @@ class PomodoroActivity: AppCompatActivity()  {
     }
 
     private fun onTimerStop() {
-        timer.cancel()
         this.finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.cancel()
+        val intentShareLocationService = Intent(applicationContext, ShareLocationService::class.java)
+        applicationContext.stopService(intentShareLocationService)
     }
 
     private fun updateCountDownText() {

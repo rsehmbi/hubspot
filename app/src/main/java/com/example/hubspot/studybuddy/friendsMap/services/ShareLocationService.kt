@@ -57,6 +57,13 @@ class ShareLocationService: Service() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        locationManager.removeUpdates(locationListenerGPS)
+        dbReference.child("Users/${currUserId}/currentLocation/latitude").setValue("none")
+        dbReference.child("Users/${currUserId}/currentLocation/longitude").setValue("none")
+    }
+
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         stopSelf()

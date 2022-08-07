@@ -57,7 +57,7 @@ class FriendsMapService : Service(){
         stopSelf()
     }
 
-    private fun updateFriendsLocationsList(friendId: String, displayName:String, newLocation: LatLng){
+    private fun addFriendsLocationsList(friendId: String, displayName:String, newLocation: LatLng){
         val iterator = friendsLocations.iterator()
         while(iterator.hasNext()){
             val item = iterator.next()
@@ -67,6 +67,16 @@ class FriendsMapService : Service(){
         }
         val updatedFriend = FriendLocation(friendId, displayName, newLocation)
         friendsLocations.add(updatedFriend)
+    }
+
+    private fun deleteFriendsLocationsList(friendId: String){
+        val iterator = friendsLocations.iterator()
+        while(iterator.hasNext()){
+            val item = iterator.next()
+            if (item.friendId == friendId) {
+                iterator.remove()
+            }
+        }
     }
 
     private fun createFriendsLocationListeners(userId: String) {
@@ -90,22 +100,25 @@ class FriendsMapService : Service(){
         dbReference.child("Users/${userId}").addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if(dataSnapshot.child("currentLocation").value != null) {
+                    if(dataSnapshot.child("currentLocation").value != null && dataSnapshot.child("currentLocation/latitude").value != "none") {
                         val newLat =
                             dataSnapshot.child("currentLocation").child("latitude").value as Double
                         val newLng =
                             dataSnapshot.child("currentLocation").child("longitude").value as Double
                         val displayName = dataSnapshot.child("displayName").value.toString()
                         val newLocation = LatLng(newLat, newLng)
-                        updateFriendsLocationsList(userId, displayName, newLocation)
-                        if (msgHandler != null) {
-                            val bundle = Bundle()
-                            bundle.putSerializable(FRIENDS_LOCATIONS_KEY, friendsLocations)
-                            val message = msgHandler!!.obtainMessage()
-                            message.data = bundle
-                            message.what = ARRAY_LIST
-                            msgHandler!!.sendMessage(message)
-                        }
+                        addFriendsLocationsList(userId, displayName, newLocation)
+                    }
+                    if (dataSnapshot.child("currentLocation/latitude").value == "none") {
+                        deleteFriendsLocationsList(userId)
+                    }
+                    if (msgHandler != null) {
+                        val bundle = Bundle()
+                        bundle.putSerializable(FRIENDS_LOCATIONS_KEY, friendsLocations)
+                        val message = msgHandler!!.obtainMessage()
+                        message.data = bundle
+                        message.what = ARRAY_LIST
+                        msgHandler!!.sendMessage(message)
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
