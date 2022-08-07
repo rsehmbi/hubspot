@@ -25,7 +25,7 @@
 
         <item android:title="">
             <menu>
-                <group android:checkableBehavior="single">
+                <group android:checkableBehavior="none">
                     <item
                         android:id="@+id/side_drawer_menu_item_profile"
                         android:icon="@drawable/ic_profile"

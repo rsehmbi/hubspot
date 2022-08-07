@@ -84,10 +84,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Use schedule fragment as default fragment
-        setCurrentFragment(ScheduleFragment::class.java)
+        setCurrentFragment(ScheduleFragment::class.java, "Schedule")
     }
 
-    private fun setCurrentFragment(fragmentClass: Class<*>) {
+    private fun setCurrentFragment(fragmentClass: Class<*>, appBarTitle: String) {
         var fragment: Fragment? = null
         try {
             fragment = fragmentClass.newInstance() as Fragment
@@ -96,6 +96,8 @@ class MainActivity : AppCompatActivity() {
         }
         val fragmentManager: FragmentManager = supportFragmentManager
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment!!).commit()
+        // Set action bar title
+        title = appBarTitle
     }
 
     fun selectDrawerItem(menuItem: MenuItem) {
@@ -103,10 +105,12 @@ class MainActivity : AppCompatActivity() {
         when (menuItem.itemId) {
             R.id.side_drawer_menu_item_profile -> {
                 onProfileMenuOptionClicked()
+                binding.drawerLayout.closeDrawers()
                 return
             }
             R.id.side_drawer_menu_item_logout -> {
                 onLogOutMenuOptionClicked()
+                binding.drawerLayout.closeDrawers()
                 return
             }
         }
@@ -121,12 +125,10 @@ class MainActivity : AppCompatActivity() {
             R.id.side_drawer_menu_item_ratings -> RatingsFragment::class.java
             else -> ScheduleFragment::class.java
         }
-        setCurrentFragment(fragmentClass)
+        setCurrentFragment(fragmentClass, menuItem.title.toString())
 
         // Highlight the selected item has been done by NavigationView
         menuItem.isChecked = true
-        // Set action bar title
-        title = menuItem.title
         // Close the navigation drawer
         binding.drawerLayout.closeDrawers()
     }
