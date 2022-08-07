@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.example.hubspot.R
 import com.example.hubspot.ratings.ProfessorListViewModel.Review
 import kotlin.collections.ArrayList
 
+/**
+ * ReviewAdapter is a class that extends [ArrayAdapter] and handles the display of reviews in the
+ * listView
+ */
 class ReviewAdapter(private val context: Activity, private val reviewArrayList: ArrayList<Review>) : ArrayAdapter<Review>(context, R.layout.reviews, reviewArrayList){
     private lateinit var ratingBar: RatingBar
     private lateinit var commentView: TextView

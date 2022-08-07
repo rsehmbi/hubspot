@@ -22,7 +22,10 @@ import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import java.util.*
 
-
+/**
+ * SecurityFragment is a [Fragment] subclass that handles the display of professor information and swapping
+ * between [ReviewDisplayFragment] and [ReviewAddFragment] fragments
+ */
 class SingleProfessorActivity : AppCompatActivity() {
 
     private lateinit var profImage: ImageView
@@ -36,8 +39,10 @@ class SingleProfessorActivity : AppCompatActivity() {
     private lateinit var curActivity: Activity
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if(NetworkUtil.isOnline(this)){
             setContentView(R.layout.activity_single_professor)
             curActivity = this
@@ -51,15 +56,28 @@ class SingleProfessorActivity : AppCompatActivity() {
             // calling listener on rate now btn
             onClickButtonHandler()
 
+            profListViewModel = ViewModelProvider(this)[ProfessorListViewModel::class.java]
             // displaying prof's info
             loadProfInfo(selectedProfName!!)
 
             // case 1: view a list of reviews for this professor
-            val reviewListFragments = ReviewDisplayFragment()
-            val arg = Bundle()
-            arg.putString("PROF_NAME", selectedProfName)
-            reviewListFragments.arguments = arg
-            replaceFragment(reviewListFragments)
+            if(profListViewModel.currentFragment == 0){
+                val reviewListFragments = ReviewDisplayFragment()
+                val arg = Bundle()
+                arg.putString("PROF_NAME", selectedProfName)
+                reviewListFragments.arguments = arg
+                replaceFragment(reviewListFragments)
+            }
+            else{
+                profListViewModel.currentFragment = 1
+                rateNowBtn.text = "View Reviews"
+                val reviewAddFragments = ReviewAddFragment()
+                val arg = Bundle()
+                val selectedProfName = intent.getStringExtra("PROF_NAME")
+                arg.putString("PROF_NAME", selectedProfName)
+                reviewAddFragments.arguments = arg
+                replaceFragment(reviewAddFragments)
+            }
         }
         else{
             setContentView(R.layout.activity_offline)
@@ -83,6 +101,7 @@ class SingleProfessorActivity : AppCompatActivity() {
     private fun onClickButtonHandler(){
         rateNowBtn.setOnClickListener {
             if(rateNowBtn.text == "Rate Now!"){
+                profListViewModel.currentFragment = 1
                 rateNowBtn.text = "View Reviews"
                 val reviewAddFragments = ReviewAddFragment()
                 val arg = Bundle()
@@ -92,6 +111,7 @@ class SingleProfessorActivity : AppCompatActivity() {
                 replaceFragment(reviewAddFragments)
             }
             else{
+                profListViewModel.currentFragment = 0
                 rateNowBtn.text = "Rate Now!"
                 val reviewListFragments = ReviewDisplayFragment()
                 val arg = Bundle()
@@ -113,7 +133,6 @@ class SingleProfessorActivity : AppCompatActivity() {
     // loads prof's information to be displayed
     private fun loadProfInfo(selectedProfName: String){
         // loading the values from the database
-        profListViewModel = ViewModelProvider(this)[ProfessorListViewModel::class.java]
 
         val query: Query = profListViewModel.professorReference.orderByChild("ProfName").equalTo(selectedProfName)
         val valueListener = object : ValueEventListener {

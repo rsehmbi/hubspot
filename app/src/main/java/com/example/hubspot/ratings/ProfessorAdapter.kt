@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -17,7 +18,10 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+/**
+ * ProfessorAdapter is a class that extends [RecyclerView.Adapter] and handles the display of professors in the
+ * listView
+ */
 class ProfessorAdapter(private val dataSet: ArrayList<Professor>, private val fragmentActivity: FragmentActivity) :
     RecyclerView.Adapter<ProfessorAdapter.ViewHolder>() {
 
