@@ -1,6 +1,7 @@
 package com.example.hubspot
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -26,6 +27,7 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var drawerToggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,24 +46,37 @@ class MainActivity : AppCompatActivity() {
 
         // Setup drawer view
         val drawer = binding.nvView
-        setupDrawerContent(drawer);
+        setupDrawerContent(drawer, savedInstanceState);
+
+        setAppBarTitleToFragmentName(drawer)
 
         // Setup animated hamburger button
+        setupHamburgerButton()
+
+        // Setup toggle to display hamburger icon with animation
+        drawerToggle.isDrawerIndicatorEnabled = true;
+        drawerToggle.syncState();
+
+        // Tie DrawerLayout events to the ActionBarToggle
+        binding.drawerLayout.addDrawerListener(drawerToggle);
+    }
+
+    private fun setupHamburgerButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        val drawerToggle = ActionBarDrawerToggle(
+        drawerToggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
             findViewById(R.id.toolbar),
             R.string.drawer_open,
             R.string.drawer_close
         )
+    }
 
-        // Setup toggle to display hamburger icon with nice animation
-        drawerToggle.isDrawerIndicatorEnabled = true;
-        drawerToggle.syncState();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        binding.drawerLayout.addDrawerListener(drawerToggle);
+    private fun setAppBarTitleToFragmentName(drawer: NavigationView) {
+        val checkedItem = drawer.checkedItem
+        if (checkedItem != null) {
+            title = checkedItem.title
+        }
     }
 
     private fun replaceActionBarWithToolBar() {
@@ -70,21 +85,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            binding.drawerLayout.openDrawer(GravityCompat.START);
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        return super.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item);
     }
 
-    private fun setupDrawerContent(navigationView: NavigationView) {
+    private fun setupDrawerContent(navigationView: NavigationView, savedInstanceState: Bundle?) {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             selectDrawerItem(menuItem)
             true
         }
 
-        // Use schedule fragment as default fragment
-        setCurrentFragment(ScheduleFragment::class.java, "Schedule")
+        if (savedInstanceState == null) {
+            // Use schedule fragment as default fragment on first app load
+            setCurrentFragment(ScheduleFragment::class.java, "Schedule")
+        }
     }
 
     private fun setCurrentFragment(fragmentClass: Class<*>, appBarTitle: String) {
@@ -116,7 +132,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Create a new fragment and specify the fragment to show based on nav item clicked
-        var fragment: Fragment? = null
         val fragmentClass: Class<*> = when (menuItem.itemId) {
             R.id.side_drawer_menu_item_schedule -> ScheduleFragment::class.java
             R.id.side_drawer_menu_item_security -> SecurityFragment::class.java
@@ -131,6 +146,16 @@ class MainActivity : AppCompatActivity() {
         menuItem.isChecked = true
         // Close the navigation drawer
         binding.drawerLayout.closeDrawers()
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        drawerToggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        drawerToggle.onConfigurationChanged(newConfig)
     }
 
     private fun sendVolumeBroadcast(action: Int, keyCode: Int) {
