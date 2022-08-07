@@ -50,23 +50,7 @@ class FriendsListAdapter(private val context: Context, private var friendsList: 
     }
 
     private fun deleteFriend(friendUserId: String) {
-        dbReference.child("Users/${currUserId}/friends/${friendUserId}").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    dataSnapshot.ref.removeValue()
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
-                    println("debug: $databaseError")
-                }
-            })
-        dbReference.child("Users/${friendUserId}/friends/${currUserId}").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    dataSnapshot.ref.removeValue()
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
-                    println("debug: $databaseError")
-                }
-            })
+        dbReference.child("Users/${currUserId}/friends/${friendUserId}").removeValue()
+        dbReference.child("Users/${friendUserId}/friends/${currUserId}").removeValue()
     }
 }
