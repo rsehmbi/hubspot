@@ -67,4 +67,14 @@
     <string name="credits">Credits:</string>
     <string name="raman_sehmbi">Raman Sehmbi</string>
 
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="schedule_fragment_title">Schedule</string>
+    <string name="security_fragment_title">Security</string>
+    <string name="study_buddy_fragment_title">Study Buddy</string>
+    <string name="friends_fragment_title">Friends</string>
+    <string name="ratings_fragment_title">Ratings</string>
+    <string name="profile_activity_title">Profile</string>
+    <string name="side_menu_item_logout_title">Log out</string>
+
 </resources>
