@@ -32,8 +32,8 @@ class Dialog : DialogFragment(), DialogInterface.OnClickListener{
         val infoDialogView: View = requireActivity().layoutInflater.inflate(R.layout.dialog_info, null)
         when (dialogId) {
             POMODORO_START_STUDY_DIALOG -> {
-                pomodoroStudyLength = bundle?.getLong("studyLength")!!
-                pomodoroBreakLength = bundle.getLong("breakLength")
+                pomodoroStudyLength = bundle?.getLong("studyLength")!! / 1000
+                pomodoroBreakLength = bundle.getLong("breakLength") / 1000
                 dialogTextView = infoDialogView.findViewById(R.id.infoTextView)
                 dialogTextView.text = getString(R.string.ask_continue)
                 builder.setView(infoDialogView)
@@ -43,8 +43,8 @@ class Dialog : DialogFragment(), DialogInterface.OnClickListener{
                 ret = builder.create()
             }
             POMODORO_START_BREAK_DIALOG -> {
-                pomodoroStudyLength = bundle?.getLong("studyLength")!!
-                pomodoroBreakLength = bundle.getLong("breakLength")
+                pomodoroStudyLength = bundle?.getLong("studyLength")!! / 1000
+                pomodoroBreakLength = bundle.getLong("breakLength") / 1000
                 dialogTextView = infoDialogView.findViewById(R.id.infoTextView)
                 dialogTextView.text = getString(R.string.ask_continue)
                 builder.setView(infoDialogView)

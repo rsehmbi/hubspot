@@ -8,7 +8,8 @@
     <string name="start_study_session">Start study session!</string>
     <string name="study_session_title">Stay focused!</string>
     <string name="break_session_title">Break time!</string>
-    <string name="timer">%1$s</string>
+    <string name="timer">Click to start</string>
+    <string name="where_friends">Look where your friends are studying!</string>
     <string name="start_study_dialog_title">Let\'s continue studying!</string>
     <string name="start_break_dialog_title">Time for a break!</string>
     <string name="ask_continue">Would you like to continue?</string>
@@ -37,6 +38,8 @@
     <string name="enter_secret_id">Enter Secret ID</string>
     <string name="add_a_friend">Add a friend!</string>
     <string name="your_friends">Your friends</string>
+    <string name="remove">Remove</string>
+
     <string name="options_menu_item_profile">Profile</string>
     <string name="course_info">Course Info</string>
     <string name="course_schedule">Course Schedule</string>
