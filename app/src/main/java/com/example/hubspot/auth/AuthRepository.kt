@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.models.User
+import com.example.hubspot.utils.Util
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -326,7 +327,8 @@ class AuthRepository {
         val storageRef = storage.getReferenceFromUrl("gs://hubspot-629d4.appspot.com")
         val userPictureRef = storageRef.child("userPictures/${user?.uid}.jpg")
         val baos = ByteArrayOutputStream()
-        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val scaledBitmap = Util.resizeBitmap(picture, 600, 600)
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data: ByteArray = baos.toByteArray()
 
         val uploadTask: UploadTask = userPictureRef.putBytes(data)
