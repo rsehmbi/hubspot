@@ -43,9 +43,11 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        this.savedInstanceState = savedInstanceState
+        if (!Util.checkCameraAndStoragePermissions(this)) {
+            finish()
+        }
 
-        Util.checkCameraAndStoragePermissions(this)
+        this.savedInstanceState = savedInstanceState
 
         // Temporary file for storing changed images not saved yet
         tempImageUri = getFileUri("tempProfileImage.jpg", "com.example.hubspot")
