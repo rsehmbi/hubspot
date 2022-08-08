@@ -15,7 +15,14 @@ import com.example.hubspot.auth.Auth
 import com.example.hubspot.databinding.ActivityMainBinding
 import com.example.hubspot.friends.FriendsFragment
 import com.example.hubspot.login.LoginActivity
+import com.example.hubspot.models.User
 import com.example.hubspot.profile.ProfileActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlin.collections.ArrayList
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.schedule.ShowMySchedule
@@ -28,9 +35,15 @@ import com.google.android.material.navigation.NavigationView
  *  navigation between the fragments and to logout or check user profiles.
  */
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
     private lateinit var drawerToggle: ActionBarDrawerToggle
+    private lateinit var binding: ActivityMainBinding
+    private var startPressTime = 0L
+    private var endPressTime = 0L
 
+    companion object {
+        var friendsList = ArrayList<User>()
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,6 +75,9 @@ class MainActivity : AppCompatActivity() {
 
         // Tie DrawerLayout events to the ActionBarToggle
         binding.drawerLayout.addDrawerListener(drawerToggle)
+        
+        // Setup friends list for quick push notification subscription in the security fragment
+        initializeFriendsList()
     }
 
     private fun setupHamburgerButton() {
@@ -156,6 +172,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         drawerToggle.syncState()
+
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -163,10 +180,39 @@ class MainActivity : AppCompatActivity() {
         drawerToggle.onConfigurationChanged(newConfig)
     }
 
-    private fun sendVolumeBroadcast(action: Int, keyCode: Int) {
-        val intent = Intent("silentButtonPressed")
-            .putExtra("action", action)
-            .putExtra("keyCode", keyCode)
+    private fun initializeFriendsList() {
+        val currentUser = Auth.getCurrentUser()!!
+        val currentUserId = currentUser.id
+
+        // Set up friend value listener
+        val dbReference = FirebaseDatabase
+            .getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference
+        dbReference.child("Users/${currentUserId}/friends").addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // clear previous friends list value
+                    friendsList.clear()
+                    // create a list of friends users
+                    var friendUser: User
+                    for(friend in dataSnapshot.children) {
+                        friendUser = User(friend.value.toString())
+                        friendsList.add(friendUser)
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                    println("debug: $databaseError")
+                }
+            })
+    }
+
+    private fun sendVolumeBroadcast(action: Int?, keyCode: Int?, buttonType: String) {
+        val intent = Intent("silentButtonPressed").putExtra("buttonType",buttonType)
+        if (action!= null) {
+            intent.putExtra("action", action)
+        }
+        if (keyCode != null) {
+            intent.putExtra("keyCode", keyCode)
+        }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
@@ -176,13 +222,19 @@ class MainActivity : AppCompatActivity() {
         return when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 if (action == KeyEvent.ACTION_DOWN) {
-                    sendVolumeBroadcast(action, keyCode)
+                    startPressTime = event.downTime
+                } else if (action == KeyEvent.ACTION_UP) {
+                    endPressTime = event.eventTime
+                    val millisPressed = endPressTime - startPressTime
+                    if (millisPressed >= 2000) {
+                        sendVolumeBroadcast(action, keyCode, "pingLocationButton")
+                    }
                 }
                 true
             }
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 if (action == KeyEvent.ACTION_DOWN) {
-                    sendVolumeBroadcast(action, keyCode)
+                    sendVolumeBroadcast(action, keyCode, "emergencyButton")
                 }
                 true
             }
