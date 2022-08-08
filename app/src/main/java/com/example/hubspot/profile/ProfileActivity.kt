@@ -33,10 +33,17 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var cameraResult: ActivityResultLauncher<Intent>
     private lateinit var galleryResult: ActivityResultLauncher<Intent>
     private lateinit var tempImageUri: Uri
+    private var isGetPictureLoadingKey = "IS_GET_PIC_LOADING"
+    private var isGetPictureLoading = false
+    private val isUpdatePictureLoadingKey = "IS_UPDATE_PIC_LOADING"
+    private var isUpdatePictureLoading = false
+    private var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        this.savedInstanceState = savedInstanceState
 
         Util.checkCameraAndStoragePermissions(this)
 
@@ -50,14 +57,26 @@ class ProfileActivity : AppCompatActivity() {
         val appBarTitle = resources.getString(R.string.activity_profile_appbar_title)
         supportActionBar?.title = appBarTitle
 
+        if (savedInstanceState != null) {
+            isGetPictureLoading = savedInstanceState.getBoolean(isGetPictureLoadingKey, false)
+            isUpdatePictureLoading = savedInstanceState.getBoolean(isUpdatePictureLoadingKey, false)
+        }
+
         refreshDisplayNameText()
         initAuthViewModel()
         initCameraAndGalleryIntents()
         loadProfilePicture()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(isGetPictureLoadingKey, isGetPictureLoading)
+        outState.putBoolean(isUpdatePictureLoadingKey, isUpdatePictureLoading)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun loadProfilePicture() {
-        setLoading(true)
+        isGetPictureLoading = true
+        updateLoadingScreen()
         authViewModel.getProfilePictureUri()
     }
 
@@ -68,10 +87,10 @@ class ProfileActivity : AppCompatActivity() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     try {
                         val tempImgBitmap = Util.getBitmap(this, tempImageUri)
-                        setLoading(true)
                         authViewModel.updateProfilePicture(tempImgBitmap)
                     } catch (e: Exception) {
-                        setLoading(false)
+                        isUpdatePictureLoading = false
+                        updateLoadingScreen()
                         val errorText =
                             resources.getString(R.string.activity_profile_toast_camera_fail)
                         Toast.makeText(
@@ -80,6 +99,9 @@ class ProfileActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                } else {
+                    isUpdatePictureLoading = false
+                    updateLoadingScreen()
                 }
             }
 
@@ -91,10 +113,10 @@ class ProfileActivity : AppCompatActivity() {
                     if (selectedImageUri != null) {
                         try {
                             val bitmap = Util.getBitmap(this, selectedImageUri)
-                            setLoading(true)
                             authViewModel.updateProfilePicture(bitmap)
                         } catch (e: Exception) {
-                            setLoading(false)
+                            isUpdatePictureLoading = false
+                            updateLoadingScreen()
                             val errorText =
                                 resources.getString(R.string.activity_profile_gallery_error)
                             Toast.makeText(
@@ -104,6 +126,9 @@ class ProfileActivity : AppCompatActivity() {
                             ).show()
                         }
                     }
+                } else {
+                    isUpdatePictureLoading = false
+                    updateLoadingScreen()
                 }
             }
     }
@@ -139,35 +164,48 @@ class ProfileActivity : AppCompatActivity() {
                 } else {
                     displayResetPasswordErrorMessage()
                 }
-                setLoading(false)
+                isUpdatePictureLoading = false
+                updateLoadingScreen()
             }
         }
 
         // Set up view model to automatically update profile image view on userImage change
         val picImageView = findViewById<ImageView>(R.id.activity_profile_imageview_picture)
         authViewModel.updateProfilePictureResult.observe(this) {
-            if (it.resultCode == AuthRepository.UpdatePictureResultCode.FAILURE) {
-                val errorMessage =
-                    resources.getString(R.string.activity_profile_toast_upload_picture_fail)
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-            } else {
-                val errorMessage =
-                    resources.getString(R.string.activity_profile_toast_upload_picture_success)
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-                Picasso.with(this).load(it.updatedImageUri).into(picImageView)
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (it.resultCode == AuthRepository.UpdatePictureResultCode.FAILURE) {
+                    val errorMessage =
+                        resources.getString(R.string.activity_profile_toast_upload_picture_fail)
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                } else {
+                    val errorMessage =
+                        resources.getString(R.string.activity_profile_toast_upload_picture_success)
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                    Picasso.with(this).load(it.updatedImageUri).into(picImageView)
+                }
+                isUpdatePictureLoading = false
+                updateLoadingScreen()
             }
-            setLoading(false)
         }
 
         authViewModel.getProfilePictureUriResult.observe(this) {
-            if (it.resultCode == AuthRepository.GetProfilePictureUriResultCode.FAILURE) {
-                val errorMessage =
-                    resources.getString(R.string.activity_profile_toast_get_picture_fail)
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-            } else {
-                Picasso.with(this).load(it.imageUri).into(picImageView)
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (it.resultCode == AuthRepository.GetProfilePictureUriResultCode.FAILURE) {
+                    val errorMessage =
+                        resources.getString(R.string.activity_profile_toast_get_picture_fail)
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                } else {
+                    Picasso.with(this).load(it.imageUri).into(picImageView)
+                }
+                isGetPictureLoading = false
+                updateLoadingScreen()
+
+                if (this@ProfileActivity.savedInstanceState != null) {
+                    val isLoading = this@ProfileActivity.savedInstanceState!!.getBoolean(isUpdatePictureLoadingKey, false)
+                    isGetPictureLoading = false
+                    updateLoadingScreen()
+                }
             }
-            setLoading(false)
         }
     }
 
@@ -185,8 +223,8 @@ class ProfileActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun setLoading(isLoading: Boolean) {
-        if (isLoading) {
+    private fun updateLoadingScreen() {
+        if (isGetPictureLoading || isUpdatePictureLoading) {
             val loadingSpinner = findViewById<ProgressBar>(R.id.activity_profile_loading_spinner)
             loadingSpinner.visibility = View.VISIBLE
             findViewById<Button>(R.id.activity_profile_button_change_picture).isEnabled = false
@@ -213,7 +251,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun onResetPasswordButtonClick(view: View) {
-        setLoading(true)
+        isUpdatePictureLoading = true
+        updateLoadingScreen()
         val user = Auth.getCurrentUser()
         authViewModel.sendPasswordResetEmail(user!!.email!!)
     }
@@ -248,12 +287,16 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun takeProfilePhotoWithCamera() {
+        isUpdatePictureLoading = true
+        updateLoadingScreen()
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri)
         cameraResult.launch(intent)
     }
 
     private fun takeProfilePhotoFromGallery() {
+        isUpdatePictureLoading = true
+        updateLoadingScreen()
         val pickGalleryPhotoIntent = Intent(Intent.ACTION_PICK)
         pickGalleryPhotoIntent.type = "image/*" // only pick images
         galleryResult.launch(pickGalleryPhotoIntent)
