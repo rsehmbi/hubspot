@@ -2,9 +2,12 @@ package com.example.hubspot.schedule
 
 import android.os.Bundle
 import android.text.Html
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.hubspot.NetworkUtil
 import com.example.hubspot.R
 import com.example.hubspot.schedule.CourseListViewModel.CourseOutlineViewModel
 import com.example.hubspot.schedule.CourseListViewModel.CourseOutlineViewModelFactory
@@ -40,22 +43,32 @@ class SingleCourseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_course)
         setupTextViews()
-        val extras = intent.extras
-        val courseID: String?
-        if (extras != null) {
-            courseID = extras.getString("COURSE_ID")
-            val repository = repository()
-            val viewModelFactory = CourseOutlineViewModelFactory(repository)
-            courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
+        if (NetworkUtil.isOnline(this)){
+            val extras = intent.extras
+            val courseID: String?
+            if (extras != null) {
+                courseID = extras.getString("COURSE_ID")
+                val repository = repository()
+                val viewModelFactory = CourseOutlineViewModelFactory(repository)
+                courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
 
-            if (!courseID.isNullOrEmpty()){
-                val courseNumber = courseID.split(" ").get(1)
-                courseOutlineViewModel.getCourseOutline("course-outlines?current/current/cmpt/${courseNumber}/d100")
-                courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
-                    if (response.isSuccessful) {
-                        updateTextViewsWithResponse(response.body())
+                if (!courseID.isNullOrEmpty()){
+                    val courseNumber = courseID.split(" ").get(1)
+                    courseOutlineViewModel.getCourseOutline("course-outlines?current/current/cmpt/${courseNumber}/d100")
+                    courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
+                        if (response.isSuccessful) {
+                            updateTextViewsWithResponse(response.body())
+                        }
                     }
                 }
+            }
+        }
+        else{
+            Toast.makeText(this, "Please connect to the Internet", Toast.LENGTH_SHORT).show()
+            setContentView(R.layout.activity_offline)
+            val closeBtn: Button = findViewById(R.id.close_btn_id)
+            closeBtn.setOnClickListener {
+                finish()
             }
         }
     }

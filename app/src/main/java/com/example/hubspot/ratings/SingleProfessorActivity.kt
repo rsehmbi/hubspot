@@ -80,6 +80,7 @@ class SingleProfessorActivity : AppCompatActivity() {
             }
         }
         else{
+            Toast.makeText(this, "Please connect to the Internet", Toast.LENGTH_SHORT).show()
             setContentView(R.layout.activity_offline)
             val closeBtn: Button = findViewById(R.id.close_btn_id)
             closeBtn.setOnClickListener {
