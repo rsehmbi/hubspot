@@ -1,10 +1,12 @@
 package com.example.hubspot.auth
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.models.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
@@ -13,6 +15,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import java.io.ByteArrayOutputStream
+
 
 /** Layer of abstraction between the AuthViewModel and Firebase Auth.
  *  Handles Firebase implementation to fulfill the AuthViewModel functionality
@@ -305,10 +311,67 @@ class AuthRepository {
             }
     }
 
+    class UpdatePictureResult(val resultCode: UpdatePictureResultCode, val updatedImageUri: Uri?)
+
+    enum class UpdatePictureResultCode {
+        SUCCESS, FAILURE
+    }
+
     fun updateProfilePicture(
         picture: Bitmap,
-        updateProfilePictureResult: MutableLiveData<AuthResult>
+        updateProfilePictureResult: MutableLiveData<UpdatePictureResult>
     ) {
+        val storage = FirebaseStorage.getInstance()
+        val user = FirebaseAuth.getInstance().currentUser
+        val storageRef = storage.getReferenceFromUrl("gs://hubspot-629d4.appspot.com")
+        val userPictureRef = storageRef.child("userPictures/${user?.uid}.jpg")
+        val baos = ByteArrayOutputStream()
+        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data: ByteArray = baos.toByteArray()
 
+        val uploadTask: UploadTask = userPictureRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            // Handle unsuccessful uploads
+            updateProfilePictureResult.value =
+                UpdatePictureResult(UpdatePictureResultCode.FAILURE, null)
+        }
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val downloadUri: Uri = it.result
+                        updateProfilePictureResult.value =
+                            UpdatePictureResult(UpdatePictureResultCode.SUCCESS, downloadUri)
+                    } else {
+                        updateProfilePictureResult.value =
+                            UpdatePictureResult(UpdatePictureResultCode.FAILURE, null)
+                    }
+                }
+            }
+    }
+
+    class GetProfilePictureUriResult(
+        val resultCode: GetProfilePictureUriResultCode,
+        val imageUri: Uri?
+    )
+
+    enum class GetProfilePictureUriResultCode {
+        SUCCESS, FAILURE
+    }
+
+    fun getProfilePictureUri(getProfilePictureUriResult: MutableLiveData<GetProfilePictureUriResult>) {
+        val storage = FirebaseStorage.getInstance()
+        val user = FirebaseAuth.getInstance().currentUser
+        val storageRef = storage.getReferenceFromUrl("gs://hubspot-629d4.appspot.com")
+        val userPictureRef = storageRef.child("userPictures/${user?.uid}.jpg")
+        userPictureRef.downloadUrl.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val downloadUri: Uri = it.result
+                getProfilePictureUriResult.value =
+                    GetProfilePictureUriResult(GetProfilePictureUriResultCode.SUCCESS, downloadUri)
+            } else {
+                getProfilePictureUriResult.value =
+                    GetProfilePictureUriResult(GetProfilePictureUriResultCode.FAILURE, null)
+            }
+        }
     }
 }

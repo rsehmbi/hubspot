@@ -34,8 +34,8 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:src="@drawable/ic_profile"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#FF000000" />
+            app:civ_border_width="1dp"
+            app:civ_border_color="#6C6C6C" />
 
         <Button
             android:id="@+id/activity_profile_button_change_picture"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:onClick="onChangePictureButtonClick"
             android:text="@string/activity_profile_button_change_picture"
-            android:layout_marginBottom="64dp" />
+            android:layout_marginBottom="32dp" />
 
         <TextView
             android:layout_width="wrap_content"

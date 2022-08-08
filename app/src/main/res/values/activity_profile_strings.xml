@@ -16,4 +16,9 @@
     <string name="activity_profile_button_change_picture">Change Picture</string>
     <string name="activity_profile_toast_camera_fail">Failed to get image from camera</string>
     <string name="activity_profile_gallery_error">Failed to get picture from gallery.</string>
+    <string name="activity_profile_change_option_camera">Use Camera</string>
+    <string name="activity_profile_change_option_gallery">Choose From Gallery</string>
+    <string name="activity_profile_change_title">Update Picture</string>
+    <string name="activity_profile_toast_upload_picture_fail">Failed to upload profile image.</string>
+    <string name="activity_profile_toast_get_picture_fail">Failed to load profile picture.</string>
 </resources>
