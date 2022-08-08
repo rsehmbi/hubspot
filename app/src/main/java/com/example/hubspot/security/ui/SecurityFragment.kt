@@ -1,6 +1,8 @@
 package com.example.hubspot.security.ui
 
 import android.Manifest
+import android.app.NotificationManager
+import android.app.Service
 import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,19 +18,25 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.hubspot.MainActivity
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
+import com.example.hubspot.models.User
 import com.example.hubspot.models.UserLocation
+import com.example.hubspot.security.services.PushNotificationService
 import com.example.hubspot.security.services.SafeLocationService
 import com.example.hubspot.security.services.SilentButtonReceiver
 import com.example.hubspot.security.viewModel.SecurityViewModel
 import com.example.hubspot.services.LocationService
 import com.example.hubspot.services.LocationService.LocationCallback
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 
@@ -37,7 +45,12 @@ import java.util.*
  * It allows the user to turn on/off continuous location capturing. It also allows users to toggle
  * whether they would like to enable the emergency services alert button presses. Contains a
  * companion object that holds a reference to the SecurityFragment's [SecurityViewModel] for
- * referencing locational and [KeyEvent] data.
+ * referencing locational and [KeyEvent] data. Handles toggle for the silent button service of
+ * pinging a friend the current user's location.
+ *
+ * Various code adapted from:
+ * https://medium.com/@mendhie/send-device-to-device-push-notifications-without-server-side-code-238611c143
+ * https://developer.android.com/codelabs/advanced-android-kotlin-training-notifications-fcm#4
  */
 class SecurityFragment : Fragment() {
     private lateinit var securityViewModel: SecurityViewModel
@@ -45,13 +58,20 @@ class SecurityFragment : Fragment() {
     private lateinit var safeLocationService: SafeLocationService
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var emergencySilentSwitch: Switch
+    private lateinit var pingLocationSwitch: Switch
     private lateinit var silentButtonReceiver: SilentButtonReceiver
+    private lateinit var notificationManager: NotificationManager
+    private var pingLocationIsOn = false
+    private var emergencySilentSystemIsOn = false
     private val bindStatusKey = "bind_status_key"
     private var isBind = false
     private var downButtonPressedCount = 0
     private var downButtonPressedCountDown = 5
     private val callPermissionRequestCode = 119
     private val callPermissionToggleRequestCode = 99
+    private val notifyId = 1
+    private var friendsList = ArrayList<User>()
+
 
     companion object CompanionObject {
         lateinit var securityViewModel: SecurityViewModel
@@ -66,6 +86,7 @@ class SecurityFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_security, container, false)
         initializeContinuousLocationServicesButtons(view)
         initializeSilentEmergencyButton(view)
+        initializeSilentPingLocationButton(view)
         setLocationTextView(view)
         handleLocationUpdates(view)
         handleSilentButtonPresses()
@@ -76,9 +97,12 @@ class SecurityFragment : Fragment() {
         super.onCreate(savedInstanceState)
         initializeViewModel()
         initializeSafeLocationService()
+        initializePingLocationService()
         initializeSharedPreferences()
+        initializeFriendsList()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -89,9 +113,11 @@ class SecurityFragment : Fragment() {
                 if (grantResults.size > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
-                    Toast.makeText(requireContext(),"Emergency services system activated. Calling '911'.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),"Emergency services system activated. " +
+                            "Calling '911'.", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(),"Call permission denied.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),"Call permission denied.",
+                        Toast.LENGTH_LONG).show()
                 }
                 return
             }
@@ -104,6 +130,12 @@ class SecurityFragment : Fragment() {
     }
 
 // Private methods --------------------------------------------------------------------------
+
+    private fun closePingLocationNotification() {
+        if(this::notificationManager.isInitialized) {
+            notificationManager.cancel(notifyId)
+        }
+    }
 
     private fun handleEmergencyServicesSilentButtonPress() {
         val intent = Intent(Intent.ACTION_CALL) // This intent dials the number automatically
@@ -132,25 +164,30 @@ class SecurityFragment : Fragment() {
         val keyCode = securityViewModel.keyEventButtonKeyCode.value
         if (action == KeyEvent.ACTION_DOWN) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                downButtonPressedCount++
-                downButtonPressedCountDown--
-                if (downButtonPressedCountDown > 0) {
-                    Toast.makeText(requireContext(), "Press Volume Down button $downButtonPressedCountDown more times to call emergency services", Toast.LENGTH_SHORT).show()
-                }
-                if (downButtonPressedCount == 5) {
-                    handleEmergencyServicesSilentButtonPress()
-                    downButtonPressedCount = 0
+                if (emergencySilentSystemIsOn) {
+                    downButtonPressedCount++
+                    downButtonPressedCountDown--
+                    if (downButtonPressedCountDown > 0) {
+                        Toast.makeText(requireContext(),
+                            "Press Volume Down button $downButtonPressedCountDown more times" +
+                                    " to call emergency services", Toast.LENGTH_SHORT).show()
+                    }
+                    if (downButtonPressedCount == 5) {
+                        handleEmergencyServicesSilentButtonPress()
+                        downButtonPressedCount = 0
+                    }
+
                 }
                 return true
             }
-        } else if (action == KeyEvent.FLAG_LONG_PRESS) {
-            when (keyCode){
-                KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                    // TODO: enable speech to text of attacker
+        } else if (action == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                if (pingLocationIsOn) {
+                    sendLocationPushNotification()
                 }
-                KeyEvent.KEYCODE_VOLUME_UP -> {
-                    // TODO: enable ping friend
-                }
+                return true
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                // TODO: enable speech to text of attacker
             }
         }
         return false
@@ -180,11 +217,9 @@ class SecurityFragment : Fragment() {
                     val newPostRef =
                         userLocationsReference.push()  // Creates a chronological UID for each list item
                     newPostRef.setValue(newUserLocation)
-                    // TODO: add max locations
                 } catch (er: Exception) {
                     println(er.toString())
                 }
-                // TODO: Broadcast to friends
                 securityViewModel.getLocationNow.value = false
             }
         }
@@ -192,12 +227,10 @@ class SecurityFragment : Fragment() {
 
     private fun handleSilentButtonPresses() {
         securityViewModel.silentButtonPressed.observe(viewLifecycleOwner) {
-            handleKeyEvent()
+            if (it == true) {
+                handleKeyEvent()
+            }
         }
-    }
-
-    private fun initializeSafeLocationService() {
-        safeLocationService = SafeLocationService()
     }
 
     private fun initializeContinuousLocationServicesButtons(view: View) {
@@ -229,6 +262,40 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    private fun initializeFriendsList() {
+        securityViewModel.friendsList.value = MainActivity.friendsList
+        friendsList = securityViewModel.friendsList.value!!
+        friendsList.forEach {
+            subscribeToFriendTopicPushNotifications(it.id!!)
+        }
+    }
+
+    private fun initializePingLocationService() {
+        notificationManager = requireActivity().getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    private fun initializeSafeLocationService() {
+        safeLocationService = SafeLocationService()
+    }
+
+    private fun initializeSilentPingLocationButton(view: View) {
+        pingLocationSwitch = view.findViewById(R.id.ping_location_button_switch)
+        pingLocationSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener
+        { buttonView, isChecked ->
+            if (isChecked) {
+                pingLocationIsOn = true
+                LocalBroadcastManager.getInstance(requireContext()).registerReceiver(silentButtonReceiver,
+                    IntentFilter("silentButtonPressed")
+                )
+            } else {
+                closePingLocationNotification()
+                pingLocationIsOn = false
+                LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(silentButtonReceiver)
+                securityViewModel.silentButtonPressed.value = false
+            }
+        })
+    }
+
     private fun initializeSharedPreferences() {
         sharedPreferences = requireActivity()
             .getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
@@ -252,20 +319,64 @@ class SecurityFragment : Fragment() {
                     )
                 } else { // User already gave permission
                     println("Permissions already granted")
+                    emergencySilentSystemIsOn = true
                 }
                 LocalBroadcastManager.getInstance(requireContext()).registerReceiver(silentButtonReceiver,
                     IntentFilter("silentButtonPressed")
                 )
+                emergencySilentSystemIsOn = true
             } else {
                 LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(silentButtonReceiver)
+                emergencySilentSystemIsOn = false
+                securityViewModel.silentButtonPressed.value = false
             }
         })
+    }
+
+    private fun subscribeToFriendTopicPushNotifications(friendTopic: String) {
+        FirebaseMessaging.getInstance().subscribeToTopic(friendTopic)
+            .addOnCompleteListener { task ->
+                println("Subscribing to topic: $friendTopic")
+                if (!task.isSuccessful) {
+                    println("Failed to subscribe to topic: $friendTopic")
+                }
+            }
     }
 
     private fun initializeViewModel() {
         securityViewModel = ViewModelProvider(requireActivity())[SecurityViewModel::class.java]
         CompanionObject.securityViewModel = securityViewModel
 
+    }
+
+    private fun sendLocationPushNotification() {
+        LocationService.getCurrentLocation(requireActivity(),
+            object : LocationCallback { // Creates a callback for handling resulting location data
+                override fun onCallback(result: Location?) {
+                    val currentLocationString = "Latitude: ${result?.latitude}, Longitude: " +
+                            "${result?.longitude}"
+                    // send location data in push notification
+                    val currentUser = Auth.getCurrentUser()!!
+                    val topic = currentUser.id
+                    val notification = JSONObject()
+                    val notificationBody = JSONObject()
+                    try {
+                        notificationBody.put("title", "EMERGENCY LOCATION ALERT!!!")
+                        notificationBody.put("message",
+                            "Your friend ${currentUser.displayName} has pinged you their " +
+                                    "location. $currentLocationString")
+                        notificationBody.put("lat", "${result?.latitude}")
+                        notificationBody.put("long", "${result?.longitude}")
+                        notification.put("to", "/topics/$topic")
+                        notification.put("data", notificationBody)
+                    } catch (e: JSONException) {
+                        println("onCreate: " + e.message)
+                    }
+                    val pushNotificationService = PushNotificationService()
+                    pushNotificationService.sendNotification(notification, requireActivity())
+                }
+            }
+        )
     }
 
     private fun setLocationTextView(view: View) {
