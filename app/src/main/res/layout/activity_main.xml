@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@android:color/white"
+        android:theme="@style/Theme.HubSpot.NoActionBar"
         app:headerLayout="@layout/side_nav_header"
         app:menu="@menu/side_drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

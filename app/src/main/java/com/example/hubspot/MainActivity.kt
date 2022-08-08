@@ -21,6 +21,7 @@ import com.example.hubspot.schedule.ScheduleFragment
 import com.example.hubspot.schedule.ShowMySchedule
 import com.example.hubspot.security.ui.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
+import com.example.hubspot.utils.Util
 import com.google.android.material.navigation.NavigationView
 
 /** The main activity for the application, which displays the different
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Util.checkCameraAndStoragePermissions(this)
 
         replaceActionBarWithToolBar()
 

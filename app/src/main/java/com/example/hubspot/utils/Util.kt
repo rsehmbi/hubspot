@@ -17,8 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 object Util {
-    fun checkCameraAndStoragePermissions(activity: Activity?) {
-        if (Build.VERSION.SDK_INT < 23) return
+    fun checkCameraAndStoragePermissions(activity: Activity?): Boolean {
+        if (Build.VERSION.SDK_INT < 23) return true
 
         val requestCode = 0
         val permissions =
@@ -28,7 +28,7 @@ object Util {
             )
 
         if (activity == null) {
-            return
+            return false
         }
 
         if (checkExternalStoragePerm(activity) != PackageManager.PERMISSION_GRANTED
@@ -39,7 +39,9 @@ object Util {
                 permissions,
                 requestCode
             )
+            return false
         }
+        return true
     }
 
     private fun checkCameraPerm(activity: Activity) =
