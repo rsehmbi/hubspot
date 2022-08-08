@@ -183,7 +183,7 @@ class ProfileActivity : AppCompatActivity() {
                     val errorMessage =
                         resources.getString(R.string.activity_profile_toast_upload_picture_success)
                     Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-                    Picasso.with(this).load(it.updatedImageUri).into(picImageView)
+                    Picasso.with(this).load(it.updatedImageUri).resize(600,600).centerCrop().into(picImageView)
                 }
                 isUpdatePictureLoading = false
                 updateLoadingScreen()
@@ -197,7 +197,7 @@ class ProfileActivity : AppCompatActivity() {
                         resources.getString(R.string.activity_profile_toast_get_picture_fail)
                     Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                 } else {
-                    Picasso.with(this).load(it.imageUri).into(picImageView)
+                    Picasso.with(this).load(it.imageUri).resize(600,600).centerCrop().into(picImageView)
                 }
                 isGetPictureLoading = false
                 updateLoadingScreen()

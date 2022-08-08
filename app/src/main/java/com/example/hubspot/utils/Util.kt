@@ -10,11 +10,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 
 object Util {
     fun checkCameraAndStoragePermissions(activity: Activity?): Boolean {
@@ -91,5 +91,25 @@ object Util {
         }
 
         return matrix
+    }
+
+    // From https://stackoverflow.com/a/28367226
+    fun resizeBitmap(image: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        return if (maxHeight > 0 && maxWidth > 0) {
+            val width = image.width
+            val height = image.height
+            val ratioBitmap = width.toFloat() / height.toFloat()
+            val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+            var finalWidth = maxWidth
+            var finalHeight = maxHeight
+            if (ratioMax > ratioBitmap) {
+                finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+            } else {
+                finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+            }
+            Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true)
+        } else {
+            image
+        }
     }
 }
