@@ -27,7 +27,7 @@
     <string name="last_known_location_text">Last known location:</string>
     <string name="enroll">Enroll</string>
     <string name="show_schedule">Show Schedule</string>
-    <string name="emergency_info_text">When turned on, a user may press the Volume Downbutton 5 times to automaticall dial 911in the case of an emergency.</string>
+    <string name="emergency_info_text">When turned on, a user may press the volume \'Down\' button 5 times to automatically dial 911 in the case of an emergency.</string>
     <string name="emergency_services_switch_text">Emergency Services</string>
 
     <!-- Friends System -->
@@ -63,5 +63,8 @@
     <string name="_3">3</string>
     <string name="credits">Credits:</string>
     <string name="raman_sehmbi">Raman Sehmbi</string>
+    <string name="ping_location_toggle_text">When turned on, a user may long press the volume \'Up\' button to send a push notification/ping to their friends.</string>
+    <string name="friends_locations_label">Receive Friend\'s locations</string>
+    <string name="friends_location_description">This feature is always on. It allows you to receive security \'Ping Location\' push notifications which outlines which friend is in need of safety and where they were at the time of the ping.</string>
 
 </resources>
