@@ -4,6 +4,7 @@ import com.example.hubspot.schedule.Models.CourseOutline
 import retrofit2.Response
 import retrofit2.http.*
 
+// Simple API interface to make get requests for grabbing course information
 interface SimpleApi {
 
     @GET

@@ -1,5 +1,6 @@
 package com.example.hubspot.schedule.CourseListViewModel
 
+// POJO Class for course
 class Course(
     var professorName: String,
     var courseName: String,

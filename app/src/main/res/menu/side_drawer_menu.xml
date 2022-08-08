@@ -4,8 +4,8 @@
         <item
             android:id="@+id/side_drawer_menu_item_schedule"
             android:checked="true"
-            android:icon="@drawable/ic_baseline_calendar_month_24"
-            android:title="@string/schedule_fragment_title" />
+            android:icon="@drawable/ic_baseline_edit_calendar_24"
+            android:title="Enroll" />
         <item
             android:id="@+id/side_drawer_menu_item_security"
             android:icon="@drawable/ic_baseline_security_24"
@@ -22,6 +22,10 @@
             android:id="@+id/side_drawer_menu_item_ratings"
             android:icon="@drawable/ic_baseline_person_search_24"
             android:title="@string/ratings_fragment_title" />
+        <item
+            android:id="@+id/side_drawer_menu_item_my_enrolled_schedule"
+            android:icon="@drawable/ic_baseline_calendar_month_24"
+            android:title="@string/my_schedule" />
 
         <item android:title="">
             <menu>
