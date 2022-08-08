@@ -79,6 +79,15 @@ class SecurityFragment : Fragment() {
 
 // Lifecycle methods ------------------------------------------------------------------------
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializeViewModel()
+        initializeSafeLocationService()
+        initializePingLocationService()
+        initializeSharedPreferences()
+        initializeFriendsList()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -91,15 +100,6 @@ class SecurityFragment : Fragment() {
         handleLocationUpdates(view)
         handleSilentButtonPresses()
         return view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initializeViewModel()
-        initializeSafeLocationService()
-        initializePingLocationService()
-        initializeSharedPreferences()
-        initializeFriendsList()
     }
 
     @Deprecated("Deprecated in Java")
@@ -333,16 +333,6 @@ class SecurityFragment : Fragment() {
         })
     }
 
-    private fun subscribeToFriendTopicPushNotifications(friendTopic: String) {
-        FirebaseMessaging.getInstance().subscribeToTopic(friendTopic)
-            .addOnCompleteListener { task ->
-                println("Subscribing to topic: $friendTopic")
-                if (!task.isSuccessful) {
-                    println("Failed to subscribe to topic: $friendTopic")
-                }
-            }
-    }
-
     private fun initializeViewModel() {
         securityViewModel = ViewModelProvider(requireActivity())[SecurityViewModel::class.java]
         CompanionObject.securityViewModel = securityViewModel
@@ -398,5 +388,15 @@ class SecurityFragment : Fragment() {
                 }
             )
         }
+    }
+
+    private fun subscribeToFriendTopicPushNotifications(friendTopic: String) {
+        FirebaseMessaging.getInstance().subscribeToTopic(friendTopic)
+            .addOnCompleteListener { task ->
+                println("Subscribing to topic: $friendTopic")
+                if (!task.isSuccessful) {
+                    println("Failed to subscribe to topic: $friendTopic")
+                }
+            }
     }
 }
