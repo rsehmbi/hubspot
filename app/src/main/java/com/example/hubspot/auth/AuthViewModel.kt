@@ -1,6 +1,7 @@
 package com.example.hubspot.auth
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.auth.AuthRepository.AuthResult
@@ -16,6 +17,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var resendActivationEmailResult: MutableLiveData<AuthResult> = MutableLiveData()
     var updateDisplayNameResult: MutableLiveData<AuthResult> = MutableLiveData()
     var sendPasswordResetEmailResult: MutableLiveData<AuthResult> = MutableLiveData()
+    var updateProfilePictureResult: MutableLiveData<AuthResult> = MutableLiveData()
 
     fun signInUser(email: String, password: String) {
         authRepository.signInUser(email, password, signInUserResult)
@@ -35,5 +37,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun sendPasswordResetEmail(email: String) {
         authRepository.sendPasswordResetEmail(email, sendPasswordResetEmailResult)
+    }
+
+    fun updateProfilePicture(picture: Bitmap) {
+        authRepository.updateProfilePicture(picture, updateProfilePictureResult)
     }
 }

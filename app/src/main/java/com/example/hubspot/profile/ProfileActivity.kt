@@ -1,21 +1,24 @@
 package com.example.hubspot.profile
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.hubspot.R
 import com.example.hubspot.auth.Auth
 import com.example.hubspot.auth.AuthRepository
 import com.example.hubspot.auth.AuthViewModel
 import com.example.hubspot.login.LoginActivity
+import com.example.hubspot.utils.Util
 
 
 /** An activity which allows the user to display and update
@@ -23,6 +26,9 @@ import com.example.hubspot.login.LoginActivity
  */
 class ProfileActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var cameraResult: ActivityResultLauncher<Intent>
+    private lateinit var galleryResult: ActivityResultLauncher<Intent>
+    private lateinit var tempImageUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +73,55 @@ class ProfileActivity : AppCompatActivity() {
                 setLoading(false)
             }
         }
+
+        // Set up view model to automatically update profile image view on userImage change
+        val profilePicture = findViewById<ImageView>(R.id.activity_profile_imageview_picture)
+        val profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel.userImage.observe(this, Observer { it ->
+            // authviewmodel profilePicture.setImageBitmap(it)
+        })
+
+        // Set up activity result for changing profile photo from camera
+        cameraResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    try {
+                        val tempImgBitmap = Util.getBitmap(this, tempImageUri)
+                        authViewModel.
+                    } catch (e: Exception) {
+                        val errorText =
+                            resources.getString(R.string.activity_profile_toast_camera_fail)
+                        Toast.makeText(
+                            this,
+                            errorText,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+        // Set up activity result for changing profile photo from gallery
+        galleryResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val selectedImageUri = result.data?.data
+                    if (selectedImageUri != null) {
+                        try {
+                            val bitmap = Util.getBitmap(this, selectedImageUri)
+                            profileViewModel.userImage.value = bitmap
+                        } catch (e: Exception) {
+                            val errorText =
+                                resources.getString(R.string.activity_profile_gallery_error)
+                            Toast.makeText(
+                                this,
+                                errorText,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                }
+            }
     }
 
     private fun displayResetPasswordSuccessMessage() {
@@ -112,6 +167,10 @@ class ProfileActivity : AppCompatActivity() {
         setLoading(true)
         val user = Auth.getCurrentUser()
         authViewModel.sendPasswordResetEmail(user!!.email!!)
+    }
+
+    fun onChangePictureButtonClick(view: View) {
+
     }
 
 }

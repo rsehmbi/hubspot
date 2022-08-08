@@ -1,5 +1,6 @@
 package com.example.hubspot.auth
 
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.example.hubspot.models.User
 import com.google.android.gms.tasks.Task
@@ -302,5 +303,12 @@ class AuthRepository {
                     )
                 }
             }
+    }
+
+    fun updateProfilePicture(
+        picture: Bitmap,
+        updateProfilePictureResult: MutableLiveData<AuthResult>
+    ) {
+
     }
 }
