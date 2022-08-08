@@ -151,6 +151,9 @@ class ProfileActivity : AppCompatActivity() {
                     resources.getString(R.string.activity_profile_toast_upload_picture_fail)
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             } else {
+                val errorMessage =
+                    resources.getString(R.string.activity_profile_toast_upload_picture_success)
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
                 Picasso.with(this).load(it.updatedImageUri).into(picImageView)
             }
             setLoading(false)
