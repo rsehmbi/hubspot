@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
+    // Helps in setting the lenient criteria for GSON otherwise if json contains some error. App will fail to retrieve
     var gson = GsonBuilder()
         .setLenient()
         .create()
@@ -19,6 +20,8 @@ object RetrofitInstance {
             .build()
     }
 
+    // Initializes Simple API by Retrofit
+    // This code is used from retrofit documentation
     val api: SimpleApi by lazy {
         retrofit.create(SimpleApi::class.java)
     }

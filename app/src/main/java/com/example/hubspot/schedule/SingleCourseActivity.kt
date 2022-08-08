@@ -43,6 +43,7 @@ class SingleCourseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_course)
         setupTextViews()
+        // Check if user is connected to the internet
         if (NetworkUtil.isOnline(this)){
             val extras = intent.extras
             val courseID: String?
@@ -55,6 +56,7 @@ class SingleCourseActivity : AppCompatActivity() {
                 if (!courseID.isNullOrEmpty()){
                     val courseNumber = courseID.split(" ").get(1)
                     courseOutlineViewModel.getCourseOutline("course-outlines?current/current/cmpt/${courseNumber}/d100")
+                    // Make API request to SFU Server
                     courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
                         if (response.isSuccessful) {
                             updateTextViewsWithResponse(response.body())
@@ -92,10 +94,12 @@ class SingleCourseActivity : AppCompatActivity() {
             courseDetailsId.text = Html.fromHtml( info.description, Html.FROM_HTML_MODE_LEGACY)
         }
     }
+    // Helps in building string for Showing on screen
     private fun stringBuilder(prefix:String, data:String?): String{
         return "${prefix}: ${data}"
     }
 
+    // Updates Text Views
     private fun updateCourseScheduleTextView(courseSchedule: List<CourseSchedule>?) {
         roomNumberId.text = stringBuilder("Room Number", courseSchedule?.get(0)?.roomNumber)
         campusDetailsId.text = stringBuilder("Campus", courseSchedule?.get(0)?.campus)
@@ -107,6 +111,7 @@ class SingleCourseActivity : AppCompatActivity() {
         })
     }
 
+    // Updates Text Views
     private fun updateInstructorTextView(instructor: List<Instructor>?) {
         instructorNameId.text = stringBuilder("Instructor Name", instructor?.get(0)?.name)
         instructorEmailId.text  = stringBuilder("Email", instructor?.get(0)?.email)

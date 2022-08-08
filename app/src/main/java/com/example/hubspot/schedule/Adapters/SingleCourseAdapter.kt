@@ -65,10 +65,12 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val us
         viewHolder.courseProfessorTextView.text = selectedCourse.professorName
         viewHolder.courseDescriptionTextView.text = "Description: ${selectedCourse.courseDescription}"
 
+        // Attaches on click listener for button in adapter views
         viewHolder.addToCalendar.setOnClickListener { it->
             addCourseToCalendar(it.context, selectedCourse)
         }
 
+        // Attaches on click listener for button in adapter views
         viewHolder.unenrollButton.setOnClickListener {
             dataSet.remove(selectedCourse)
             userCourseViewModel.enrolledCourseList.remove(selectedCourse)
@@ -77,6 +79,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val us
             Toast.makeText(it.context, "Un-enrolled from ${selectedCourse.courseCode}", Toast.LENGTH_SHORT).show()
         }
 
+        // Attaches on click listener for button in adapter views
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(it.context, SingleCourseActivity::class.java).apply {
                 putExtra("COURSE_ID", selectedCourse.courseCode)
@@ -85,6 +88,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val us
         }
     }
 
+    // Remove the course that user is currently enrolled in. It will unenroll the person from the course currently selected by user
     private fun removeCourse(courseCode: String, userCourseViewModel: UserCourseViewModel) {
         userCourseViewModel.usersCoursesReference.child("Courses").addListenerForSingleValueEvent(object :
             ValueEventListener {
@@ -106,6 +110,7 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val us
         })
     }
 
+    // Manipulates the calendar for different timings
     private fun getCalendar(course: Course): Calendar {
         val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val calendar: Calendar = Calendar.getInstance()
@@ -119,16 +124,19 @@ class SingleCourseAdapter(private val dataSet: ArrayList<Course>, private val us
         return calendar
     }
 
+    // Get the course end time based on how long the class is
     private fun getEndTime(course: Course): Long {
         val calendar = getCalendar(course)
         return calendar.getTimeInMillis() + parseInt(course.courseDuration) * 60 * 60 * 1000
     }
 
+    // Get the course start time
     private fun getStartTime(course:Course): Long {
         val calendar = getCalendar(course)
         return calendar.getTimeInMillis()
     }
 
+    // Create a calendar intent to directly add course info to the calendar
     private fun addCourseToCalendar(context: Context?, course: Course) {
         val intent = Intent(Intent.ACTION_INSERT)
             .setDataAndType(Events.CONTENT_URI,"vnd.android.cursor.item/event")
