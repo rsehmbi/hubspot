@@ -106,17 +106,20 @@ class LoginActivity : AppCompatActivity() {
         val logInButton = findViewById<Button>(R.id.login_button_login)
         val signUpButton = findViewById<Button>(R.id.login_button_signup)
         val resendButton = findViewById<Button>(R.id.login_button_resend_email)
+        val resetButton = findViewById<Button>(R.id.login_button_reset_password)
 
         if (isLoading) {
             loadingSpinner.visibility = View.VISIBLE
             logInButton.isEnabled = false
             signUpButton.isEnabled = false
             resendButton.isEnabled = false
+            resetButton.isEnabled = false
         } else {
             loadingSpinner.visibility = View.GONE
             logInButton.isEnabled = true
             signUpButton.isEnabled = true
             resendButton.isEnabled = true
+            resetButton.isEnabled = true
         }
     }
 
