@@ -18,6 +18,7 @@ import com.example.hubspot.login.LoginActivity
 import com.example.hubspot.profile.ProfileActivity
 import com.example.hubspot.ratings.RatingsFragment
 import com.example.hubspot.schedule.ScheduleFragment
+import com.example.hubspot.schedule.ShowMySchedule
 import com.example.hubspot.security.ui.SecurityFragment
 import com.example.hubspot.studybuddy.StudyBuddyFragment
 import com.google.android.material.navigation.NavigationView
@@ -141,6 +142,7 @@ class MainActivity : AppCompatActivity() {
             R.id.side_drawer_menu_item_studybuddy -> StudyBuddyFragment::class.java
             R.id.side_drawer_menu_item_friends -> FriendsFragment::class.java
             R.id.side_drawer_menu_item_ratings -> RatingsFragment::class.java
+            R.id.side_drawer_menu_item_my_enrolled_schedule -> ShowMySchedule::class.java
             else -> ScheduleFragment::class.java
         }
         setCurrentFragment(fragmentClass, menuItem.title.toString())

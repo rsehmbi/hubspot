@@ -76,5 +76,7 @@
     <string name="ratings_fragment_title">Ratings</string>
     <string name="profile_activity_title">Profile</string>
     <string name="side_menu_item_logout_title">Log out</string>
+    <string name="plan_my_schedule">Plan My Schedule</string>
+    <string name="my_schedule">My Schedule</string>
 
 </resources>

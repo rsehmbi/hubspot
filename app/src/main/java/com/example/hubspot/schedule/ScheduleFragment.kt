@@ -42,7 +42,7 @@ class ScheduleFragment : Fragment() {
         usercourseListViewModel.getUserCourses()
         courseListViewModel.getCourseListSuggestions()?.observe(requireActivity(), Observer {
             SuggestionCourselist = it
-            var courseListAdapter = ArrayAdapter(
+            val courseListAdapter = ArrayAdapter(
                 requireActivity(),
                 android.R.layout.simple_list_item_1,
                 SuggestionCourselist
@@ -149,8 +149,11 @@ class ScheduleFragment : Fragment() {
                                     Toast.makeText(requireContext(), "No Course Selected", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
-                            startActivity(showMyScheduleIntent)
+                            val showMySchedule = ShowMySchedule()
+                            val transaction = activity!!.supportFragmentManager.beginTransaction()
+                            transaction.replace(R.id.flContent, showMySchedule)
+                            transaction.disallowAddToBackStack()
+                            transaction.commit()
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
 
@@ -172,11 +175,6 @@ class ScheduleFragment : Fragment() {
 
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
             enrollInCourse()
-        }
-
-        view.findViewById<Button>(R.id.view_schedule_id).setOnClickListener {
-            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
-            startActivity(showMyScheduleIntent)
         }
     }
 }
