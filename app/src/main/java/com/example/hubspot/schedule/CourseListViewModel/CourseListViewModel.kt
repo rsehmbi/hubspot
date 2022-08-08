@@ -9,7 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-
+// Grabs suggestion from Firebase database
 class CourseListViewModel:ViewModel() {
     private var courseListSuggestions: MutableLiveData<ArrayList<String>>? = null
     var SelectedCourselist = ArrayList<Course>()
@@ -26,6 +26,7 @@ class CourseListViewModel:ViewModel() {
         return courseListSuggestions
     }
 
+    // Loads suggestion from data stored in firebase database
     private fun loadSuggestions(){
         courseReference.addListenerForSingleValueEvent(
             object : ValueEventListener {

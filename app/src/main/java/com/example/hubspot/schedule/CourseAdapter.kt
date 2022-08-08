@@ -55,6 +55,7 @@ class CourseAdapter(private val dataSet: ArrayList<Course>, val courseListViewMo
         viewHolder.courseProfessorTextView.text = selectedCourse.professorName
         viewHolder.courseDescriptionTextView.text = "Description: ${selectedCourse.courseDescription}"
 
+        // Sets On Click listner for recycler view
         viewHolder.itemView.setOnClickListener {
             val intent = Intent(it.context, SingleCourseActivity::class.java).apply {
                 putExtra("COURSE_ID", selectedCourse.courseCode)
@@ -69,6 +70,7 @@ class CourseAdapter(private val dataSet: ArrayList<Course>, val courseListViewMo
         }
     }
 
+    // Sets Course Code
     private fun setCourseCode(viewHolder: ViewHolder, selectedCourse: Course) {
         viewHolder.courseCodeTextView.text = selectedCourse.courseCode
     }

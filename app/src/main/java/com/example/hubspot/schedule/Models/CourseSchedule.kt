@@ -3,6 +3,7 @@ package com.example.hubspot.schedule.Models
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+// POJO class for Course Schedule
 class CourseSchedule {
     @SerializedName("roomNumber")
     @Expose

@@ -22,7 +22,7 @@ class ShowMySchedule : Fragment() {
     lateinit var courseListViewModel: CourseListViewModel
     private var SelectedCourselist = ArrayList<String>()
 
-
+    // This fragment is reponsible showing enrolled courses that the user is enrolled in
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
