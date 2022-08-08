@@ -2,6 +2,10 @@ package com.example.hubspot.schedule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,27 +16,30 @@ import com.example.hubspot.schedule.CourseListViewModel.CourseListViewModel
 import com.example.hubspot.schedule.CourseListViewModel.UserCourseViewModel
 import com.google.firebase.database.*
 
-class ShowMySchedule : AppCompatActivity() {
+class ShowMySchedule : Fragment() {
     lateinit var mycourseListView: RecyclerView
     lateinit var usercourseListViewModel: UserCourseViewModel
     lateinit var courseListViewModel: CourseListViewModel
     private var SelectedCourselist = ArrayList<String>()
 
+    // This fragment is reponsible showing enrolled courses that the user is enrolled in
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val myscheduleView: View = inflater.inflate(R.layout.activity_show_my_schedule, container, false)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_my_schedule)
-
-        mycourseListView = findViewById(R.id.myscheduleListView)
-        val recycleLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
+        mycourseListView = myscheduleView.findViewById(R.id.myscheduleListView)
+        val recycleLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireActivity())
         mycourseListView.layoutManager = recycleLayoutManager
 
         usercourseListViewModel = ViewModelProvider(this)[UserCourseViewModel::class.java]
         courseListViewModel = ViewModelProvider(this)[CourseListViewModel::class.java]
-        usercourseListViewModel.getUserCourses()?.observe(this) {
+        usercourseListViewModel.getUserCourses()?.observe(requireActivity()) {
             SelectedCourselist = it
             loadEachCourseinRecyclerView(courseListViewModel.courseReference, SelectedCourselist)
         }
+        return myscheduleView
     }
 
     private fun loadEachCourseinRecyclerView(

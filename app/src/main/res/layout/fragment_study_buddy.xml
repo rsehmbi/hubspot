@@ -1,63 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".studybuddy.StudyBuddyFragment"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:layout_margin="20dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/study_length" />
-    <EditText
-        android:id="@+id/studyLength"
+    android:layout_height="match_parent">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/break_length" />
-    <EditText
-        android:id="@+id/breakLength"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ask_share_location" />
-    <RadioGroup
-        android:id="@+id/share_location_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
-        <RadioButton
-            android:id="@+id/share_location_yes"
+        tools:context=".studybuddy.StudyBuddyFragment"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/pomodoro_img" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/yes" />
-        <RadioButton
-            android:id="@+id/share_location_no"
+            android:text="@string/study_length" />
+        <EditText
+            android:id="@+id/studyLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no" />
-    </RadioGroup>
+            android:text="@string/break_length" />
+        <EditText
+            android:id="@+id/breakLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:autofillHints=""
+            tools:ignore="LabelFor" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ask_share_location" />
+        <RadioGroup
+            android:id="@+id/share_location_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <RadioButton
+                android:id="@+id/share_location_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yes" />
+            <RadioButton
+                android:id="@+id/share_location_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no" />
+        </RadioGroup>
 
-    <Button
-        android:id="@+id/startStudySessionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start_study_session" />
-    <Button
-        android:id="@+id/friendsMapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Look where your friends are studying!" />
-</LinearLayout>
+        <Button
+            android:id="@+id/startStudySessionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_study_session" />
+        <Button
+            android:id="@+id/friendsMapButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/where_friends" />
+    </LinearLayout>
+</ScrollView>

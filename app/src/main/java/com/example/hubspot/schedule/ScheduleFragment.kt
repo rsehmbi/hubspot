@@ -42,7 +42,7 @@ class ScheduleFragment : Fragment() {
         usercourseListViewModel.getUserCourses()
         courseListViewModel.getCourseListSuggestions()?.observe(requireActivity(), Observer {
             SuggestionCourselist = it
-            var courseListAdapter = ArrayAdapter(
+            val courseListAdapter = ArrayAdapter(
                 requireActivity(),
                 android.R.layout.simple_list_item_1,
                 SuggestionCourselist
@@ -70,6 +70,7 @@ class ScheduleFragment : Fragment() {
         return false
     }
 
+    // Loads course info in the recycler view
     private fun loadCourseInfo(databaseReference:DatabaseReference, courseSelected: String) {
         if (!checkAlreadySelected(courseSelected)){
             val query: Query = databaseReference.orderByChild("CourseCode").equalTo(courseSelected)
@@ -102,6 +103,7 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    // Gets new selected courses by user
     private fun getNewCourses(): List<String> {
         val coursesToEnroll: MutableList<String> = mutableListOf()
         for (course in courseListViewModel.SelectedCourselist) {
@@ -109,6 +111,8 @@ class ScheduleFragment : Fragment() {
         }
         return coursesToEnroll.distinct()
     }
+
+    // Checks if user is already enrolled in courses, if yes, enroll in newly selected courses
     private fun enrollInCourse(){
         val UsersReference =
             FirebaseDatabase.getInstance("https://hubspot-629d4-default-rtdb.firebaseio.com/").reference.child(
@@ -149,8 +153,11 @@ class ScheduleFragment : Fragment() {
                                     Toast.makeText(requireContext(), "No Course Selected", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
-                            startActivity(showMyScheduleIntent)
+                            val showMySchedule = ShowMySchedule()
+                            val transaction = activity!!.supportFragmentManager.beginTransaction()
+                            transaction.replace(R.id.flContent, showMySchedule)
+                            transaction.disallowAddToBackStack()
+                            transaction.commit()
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
 
@@ -164,19 +171,15 @@ class ScheduleFragment : Fragment() {
         }
     }
     private fun onClickButtonHandler(view: View){
+        // Helps in Clearing Selected courses
         view.findViewById<Button>(R.id.clear_button_id).setOnClickListener {
             courseListViewModel.SelectedCourselist.clear()
             val adapter = CourseAdapter(courseListViewModel.SelectedCourselist, courseListViewModel)
             autoPopulateCourseList.adapter = adapter
         }
-
+        // Helps in Course Enrollment
         view.findViewById<Button>(R.id.enroll_button_id).setOnClickListener {
             enrollInCourse()
-        }
-
-        view.findViewById<Button>(R.id.view_schedule_id).setOnClickListener {
-            val showMyScheduleIntent = Intent(requireContext(), ShowMySchedule::class.java)
-            startActivity(showMyScheduleIntent)
         }
     }
 }

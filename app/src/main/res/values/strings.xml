@@ -8,7 +8,8 @@
     <string name="start_study_session">Start study session!</string>
     <string name="study_session_title">Stay focused!</string>
     <string name="break_session_title">Break time!</string>
-    <string name="timer">%1$s</string>
+    <string name="timer">Click to start</string>
+    <string name="where_friends">Look where your friends are studying!</string>
     <string name="start_study_dialog_title">Let\'s continue studying!</string>
     <string name="start_break_dialog_title">Time for a break!</string>
     <string name="ask_continue">Would you like to continue?</string>
@@ -37,6 +38,8 @@
     <string name="enter_secret_id">Enter Secret ID</string>
     <string name="add_a_friend">Add a friend!</string>
     <string name="your_friends">Your friends</string>
+    <string name="remove">Remove</string>
+
     <string name="options_menu_item_profile">Profile</string>
     <string name="course_info">Course Info</string>
     <string name="course_schedule">Course Schedule</string>
@@ -66,5 +69,17 @@
     <string name="ping_location_toggle_text">When turned on, a user may long press the volume \'Up\' button to send a push notification/ping to their friends.</string>
     <string name="friends_locations_label">Receive Friend\'s locations</string>
     <string name="friends_location_description">This feature is always on. It allows you to receive security \'Ping Location\' push notifications which outlines which friend is in need of safety and where they were at the time of the ping.</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="schedule_fragment_title">Schedule</string>
+    <string name="security_fragment_title">Security</string>
+    <string name="study_buddy_fragment_title">Study Buddy</string>
+    <string name="friends_fragment_title">Friends</string>
+    <string name="ratings_fragment_title">Ratings</string>
+    <string name="profile_activity_title">Profile</string>
+    <string name="side_menu_item_logout_title">Log out</string>
+    <string name="plan_my_schedule">Plan My Schedule</string>
+    <string name="my_schedule">My Schedule</string>
 
 </resources>

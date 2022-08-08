@@ -12,4 +12,14 @@
     <string name="activity_profile_toast_reset_password_success">Please check your email and reset your password, then log in again.</string>
     <string name="activity_profile_toast_reset_password_error">Failed to send password reset email. Please try again later.</string>
     <string name="activity_profile_appbar_title">Profile</string>
+    <string name="activity_profile_textview_your_picture">Your Picture</string>
+    <string name="activity_profile_button_change_picture">Change Picture</string>
+    <string name="activity_profile_toast_camera_fail">Failed to get image from camera</string>
+    <string name="activity_profile_gallery_error">Failed to get picture from gallery.</string>
+    <string name="activity_profile_change_option_camera">Use Camera</string>
+    <string name="activity_profile_change_option_gallery">Choose From Gallery</string>
+    <string name="activity_profile_change_title">Update Picture</string>
+    <string name="activity_profile_toast_upload_picture_fail">Failed to upload profile image.</string>
+    <string name="activity_profile_toast_get_picture_fail">Failed to load profile picture.</string>
+    <string name="activity_profile_toast_upload_picture_success">Successfully Changed Profile Picture!</string>
 </resources>

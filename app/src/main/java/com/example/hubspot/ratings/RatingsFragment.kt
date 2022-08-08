@@ -1,6 +1,7 @@
 package com.example.hubspot.ratings
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,16 +14,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hubspot.R
 import com.example.hubspot.ratings.ProfessorListViewModel.Professor
 import com.example.hubspot.ratings.ProfessorListViewModel.ProfessorListViewModel
+import com.example.hubspot.security.viewModel.SecurityViewModel
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * SecurityFragment is a [Fragment] subclass that handles the professor search, populating professor
+ * list view and clearing them.
+ */
 class RatingsFragment : Fragment() {
     lateinit var autocompleteTextSearch: AutoCompleteTextView;
     lateinit var autoPopulateProfList: RecyclerView;
     private var suggestionProfList = ArrayList<String>()
     lateinit var profListViewModel: ProfessorListViewModel
-
 
 
     override fun onCreateView(
@@ -100,8 +105,11 @@ class RatingsFragment : Fragment() {
                         )
                         profListViewModel.selectedProfessorList.add(selectedProf)
                     }
-                    val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
-                    autoPopulateProfList.adapter = adapter
+                    if(isAdded()){
+                        val adapter = ProfessorAdapter(profListViewModel.selectedProfessorList, requireActivity())
+                        autoPopulateProfList.adapter = adapter
+                    }
+
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/side_drawer_menu_item_schedule"
+            android:checked="true"
+            android:icon="@drawable/ic_baseline_edit_calendar_24"
+            android:title="Enroll" />
+        <item
+            android:id="@+id/side_drawer_menu_item_security"
+            android:icon="@drawable/ic_baseline_security_24"
+            android:title="@string/security_fragment_title" />
+        <item
+            android:id="@+id/side_drawer_menu_item_studybuddy"
+            android:icon="@android:drawable/ic_lock_idle_alarm"
+            android:title="@string/study_buddy_fragment_title" />
+        <item
+            android:id="@+id/side_drawer_menu_item_friends"
+            android:icon="@drawable/ic_baseline_people_outline_24"
+            android:title="@string/friends_fragment_title" />
+        <item
+            android:id="@+id/side_drawer_menu_item_ratings"
+            android:icon="@drawable/ic_baseline_person_search_24"
+            android:title="@string/ratings_fragment_title" />
+        <item
+            android:id="@+id/side_drawer_menu_item_my_enrolled_schedule"
+            android:icon="@drawable/ic_baseline_calendar_month_24"
+            android:title="@string/my_schedule" />
+
+        <item android:title="">
+            <menu>
+                <group android:checkableBehavior="none">
+                    <item
+                        android:id="@+id/side_drawer_menu_item_profile"
+                        android:icon="@drawable/ic_profile"
+                        android:title="@string/profile_activity_title" />
+                    <item
+                        android:id="@+id/side_drawer_menu_item_logout"
+                        android:icon="@drawable/ic_logout"
+                        android:title="@string/side_menu_item_logout_title" />
+                </group>
+            </menu>
+        </item>
+    </group>
+</menu>

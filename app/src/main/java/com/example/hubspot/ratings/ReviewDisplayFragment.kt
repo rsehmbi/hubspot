@@ -16,9 +16,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 /**
- * A simple [Fragment] subclass.
- * Use the [ReviewDisplayFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A ReviewDisplayFragment is [Fragment] subclass that handles the display of reviews as they get
+ * updated
  */
 class ReviewDisplayFragment : Fragment() {
 
