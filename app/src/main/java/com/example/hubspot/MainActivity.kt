@@ -22,7 +22,6 @@ import com.example.hubspot.friends.FriendsFragment
 import com.example.hubspot.login.LoginActivity
 import com.example.hubspot.models.User
 import com.example.hubspot.profile.ProfileActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -43,8 +42,12 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerToggle: ActionBarDrawerToggle
     private lateinit var binding: ActivityMainBinding
-    private var startPressTime = 0L
-    private var endPressTime = 0L
+    private var upStartPressTime = 0L
+    private var upEndPressTime = 0L
+    private var downStartPressTime = 0L
+    private var downEndPressTime = 0L
+    private var downButtonPressedCount = 0
+    private var downButtonPressedCountDown = 5
 
     companion object {
         var friendsList = ArrayList<User>()
@@ -239,7 +242,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendVolumeBroadcast(action: Int?, keyCode: Int?, buttonType: String) {
-        val intent = Intent("silentButtonPressed").putExtra("buttonType",buttonType)
+        val intent = Intent("silentButtonPressed").putExtra("buttonPressType",buttonType)
         if (action!= null) {
             intent.putExtra("action", action)
         }
@@ -255,10 +258,10 @@ class MainActivity : AppCompatActivity() {
         return when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 if (action == KeyEvent.ACTION_DOWN) {
-                    startPressTime = event.downTime
+                    upStartPressTime = event.downTime
                 } else if (action == KeyEvent.ACTION_UP) {
-                    endPressTime = event.eventTime
-                    val millisPressed = endPressTime - startPressTime
+                    upEndPressTime = event.eventTime
+                    val millisPressed = upEndPressTime - upStartPressTime
                     if (millisPressed >= 2000) {
                         sendVolumeBroadcast(action, keyCode, "pingLocationButton")
                     }
@@ -267,7 +270,24 @@ class MainActivity : AppCompatActivity() {
             }
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 if (action == KeyEvent.ACTION_DOWN) {
-                    sendVolumeBroadcast(action, keyCode, "emergencyButton")
+                    downStartPressTime = event.downTime
+                }
+                else if (action == KeyEvent.ACTION_UP) {
+                    downEndPressTime = event.eventTime
+                    val millisPressed = downEndPressTime - downStartPressTime
+                    if (millisPressed >= 2000) {
+                        resetEmergencyButtonQuickPress()
+                        sendVolumeBroadcast(action, keyCode, "speechToTextButton")
+                    } else if (millisPressed in 25..1500) {
+                        if (SecurityFragment.securityViewModel.emergencyServicesToggle.value == true) {
+                            countEmergencyButtonQuickPress()
+                            displayEmergencyButtonCount()
+                            if (downButtonPressedCount == 5) {
+                                resetEmergencyButtonQuickPress()
+                                sendVolumeBroadcast(action, keyCode, "emergencyButton")
+                            }
+                        }
+                    }
                 }
                 true
             }
@@ -275,15 +295,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun onLogOutMenuOptionClicked() {
+    private fun onLogOutMenuOptionClicked() {
         Auth.signOutCurrentUser()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    fun onProfileMenuOptionClicked() {
+    private fun onProfileMenuOptionClicked() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun countEmergencyButtonQuickPress() {
+        downButtonPressedCount++
+        downButtonPressedCountDown--
+    }
+
+    private fun displayEmergencyButtonCount() {
+        var emergencyDownPressedToast: Toast? = null
+        if (emergencyDownPressedToast != null) {
+            emergencyDownPressedToast.cancel()
+        }
+        if (downButtonPressedCountDown > 0 ) {
+            emergencyDownPressedToast = Toast.makeText(this,
+                "Press $downButtonPressedCountDown more times to call 911", Toast.LENGTH_SHORT)
+            emergencyDownPressedToast.show()
+        }
+    }
+
+    private fun resetEmergencyButtonQuickPress() {
+        downButtonPressedCount = 0
+        downButtonPressedCountDown = 5
     }
 }

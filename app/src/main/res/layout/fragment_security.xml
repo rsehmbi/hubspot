@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:layout_gravity="center"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="wrap_content"
@@ -71,6 +74,40 @@
                 android:layout_height="wrap_content"
                 android:text='@string/emergency_info_text'
                 >
+            </TextView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="10sp"
+                />
+
+            <Switch
+                android:id="@+id/speech_to_text_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/speech_to_text_label"
+                android:layout_marginTop="10sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speech_to_text_description"
+                >
+            </TextView>
+            <TextView
+                android:id="@+id/saved_speech_button"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="See Last Saved Speech"
+                android:layout_marginTop="5sp"
+                android:layout_marginEnd="20sp"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/design_default_color_error"
+                >
+
             </TextView>
 
             <View

@@ -81,5 +81,11 @@
     <string name="side_menu_item_logout_title">Log out</string>
     <string name="plan_my_schedule">Plan My Schedule</string>
     <string name="my_schedule">My Schedule</string>
+    <string name="speech_to_text_description">When turned on, a user may long press the volume \'Down\' button to record and save speech for later use.</string>
+    <string name="speech_to_text_label">Speech-to-Text</string>
+    <string name="latest_speech_text_view">Latest Speech</string>
+    <string name="time_recorded_text_view">Time Recorded:</string>
+    <string name="speech_text_text_view">Speech Text:</string>
+    <string name="done_button_text">Done</string>
 
 </resources>

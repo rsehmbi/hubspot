@@ -22,6 +22,10 @@ class SafeLocationService {
 
 // Private methods --------------------------------------------------------------------------
 
+    /**
+     * Uses an alarm manager to broadcast an intent that will signal the app to get the user's
+     * location every 15 minutes.
+     */
     private fun setLocationAlarm(activity: Activity) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -46,6 +50,9 @@ class SafeLocationService {
         Toast.makeText(activity,"Location Services ON.", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Turns of the alarm manager alarm to stop broadcasting the app to get the user's location.
+     */
     private fun turnOffLocationAlarm(activity: Activity) {
         val intent = Intent(activity, LocationReceiver::class.java)
 
