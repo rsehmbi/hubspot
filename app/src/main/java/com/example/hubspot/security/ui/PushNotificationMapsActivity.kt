@@ -1,21 +1,25 @@
 package com.example.hubspot.security.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.hubspot.R
+import com.example.hubspot.databinding.ActivityPushNotificationMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import  com.example.hubspot.databinding.ActivityPushNotificationMapsBinding
 
 class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityPushNotificationMapsBinding
+    private var latString = ""
+    private var longString = ""
+    private var friendsName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,8 @@ class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        getExtras()
+        initializeTextView()
         initializeBackButton()
     }
 
@@ -38,12 +44,10 @@ class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val latString = intent.getStringExtra("lat")
         var lat = 0.0
         if (!latString.isNullOrBlank()) {
             lat = latString.toDouble()
         }
-        val longString = intent.getStringExtra("long")
         var long = 0.0
         if (!longString.isNullOrBlank()) {
             long = longString.toDouble()
@@ -51,7 +55,7 @@ class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Add a marker to friend's location and move camera
         val friendsLocation = LatLng(lat, long)
         mMap.addMarker(MarkerOptions().position(friendsLocation).title("Friends Location"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(friendsLocation, 17f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(friendsLocation, 18f))
     }
 
     private fun initializeBackButton() {
@@ -59,5 +63,16 @@ class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         backButton.setOnClickListener {
             finish()
         }
+    }
+
+    private fun initializeTextView() {
+        val mapTextView = findViewById<TextView>(R.id.notification_text_view)
+        mapTextView.text = "Friend: $friendsName\nLatitude: $latString, Longitude: $longString"
+    }
+
+    private fun getExtras() {
+        latString = intent.getStringExtra("lat")!!
+        longString = intent.getStringExtra("long")!!
+        friendsName = intent.getStringExtra("name")!!
     }
 }
