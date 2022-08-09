@@ -140,7 +140,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="10sp"
                 android:textColor="@color/black"
                 android:text="@string/friends_locations_label"
                 >
@@ -149,7 +149,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="10sp"
                 android:text="@string/friends_location_description"
                 >
             </TextView>
