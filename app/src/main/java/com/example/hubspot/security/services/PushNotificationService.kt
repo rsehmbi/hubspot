@@ -62,12 +62,14 @@ class PushNotificationService : FirebaseMessagingService() {
         val body = notification["message"]
         val lat = notification["lat"]
         val long = notification["long"]
+        val friendsName = notification["name"]
 
         val notificationIntent = Intent(this, PushNotificationMapsActivity::class.java)
+            .putExtra("name", friendsName)
             .putExtra("lat", lat)
             .putExtra("long", long)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, pushNotificationRequestCode,
-            notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+            notificationIntent, PendingIntent.FLAG_MUTABLE)
 
         val notificationManager = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
         val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, pushChannel)
@@ -78,8 +80,6 @@ class PushNotificationService : FirebaseMessagingService() {
         notificationBuilder.setContentText(body)
         notificationBuilder.setSmallIcon(R.drawable.ic_baseline_security_24)
         val notification = notificationBuilder.build()
-
-        // TODO: handle notification on click to open up a map of current location
 
         if(Build.VERSION.SDK_INT > 26) {
             val notificationChannel = NotificationChannel(pushChannel, "Ping Location Channel",
@@ -134,7 +134,4 @@ class PushNotificationService : FirebaseMessagingService() {
      */
     private fun sendRegistrationToServer(token: String?) {}
 
-    companion object {
-        private const val TAG = "FirebaseMsgService"
-    }
 }
