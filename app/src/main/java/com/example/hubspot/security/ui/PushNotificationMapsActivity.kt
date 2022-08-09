@@ -13,6 +13,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+/**
+ * This activity shows a map of a user's friends geographical location as well as their friend's
+ * coordinates and friend's name.
+ */
 class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -32,6 +36,7 @@ class PushNotificationMapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // Set up views on map activity
         getExtras()
         initializeTextView()
         initializeBackButton()
