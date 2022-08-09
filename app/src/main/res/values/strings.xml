@@ -66,7 +66,7 @@
     <string name="_3">3</string>
     <string name="credits">Credits:</string>
     <string name="raman_sehmbi">Raman Sehmbi</string>
-    <string name="ping_location_toggle_text">When turned on, a user may long press the volume \'Up\' button to send a push notification/ping to their friends.</string>
+    <string name="ping_location_toggle_text">When turned on, a user may long press (3 seconds) the volume \'Up\' button to send a push notification/ping to their friends.</string>
     <string name="friends_locations_label">Receive Friend\'s locations</string>
     <string name="friends_location_description">This feature is always on. It allows you to receive security \'Ping Location\' push notifications which outlines which friend is in need of safety and where they were at the time of the ping.</string>
 
@@ -81,7 +81,7 @@
     <string name="side_menu_item_logout_title">Log out</string>
     <string name="plan_my_schedule">Plan My Schedule</string>
     <string name="my_schedule">My Schedule</string>
-    <string name="speech_to_text_description">When turned on, a user may long press the volume \'Down\' button to record and save speech for later use.</string>
+    <string name="speech_to_text_description">When turned on, a user may long press (3 seconds) the volume \'Down\' button to record and save speech for later use.</string>
     <string name="speech_to_text_label">Speech-to-Text</string>
     <string name="latest_speech_text_view">Latest Speech</string>
     <string name="time_recorded_text_view">Time Recorded:</string>
