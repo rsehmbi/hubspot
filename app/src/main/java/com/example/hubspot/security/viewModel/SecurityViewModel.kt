@@ -3,6 +3,7 @@ package com.example.hubspot.security.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hubspot.models.User
+import com.example.hubspot.security.models.Speech
 import java.util.ArrayList
 
 /**
@@ -24,4 +25,8 @@ class SecurityViewModel: ViewModel() {
     val keyEventButtonAction = MutableLiveData<Int>()
     val keyEventButtonKeyCode = MutableLiveData<Int>()
     val friendsList = MutableLiveData<ArrayList<User>>()
+    val speech = MutableLiveData<Speech>()
+    val buttonPressType = MutableLiveData<String>()
+    val emergencyServicesToggle = MutableLiveData<Boolean>()
+
 }
