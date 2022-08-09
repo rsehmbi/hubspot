@@ -54,8 +54,9 @@ class SingleCourseActivity : AppCompatActivity() {
                 courseOutlineViewModel = ViewModelProvider(this, viewModelFactory).get(CourseOutlineViewModel::class.java)
 
                 if (!courseID.isNullOrEmpty()){
+                    val courseName = courseID.split(" ").get(0).lowercase()
                     val courseNumber = courseID.split(" ").get(1)
-                    courseOutlineViewModel.getCourseOutline("course-outlines?current/current/cmpt/${courseNumber}/d100")
+                    courseOutlineViewModel.getCourseOutline("course-outlines?current/current/${courseName}/${courseNumber}/d100")
                     // Make API request to SFU Server
                     courseOutlineViewModel.myOutlineReponse.observe(this) { response ->
                         if (response.isSuccessful) {
