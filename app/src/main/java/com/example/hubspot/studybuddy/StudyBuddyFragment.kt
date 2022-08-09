@@ -17,6 +17,9 @@ import com.example.hubspot.studybuddy.friendsMap.services.ShareLocationService
 import com.example.hubspot.studybuddy.friendsMap.ui.FriendsMapActivity
 import com.example.hubspot.studybuddy.pomodoro.PomodoroActivity
 
+/**
+ *  Main fragment for the study buddy feature
+ */
 class StudyBuddyFragment : Fragment() {
     companion object {
         const val LAST_KNOWN_LOCATION_KEY = "last_know_location_key"
@@ -45,16 +48,16 @@ class StudyBuddyFragment : Fragment() {
         return view
     }
 
+    // Start the pomodoro timer and start the ShareLocationService if "Yes" radio button is checked
     private fun startStudySession(){
         val intent = Intent(requireActivity(), PomodoroActivity::class.java)
         if(studyLength.text.toString() != "" && breakLength.text.toString() != "" && shareLocationRadioGroup.checkedRadioButtonId != -1) {
             if(shareLocationRadioGroup.checkedRadioButtonId == R.id.share_location_yes) {
                 shareLocation()
             }
-            // for testing purposes, the input is in seconds
-            // TODO: multiply both length by 60 so that the input is in minutes
-            intent.putExtra("studyLength", studyLength.text.toString().toLong())
-            intent.putExtra("breakLength", breakLength.text.toString().toLong())
+            // take the study and break time inputs in minutes and convert to seconds
+            intent.putExtra("studyLength", studyLength.text.toString().toLong() * 60)
+            intent.putExtra("breakLength", breakLength.text.toString().toLong() * 60)
             intent.putExtra("sessionType", PomodoroActivity.STUDY_SESSION)
             startActivity(intent)
         } else {
@@ -64,6 +67,7 @@ class StudyBuddyFragment : Fragment() {
         }
     }
 
+    // Get the current location and start the ShareLocationService
     private fun shareLocation(){
         LocationService.getCurrentLocation(requireActivity(),
             object : LocationService.LocationCallback {

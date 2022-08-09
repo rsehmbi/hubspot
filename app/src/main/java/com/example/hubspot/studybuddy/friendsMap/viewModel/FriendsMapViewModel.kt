@@ -9,6 +9,9 @@ import androidx.lifecycle.ViewModel
 import com.example.hubspot.studybuddy.friendsMap.services.FriendLocation
 import com.example.hubspot.studybuddy.friendsMap.services.FriendsMapService
 
+/**
+ * The view model is a middleman between the FriendsMapActivity and the FriendsMapService
+ */
 class FriendsMapViewModel : ViewModel(), ServiceConnection {
     private var myMessageHandler: MyMessageHandler = MyMessageHandler(Looper.getMainLooper())
     private val _friendsLocations = MutableLiveData<ArrayList<FriendLocation>>()
@@ -27,6 +30,7 @@ class FriendsMapViewModel : ViewModel(), ServiceConnection {
     override fun onServiceDisconnected(name: ComponentName) {}
 
     inner class MyMessageHandler(looper: Looper) : Handler(looper) {
+        // Handle the message from the FriendsMapService by updating the friendsLocations list
         override fun handleMessage(msg: Message) {
             if (msg.what == FriendsMapService.ARRAY_LIST) {
                 val bundle = msg.data
