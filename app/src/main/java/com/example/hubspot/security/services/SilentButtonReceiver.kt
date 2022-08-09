@@ -19,8 +19,10 @@ class SilentButtonReceiver : BroadcastReceiver() {
     ) {
         val action = intent.getIntExtra("action", -1)
         val keycode = intent.getIntExtra("keyCode", -1)
+        val buttonPressType = intent.getStringExtra("buttonPressType")
         SecurityFragment.securityViewModel.keyEventButtonAction.value = action
         SecurityFragment.securityViewModel.keyEventButtonKeyCode.value = keycode
+        SecurityFragment.securityViewModel.buttonPressType.value = buttonPressType
         SecurityFragment.securityViewModel.silentButtonPressed.value = true
     }
 }
