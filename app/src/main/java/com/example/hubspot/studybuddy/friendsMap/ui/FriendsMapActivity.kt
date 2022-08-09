@@ -24,11 +24,15 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+/**
+ * An activity that starts the FriendMapService through the FriendsMapViewModel
+ * and updates the Google Maps UI if the location of any friend is updated
+ */
 class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private const val DEFAULT_ZOOM = 15
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
-        // Keys for storing activity state.
+        // Keys for storing activity state
         private const val KEY_CAMERA_POSITION = "camera_position"
         private const val KEY_LOCATION = "location"
     }
@@ -40,6 +44,7 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
     private lateinit var mapViewModel: FriendsMapViewModel
+    // An array list of friends locations that are displayed in the map
     private var friendsLocations = ArrayList<FriendLocation>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,24 +54,28 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
         }
-        // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_friends_maps)
-        // Build the map.
+
+        // Build the map
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
+        // Set the view model observer
         mapViewModel = ViewModelProvider(this).get(FriendsMapViewModel::class.java)
         mapViewModel.friendsLocations.observe(this) {
             friendsLocations = it
             updateFriendsLocationsMarkers()
         }
+
+        // Start the FriendsMapService that monitors the friends locations
         val intentTrackingService = Intent(this, FriendsMapService::class.java)
         applicationContext.startService(intentTrackingService)
         applicationContext.bindService(intentTrackingService, mapViewModel, Context.BIND_AUTO_CREATE)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        // save the camera position and the last know user location to handle the orientation change
         map?.let { map ->
             outState.putParcelable(KEY_CAMERA_POSITION, map.cameraPosition)
             outState.putParcelable(KEY_LOCATION, lastKnownLocation)
@@ -78,52 +87,33 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
         this.map = map
         markerOptions = MarkerOptions()
 
-        // Prompt the user for permission.
+        // Prompt the user for permission
         getCurrentLocationPermission()
-        // Turn on the My Location layer and the related control on the map.
+        // Turn on the My Location layer and the related control on the map
         addCurrentLocationButtons()
-        // Get the current location of the device and set the position of the map.
+        // Get the current location of the device and set the position of the map
         getDeviceLocation()
         // put markers at the friends' locations
         updateFriendsLocationsMarkers()
     }
 
-    private fun getDeviceLocation() {
-        if (locationPermissionGranted) {
-            try {
-                LocationService.getCurrentLocation(this, object : LocationService.LocationCallback {
-                    override fun onCallback(result: Location?) {
-                        lastKnownLocation = result
-                        if (lastKnownLocation != null) {
-                            map?.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(
-                                        lastKnownLocation!!.latitude,
-                                        lastKnownLocation!!.longitude
-                                    ), DEFAULT_ZOOM.toFloat()
-                                )
-                            )
-                        } else {
-                            map?.moveCamera(
-                                CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
-                            )
-                            map?.uiSettings?.isMyLocationButtonEnabled = false
-                        }
-                    }
-                })
-            } catch (e: SecurityException) {
-                println("debug: $e")
+    // Update the map markers when the friends location changes
+    private fun updateFriendsLocationsMarkers(){
+        map?.clear()
+        for (friend in friendsLocations) {
+            if (friend.location != null) {
+                map?.addMarker(MarkerOptions()
+                    .position(friend.location!!)
+                    .title(friend.friendDisplayName)
+                    .snippet("Studying here!"))
             }
         }
     }
 
+    // Request location permission, so that we can get the location of the
+    // device. The result of the permission request is handled by a callback,
+    // onRequestPermissionsResult.
     private fun getCurrentLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
         if (ContextCompat.checkSelfPermission(this.applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -152,9 +142,8 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
         addCurrentLocationButtons()
     }
 
-    /**
-     * Updates the map's UI settings based on whether the user has granted location permission.
-     */
+
+    // Updates the map's UI settings based on whether the user has granted location permission.
     private fun addCurrentLocationButtons() {
         if (map == null) {
             return
@@ -174,14 +163,33 @@ class FriendsMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun updateFriendsLocationsMarkers(){
-        map?.clear()
-        for (friend in friendsLocations) {
-            if (friend.location != null) {
-                map?.addMarker(MarkerOptions()
-                    .position(friend.location!!)
-                    .title(friend.friendDisplayName)
-                    .snippet("Studying here!"))
+    // Get the current location of the user using LocationService
+    private fun getDeviceLocation() {
+        if (locationPermissionGranted) {
+            try {
+                LocationService.getCurrentLocation(this, object : LocationService.LocationCallback {
+                    override fun onCallback(result: Location?) {
+                        lastKnownLocation = result
+                        if (lastKnownLocation != null) {
+                            map?.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        lastKnownLocation!!.latitude,
+                                        lastKnownLocation!!.longitude
+                                    ), DEFAULT_ZOOM.toFloat()
+                                )
+                            )
+                        } else {
+                            map?.moveCamera(
+                                CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                            )
+                            map?.uiSettings?.isMyLocationButtonEnabled = false
+                        }
+                    }
+                })
+            } catch (e: SecurityException) {
+                println("debug: $e")
             }
         }
     }

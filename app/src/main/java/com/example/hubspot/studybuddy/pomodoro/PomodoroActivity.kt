@@ -12,6 +12,10 @@ import com.example.hubspot.utils.Dialog
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
 import java.util.*
 
+/**
+ * Activity for the pomodoro timer in the study buddy feature
+ * The timer has two session types: study time and break rime
+ */
 class PomodoroActivity: AppCompatActivity()  {
     companion object{
         const val STUDY_SESSION = "study"
@@ -44,9 +48,13 @@ class PomodoroActivity: AppCompatActivity()  {
         pauseButton = this.findViewById(R.id.timerPauseButton)
         stopButton = this.findViewById(R.id.timerStopButton)
         progressBar = this.findViewById(R.id.materialProgressBar)
+
+        // Convert the study and break time inputs to milliseconds
         initStudyLengthInSeconds = intent.getLongExtra("studyLength", 0L) * 1000
         initBreakLengthInSeconds = intent.getLongExtra("breakLength", 0L) * 1000
         sessionType = intent.getStringExtra("sessionType")!!
+
+        // Initialize the activity depending on the type of session
         if (sessionType == STUDY_SESSION) {
             timeLeftInMillis = initStudyLengthInSeconds
             progressBar.max = initStudyLengthInSeconds.toInt()
@@ -57,10 +65,12 @@ class PomodoroActivity: AppCompatActivity()  {
             sessionTypeTextView.text = getString(R.string.break_session_title)
         }
 
+        // Set onClick listeners for Start, Pause, and End session buttons
         startButton.setOnClickListener{startTimer()}
         pauseButton.setOnClickListener{pauseTimer()}
         stopButton.setOnClickListener{onTimerStop()}
 
+        // if the timer was running after the activity was destroyed and create again, restart the timer
         if (savedInstanceState == null || !savedInstanceState.getBoolean("timerIsRunning")) {
             startTimer()
         }
@@ -70,15 +80,18 @@ class PomodoroActivity: AppCompatActivity()  {
         startButton.isEnabled = false
         pauseButton.isEnabled = true
         endTime = System.currentTimeMillis() + timeLeftInMillis
+        // Create a CountDownTimer object
         timer = object : CountDownTimer(timeLeftInMillis, 10) {
+            // A callback function executed every second
             override fun onTick(millisUntilFinished: Long) {
                 timeLeftInMillis = millisUntilFinished
                 updateCountDownText()
             }
-
+            // A callback function executed once the timer finished
             override fun onFinish() {
                 timerIsRunning = false
                 if (!supportFragmentManager.isDestroyed) {
+                    // Create a dialog depending on the type of the session
                     bundle.putLong("studyLength", initStudyLengthInSeconds)
                     bundle.putLong("breakLength", initBreakLengthInSeconds)
                     if (sessionType == STUDY_SESSION) {
@@ -95,6 +108,7 @@ class PomodoroActivity: AppCompatActivity()  {
         timerIsPaused = false
     }
 
+    // On timer pause handler
     private fun pauseTimer() {
         pauseButton.isEnabled = false
         startButton.isEnabled = true
@@ -104,6 +118,7 @@ class PomodoroActivity: AppCompatActivity()  {
         timerIsPaused = true
     }
 
+    // On timer stop handler
     private fun onTimerStop() {
         this.finish()
     }
@@ -111,10 +126,12 @@ class PomodoroActivity: AppCompatActivity()  {
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
+        // Stop the ShareLocationService once the user ends the session
         val intentShareLocationService = Intent(applicationContext, ShareLocationService::class.java)
         applicationContext.stopService(intentShareLocationService)
     }
 
+    // Update the UI with the remaining time
     private fun updateCountDownText() {
         val minutes = (timeLeftInMillis / 1000).toInt() / 60
         val seconds = (timeLeftInMillis / 1000).toInt() % 60
@@ -124,6 +141,7 @@ class PomodoroActivity: AppCompatActivity()  {
         progressBar.progress = if (sessionType == STUDY_SESSION) (initStudyLengthInSeconds - timeLeftInMillis).toInt() else (initBreakLengthInSeconds - timeLeftInMillis).toInt()
     }
 
+    // Save the state of the instance to that the timer state can be retained on orientation change
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong("timeLeftInMillis", timeLeftInMillis)
@@ -132,6 +150,7 @@ class PomodoroActivity: AppCompatActivity()  {
         outState.putLong("endTime", endTime)
     }
 
+    // Init the timer state once the instance is restored
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         timeLeftInMillis = savedInstanceState.getLong("timeLeftInMillis")
