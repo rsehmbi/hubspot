@@ -89,6 +89,9 @@ class SecurityFragment : Fragment() {
 
 // Lifecycle methods ------------------------------------------------------------------------
 
+    /**
+     * Used for getting recognizer intent extras from the speech-to-text system
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -134,6 +137,9 @@ class SecurityFragment : Fragment() {
         cleanUpSystems()
     }
 
+    /**
+     * Checks call permissions at runtime due to the nature of android call permissions
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -163,6 +169,9 @@ class SecurityFragment : Fragment() {
 
 // Private methods --------------------------------------------------------------------------
 
+    /**
+     * Cleans up broadcasts
+     */
     private fun cleanUpSystems() {
         // Clean up emergency services
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(silentButtonReceiver)
@@ -181,12 +190,19 @@ class SecurityFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(silentButtonReceiver)
     }
 
+    /**
+     * Handles notification closes
+     */
     private fun closePingLocationNotification() {
         if(this::notificationManager.isInitialized) {
             notificationManager.cancel(notifyId)
         }
     }
 
+    /**
+     * Sets up an event listener for a user's speech attribute in firebase realtime database and
+     * sets the view model speech to the changed user speech attribute.
+     */
     private fun getSpeechChangesFromFirebase() {
         val currentUser = Auth.getCurrentUser()!!
         val currentUserId = currentUser.id
@@ -212,6 +228,9 @@ class SecurityFragment : Fragment() {
 
     }
 
+    /**
+     * Checks runtime call permissions and starts the call activity if permissions are granted.
+     */
     private fun handleEmergencyServicesSilentButtonPress() {
         val intent = Intent(Intent.ACTION_CALL) // This intent dials the number automatically
         intent.data = Uri.parse("tel: 119") // Obviously not using 911 for this project app
@@ -234,6 +253,9 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Handles the a security subsystem activation associtated with a specific key event.
+     */
     private fun handleKeyEvent(): Boolean {
         securityViewModel.silentButtonPressed.value = false
         securityViewModel.keyEventButtonAction.value = null
@@ -254,6 +276,10 @@ class SecurityFragment : Fragment() {
         return false
     }
 
+    /**
+     * Observes when to get a new location, gets the user's location, and adds it the User's
+     * location attribute in firebase realtime database.
+     */
     private fun handleLocationUpdates(view: View) {
         securityViewModel.getLocationNow.observe(viewLifecycleOwner) {
             if (securityViewModel.getLocationNow.value == true) {
@@ -286,6 +312,9 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Observes when a silent button is pressed and calls [handleKeyEvent]
+     */
     private fun handleSilentButtonPresses() {
         securityViewModel.silentButtonPressed.observe(viewLifecycleOwner) {
             if (it == true) {
@@ -294,6 +323,9 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Starts the continuous location service.
+     */
     private fun initializeContinuousLocationServicesButtons(view: View) {
         // Continuous Location Services Button
         locationServicesButton = view.findViewById(R.id.location_services_button)
@@ -320,6 +352,9 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Gets the user's friend list and subscribes to their push notifications.
+     */
     private fun initializeFriendsList() {
         securityViewModel.friendsList.value = MainActivity.friendsList
         friendsList = securityViewModel.friendsList.value!!
@@ -328,20 +363,34 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Observes the speech object in the [securityViewModel] and sets the change to the view model's
+     * speech object
+     */
     private fun initializeObserveSpeechObject() {
         securityViewModel.speech.observe(this){
             speechObject = it
         }
     }
 
+    /**
+     * Starts the ping location push notification service
+     */
     private fun initializePingLocationService() {
         notificationManager = requireActivity().getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
     }
 
+    /**
+     * Starts the safe location service
+     */
     private fun initializeSafeLocationService() {
         safeLocationService = SafeLocationService()
     }
 
+    /**
+     * Sets an on click listener for the speech text button view an handles starting the
+     * [SpeechActivity]
+     */
     private fun initializeSavedSpeechTextViewButton(view: View) {
         savedSpeechTextViewButton = view.findViewById(R.id.saved_speech_button)
         savedSpeechTextViewButton.setOnClickListener {
@@ -361,6 +410,10 @@ class SecurityFragment : Fragment() {
         silentButtonReceiver = SilentButtonReceiver()
     }
 
+    /**
+     * Determines what happens when the ping location switch is checked (register receiver) or
+     * unchecked (unregister receiver)
+     */
     private fun initializeSilentPingLocationButton(view: View) {
         pingLocationSwitch = view.findViewById(R.id.ping_location_button_switch)
         pingLocationSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener
@@ -379,6 +432,10 @@ class SecurityFragment : Fragment() {
         })
     }
 
+    /**
+     * Determines what happens when the emergency silent switch is checked (register receiver) or
+     * unchecked (unregister receiver)
+     */
     private fun initializeSilentEmergencyButton(view: View) {
         emergencySilentSwitch = view.findViewById(R.id.emergency_silent_button_switch)
         emergencySilentSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener
@@ -412,6 +469,10 @@ class SecurityFragment : Fragment() {
         })
     }
 
+    /**
+     * Determines what happens when the speech to text switch is checked (register receiver) or
+     * unchecked (unregister receiver)
+     */
     private fun initializeSpeechToTextButton(view: View) {
         speechToTextSwitch = view.findViewById(R.id.speech_to_text_switch)
         speechToTextSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener
@@ -429,12 +490,19 @@ class SecurityFragment : Fragment() {
         })
     }
 
+    /**
+     * Intializes the security view model and campanion object
+     */
     private fun initializeViewModel() {
         securityViewModel = ViewModelProvider(requireActivity())[SecurityViewModel::class.java]
         CompanionObject.securityViewModel = securityViewModel
 
     }
 
+    /**
+     * Launches the speech to text system and allows the user to install Google Quick Search Box if
+     * they are missing it from their device.
+     */
     private fun launchSpeechToText() {
         try {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -452,6 +520,10 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Takes the text speech and saves it the firebase realtime database under the user's speech
+     * attribute
+     */
     private fun saveSpeechToDataBase(speech: String) {
         val currentUser = Auth.getCurrentUser()!!
         val currentUserUid = currentUser.id
@@ -467,6 +539,9 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Sets variables that were saved when fragment was destroyed
+     */
     private fun setSavedInstanceVariables(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val savedSecurityButtonText = savedInstanceState!!.getString("securityButtonText")
@@ -476,6 +551,10 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Upon receiving a location, will create and send a push notification containing the user's
+     * location and name.
+     */
     private fun sendLocationPushNotification() {
         LocationService.getCurrentLocation(requireActivity(),
             object : LocationCallback { // Creates a callback for handling resulting location data
@@ -511,6 +590,9 @@ class SecurityFragment : Fragment() {
         )
     }
 
+    /**
+     * Sets the text view that showcases the user's current location
+     */
     private fun setLocationTextView(view: View) {
         CoroutineScope(IO).launch {
             val locationTextView: TextView = view.findViewById(R.id.location_text_view)
@@ -532,6 +614,10 @@ class SecurityFragment : Fragment() {
         }
     }
 
+    /**
+     * Allows a user to subscribe to a friend topic so that they may receive push notifications
+     * from that friend.
+     */
     private fun subscribeToFriendTopicPushNotifications(friendTopic: String) {
         FirebaseMessaging.getInstance().subscribeToTopic(friendTopic)
             .addOnCompleteListener { task ->
